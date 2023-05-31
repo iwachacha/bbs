@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Lecture extends Model
 {
     use HasFactory;
+    use SoftDeletes;
     
     public function user() {
         return $this->belongsTo(User::class);
@@ -37,4 +39,8 @@ class Lecture extends Model
         return $this->hasMany(LectureKeep::class);  
     }
     
+    protected $fillable = [
+        'user_id', 'lecture_category_id', 'faculty_id', 'department_id', 'course_id', 
+        'name', 'professor_last', 'professor_first', 'season', 'grade'
+    ];
 }
