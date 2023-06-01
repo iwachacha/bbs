@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
         \URL::forceScheme('https');
         $this->app['request']->server->set('HTTPS','on');
+        Paginator::useBootstrap();
         
         $class_methods = [
             '対面',
@@ -61,7 +63,7 @@ class AppServiceProvider extends ServiceProvider
         ];
         $date = new Carbon('now');
         $year = $date->year;
-        
+
         view()->share('class_methods', $class_methods);
         view()->share('attedances', $attedances);
         view()->share('evaluation_methods', $evaluation_methods);

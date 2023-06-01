@@ -8,7 +8,7 @@
             <input type="text" name="lecture[name]" id="name" value="{{ $lecture->name }}"/>
         </div>
         <div class="professor_name">
-            <label>担当教員名</label>
+            <label for="professor_name">担当教員名</label>
             <label for="professor_last">姓</label>
             <input type="text" name="lecture[professor_last]" id="professor_last" value="{{ $lecture->professor_last }}"/>
             <label for="professor_first">名</label>

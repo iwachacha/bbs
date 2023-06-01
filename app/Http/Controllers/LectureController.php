@@ -8,15 +8,66 @@ use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\Course;
 use App\Models\Lecture;
+use Illuminate\Http\Request;
 use App\Http\Requests\LectureRequest;
 use Illuminate\Support\Facades\Auth;
 
 class LectureController extends Controller
 {
-    public function index(Lecture $lecture)
-    {
-        $lectures = Lecture::withCount('reviews')->get();
-        return view('lectures/index')->with(['lectures' => $lectures]);  
+    public function index(
+        Request $request,
+        Lecture $lecture,
+        LectureCategory $lecture_category,
+        Faculty $faculty,
+        Department $department,
+        Course $course
+    ){
+        $lectures = $lecture;
+        
+        //絞り込み検索処理
+        
+        //キーワード検索
+        $search_word = $request->input('search_word'); 
+        if( !(empty($search_word)) ){
+            $lectures = $lectures->where('name', 'LIKE', '%'.$search_word.'%');
+        } 
+        
+        //講義カテゴリー検索
+        $search_category = $request->input('search_category');
+        if( !(empty($search_category)) ){
+            $lectures = $lectures->where('lecture_category_id', $search_category);
+        }    
+        
+        //学部検索
+        $search_faculty = $request->input('search_faculty');
+        if( !(empty($search_faculty)) ){
+            $lectures = $lectures->where('faculty_id', $search_faculty);
+        }
+        
+        //学科検索
+        $search_department = $request->input('search_department');
+        if( !(empty($search_department)) ){
+            $lectures = $lectures->where('department_id', $search_department);
+        }
+        
+        //コース検索
+        $search_course = $request->input('search_course');
+        if( !(empty($search_course)) ){
+            $lectures = $lectures->where('course_id', $search_course);
+        }
+        
+        $lectures = $lectures->withcount('reviews')->get();
+        $result_count = $lectures->count();
+        
+        return view('lectures/index')->with([
+            'lectures' => $lectures,
+            'lecture_categories' => $lecture_category->get(),
+            'faculties' => $faculty->get(),
+            'departments' => $department->get(),
+            'courses' => $course->get(),
+            'result_count' => $result_count
+        ]);
+
     }
 
     public function create(
