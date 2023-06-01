@@ -2,18 +2,15 @@
     <h1>講義作成</h1>
     <form action="{{ route('lecture.index') }}" method="POST">
         @csrf
-        <div class="lecture_name">
+        <div>
             <label for="lecture_name">講義名</label>
-            <input type="text" name="lecture[name]" id="lecture_name" placeholder="講義名を入力してください"/>
+            <input type="text" name="lecture[lecture_name]" id="lecture_name" placeholder="講義名を入力してください"/>
         </div>
-        <div class="professor_name">
-            <label>担当教員名</label>
-            <label for="professor_last">姓</label>
-            <input type="text" name="lecture[professor_last]" id="professor_last" placeholder="担当教員の名字を入力してください"/>
-            <label for="professor_first">名</label>
-            <input type="text" name="lecture[professor_first]" id="professor_first" placeholder="担当教員の名前を入力してください"/>
+        <div>
+            <label for="professor_name">担当教員名</label>
+            <input type="text" name="lecture[professor_name]" id="professor_name" placeholder="教員名を入力してください"/>
         </div>
-        <div class="category">
+        <div>
             <label for="lecture_category_id">講義カテゴリー</label>
             <select name="lecture[lecture_category_id]" id="lecture_category_id">
                 <option value="" selected disabled>選択してください</option>
@@ -22,7 +19,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="faculty">
+        <div>
             <label for="faculty_id">開講学部</label>
             <select name="lecture[faculty_id]" id="faculty_id">
                 <option value="" selected disabled>選択してください</option>
@@ -32,7 +29,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="department">
+        <div>
             <label for="department_id">開講学科・課程</label>
             <select name="lecture[department_id]" id="department_id">
                 <option value="" selected disabled>選択してください</option>
@@ -42,7 +39,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="course">
+        <div>
             <label for="course_id">開講コース・専修</label>
             <select name="lecture[course_id]" id="course_id">
                 <option value="" selected disabled>選択してください</option>
@@ -52,17 +49,16 @@
                 @endforeach
             </select>
         </div>
-        <div class="season">
+        <div>
             <label>開講時期</label>
             <input type="radio" name="lecture[season]" value="前期" id="pre"><label for="pre">前期</label>
             <input type="radio" name="lecture[season]" value="後期" id="post"><label for="post">後期</label>    
         </div>
-        <div class="grade">
+        <div>
             <label>開講学年</label>
-            <input type="radio" name="lecture[grade]" value=1 id="grade1"><label for="grade1">1年次</label>
-            <input type="radio" name="lecture[grade]" value=2 id="grade2"><label for="grade2">2年次</label>
-            <input type="radio" name="lecture[grade]" value=3 id="grade3"><label for="grade3">3年次</label>
-            <input type="radio" name="lecture[grade]" value=4 id="grade4"><label for="grade4">4年次</label>
+            @for($i=1; $i<=4; $i++)
+                <input type="radio" name="lecture[grade]" value="{{ $i }}" id="grade{{ $i }}"><label for="grade{{ $i }}">{{ $i }}年次</label>
+            @endfor
         </div>
         <input type="submit" value="作成する"/>
     </form>

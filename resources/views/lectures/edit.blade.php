@@ -3,18 +3,15 @@
     <form action="{{ route('lecture.show', ['lecture' => $lecture->id]) }}" method="POST">
         @csrf
         @method('PUT')
-        <div class="lecture_name">
-            <label for="name">講義名</label>
-            <input type="text" name="lecture[name]" id="name" value="{{ $lecture->name }}"/>
+        <div>
+            <label for="lecture_name">講義名</label>
+            <input type="text" name="lecture[lecture_name]" id="lecture_name" value="{{ $lecture->lecture_name }}"/>
         </div>
-        <div class="professor_name">
+        <div>
             <label for="professor_name">担当教員名</label>
-            <label for="professor_last">姓</label>
-            <input type="text" name="lecture[professor_last]" id="professor_last" value="{{ $lecture->professor_last }}"/>
-            <label for="professor_first">名</label>
-            <input type="text" name="lecture[professor_first]" id="professor_first" value="{{ $lecture->professor_first }}"/>
+            <input type="text" name="lecture[professor_name]" id="professor_name" value="{{ $lecture->professor_name }}"/>
         </div>
-        <div class="category">
+        <div>
             <label for="lecture_category_id">講義カテゴリー</label>
             <select name="lecture[lecture_category_id]" id="lecture_category_id">
                 @foreach($lecture_categories as $lecture_category)　
@@ -26,7 +23,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="faculty">
+        <div>
             <label for="faculty_id">開講学部</label>
             <select name="lecture[faculty_id]" id="faculty_id">
                 @foreach($faculties as $faculty)
@@ -42,7 +39,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="department">
+        <div>
             <label for="department_id">開講学科・課程</label>
             <select name="lecture[department_id]" id="department_id">
                 @foreach($departments as $department)
@@ -58,7 +55,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="course">
+        <div>
             <label for="course_id">開講コース・専修</label>
             <select name="lecture[course_id]" id="course_id">
                 @foreach($courses as $course)
@@ -74,7 +71,7 @@
                 @endforeach
             </select>
         </div>
-        <div class="season">
+        <div>
             <label>開講時期</label>
             @if($lecture->season === "前期")
                 <input type="radio" name="lecture[season]" value="前期" id="pre" checked><label for="pre">前期</label>
@@ -84,7 +81,7 @@
                 <input type="radio" name="lecture[season]" value="後期" id="post" checked><label for="post">後期</label> 
             @endif
         </div>
-        <div class="grade">
+        <div>
             <label>開講学年</label>
             @for($i=1; $i<=4; $i++) <!--1~4年の選択肢　初期値を元の入力値に設定-->
                 @if($i === $lecture->grade)

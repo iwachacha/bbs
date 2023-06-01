@@ -26,10 +26,16 @@ class LectureController extends Controller
         
         //絞り込み検索処理
         
-        //キーワード検索
-        $search_word = $request->input('search_word'); 
-        if( !(empty($search_word)) ){
-            $lectures = $lectures->where('name', 'LIKE', '%'.$search_word.'%');
+        //講義名検索
+        $search_lecture_name = $request->input('search_lecture_name'); 
+        if( !(empty($search_lecture_name)) ){
+            $lectures = $lectures->where('lecture_name', 'LIKE', '%'.$search_lecture_name.'%');
+        } 
+        
+        //教員名検索
+        $search_word = $request->input('search_professor_name'); 
+        if( !(empty($search_professor_name)) ){
+            $lectures = $lectures->where('professor_name', 'LIKE', '%'.$search_professor_name.'%');
         } 
         
         //講義カテゴリー検索

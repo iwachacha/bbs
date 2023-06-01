@@ -6,6 +6,10 @@
                 <input type="search" name="search_lecture_name" placeholder="講義名を入力してください" id="lecture_name">
             </div>
             <div>
+                <label for="professor_name">担当教員名</label>
+                <input type="search" name="search_lecture_name" placeholder="担当教員名を入力してください" id="professor_name">
+            </div>
+            <div>
                 <label for="category">講義カテゴリー</label>
                 <select name="search_category" id="category">
                     <option value="" selected></option>
@@ -54,8 +58,8 @@
                     <h2>{{ $lecture->name }}</h2>
                     <div>
                         <table>
-                            <tr><th>講義名</th><td>{{ $lecture->name }}</td></tr>
-                            <tr><th>担当教員名</th><td>{{ $lecture->professor_last }}{{ $lecture->professor_first }}</td></tr>
+                            <tr><th>講義名</th><td>{{ $lecture->lecture_name }}</td></tr>
+                            <tr><th>担当教員名</th><td>{{ $lecture->professor_name }}</td></tr>
                             <tr><th>カテゴリー</th><td>{{ $lecture->lecture_category->name }}</td></tr>
                             <tr><th>評価数</th><td>{{ $lecture->reviews_count }}</td></tr>
                         </table>

@@ -41,6 +41,6 @@ class Lecture extends Model
     
     protected $fillable = [
         'user_id', 'lecture_category_id', 'faculty_id', 'department_id', 'course_id', 
-        'name', 'professor_last', 'professor_first', 'season', 'grade'
+        'lecture_name', 'professor_name', 'season', 'grade'
     ];
 }
