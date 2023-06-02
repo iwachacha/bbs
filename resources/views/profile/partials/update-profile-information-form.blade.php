@@ -25,10 +25,14 @@
         
         <div class="mt-4">
             <x-input-label for="faculty" :value="__('Faculty')" />
-            <x-text-select id="faculty" class="block mt-1 w-full" name="faculty" :value="old('faculty', $user->faculty)" required autofocus autocomplete="faculty">
+            <x-text-select id="faculty" class="block mt-1 w-full" name="faculty_id">
                 <option value="">登録しない</option>
                 @foreach($faculties as $faculty)
-                    <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
+                    @if($faculty->id === $user->faculty_id)
+                        <option value="{{ $faculty->id }}" selected>{{ $faculty->name }}</option>
+                    @else
+                        <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
+                    @endif
                 @endforeach
             </x-text-select>
             <x-input-error :messages="$errors->get('faculty')" class="mt-2" />
@@ -36,10 +40,14 @@
         
         <div class="mt-4">
             <x-input-label for="department" :value="__('Department')" />
-            <x-text-select id="department" class="block mt-1 w-full" name="department" :value="old('department', $user->faculty)" required autofocus autocomplete="department">
+            <x-text-select id="department" class="block mt-1 w-full" name="department_id">
                 <option value="">登録しない</option>
                 @foreach($departments as $department)
-                    <option value="{{ $department->id }}">{{ $department->name }}</option>
+                    @if($department->id === $user->department_id)
+                        <option value="{{ $department->id }}" selected>{{ $department->name }}</option>
+                    @else
+                        <option value="{{ $department->id }}">{{ $department->name }}</option>
+                    @endif
                 @endforeach
             </x-text-select>
             <x-input-error :messages="$errors->get('department')" class="mt-2" />
@@ -47,15 +55,11 @@
         
         <div class="mt-4">
             <x-input-label for="course" :value="__('Course')" />
-            <x-text-select id="course" class="block mt-1 w-full" name="course" required autofocus autocomplete="course">
+            <x-text-select id="course" class="block mt-1 w-full" name="course_id">
                 <option value="">登録しない</option>
                 @foreach($courses as $course)
-                    @if(isset($user->course_id))
-                        @if($user->course_id === $course->course_id)
-                            <option value="{{ $user->course_id }}" selected>{{ $user->course->name }}</option>
-                        @else
-                            <option value="{{ $course->id }}">{{ $course->name }}</option>
-                        @endif
+                    @if($course->id === $user->course_id)
+                        <option value="{{ $course->id }}" selected>{{ $course->name }}</option>
                     @else
                         <option value="{{ $course->id }}">{{ $course->name }}</option>
                     @endif
@@ -64,13 +68,17 @@
             <x-input-error :messages="$errors->get('course')" class="mt-2" />
         </div>
         
-        <!-- Grade -->
         <div class="mt-4">
             <x-input-label for="grade" :value="__('Grade')" />
-            <x-text-select id="grade" class="block mt-1 w-full" name="grade" :value="old('grade', $user->course)" required autofocus autocomplete="grade">
+            <x-text-select id="grade" class="block mt-1 w-full" name="grade">
                 <option value="">登録しない</option>
+                <option value="">コース・専修がない</option>
                 @for($i = 1; $i <= 4; $i++)
-                    <option>{{ $i }}</option>
+                    @if($i === $user->grade)
+                        <option selected>{{ $i }}</option>
+                    @else
+                        <option>{{ $i }}</option>
+                    @endif
                 @endfor
             </x-text-select>
             <x-input-error :messages="$errors->get('grade')" class="mt-2" />

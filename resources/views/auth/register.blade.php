@@ -12,8 +12,8 @@
         <!-- Faculty -->
         <div class="mt-4">
             <x-input-label for="faculty" :value="__('Faculty')" />
-            <x-text-select id="faculty" class="block mt-1 w-full" name="faculty" :value="old('faculty')" required autofocus autocomplete="faculty">
-                <option value="">選択してください</option>
+            <x-text-select id="faculty" class="block mt-1 w-full" name="faculty_id" :value="old('faculty')" required autofocus autocomplete="faculty">
+                <option value="" selected disabled>選択してください</option>
                 <option value="">登録しない</option>
                 @foreach($faculties as $faculty)
                     <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
@@ -25,8 +25,8 @@
         <!-- Department -->
         <div class="mt-4">
             <x-input-label for="department" :value="__('Department')" />
-            <x-text-select id="department" class="block mt-1 w-full" name="department" :value="old('department')" required autofocus autocomplete="department">
-                <option value="">選択してください</option>
+            <x-text-select id="department" class="block mt-1 w-full" name="department_id" :value="old('department')" required autofocus autocomplete="department">
+                <option value="" selected disabled>選択してください</option>
                 <option value="">登録しない</option>
                 @foreach($departments as $department)
                     <option value="{{ $department->id }}">{{ $department->name }}</option>
@@ -38,9 +38,10 @@
         <!-- Course -->
         <div class="mt-4">
             <x-input-label for="course" :value="__('Course')" />
-            <x-text-select id="course" class="block mt-1 w-full" name="course" :value="old('course')" required autofocus autocomplete="course">
-                <option value="">選択してください</option>
+            <x-text-select id="course" class="block mt-1 w-full" name="course_id" :value="old('course')" required autofocus autocomplete="course">
+                <option value="" selected disabled>選択してください</option>
                 <option value="">登録しない</option>
+                <option value="">コース・専修がない</option>
                 @foreach($courses as $course)
                     <option value="{{ $course->id }}">{{ $course->name }}</option>
                 @endforeach
@@ -52,12 +53,11 @@
         <div class="mt-4">
             <x-input-label for="grade" :value="__('Grade')" />
             <x-text-select id="grade" class="block mt-1 w-full" name="grade" :value="old('grade')" required autofocus autocomplete="grade">
-                <option value="">選択してください</option>
+                <option value="" selected disabled>選択してください</option>
                 <option value="">登録しない</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
+                @for($i = 0; $i <= 4; $i++)
+                    <option>{{ $i }}</option>
+                @endfor
             </x-text-select>
             <x-input-error :messages="$errors->get('grade')" class="mt-2" />
         </div>

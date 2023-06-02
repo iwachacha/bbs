@@ -26,7 +26,7 @@ class ViewComposerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        View::composer( ['lectures/index', 'lectures/create', 'lectures/edit'], LectureComposer::class );
+        View::composer( ['lectures/index', 'lectures/create', 'lectures/edit', 'profile.edit', 'auth.register'], LectureComposer::class );
         View::composer( ['reviews/create', 'reviews/edit'], ReviewComposer::class );
     }
 }

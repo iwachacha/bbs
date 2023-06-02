@@ -5,24 +5,24 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('home') }}">
+                    <a href="{{ route('lecture.index') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
-                        ホーム
-                    </x-nav-link>
                     <x-nav-link :href="route('lecture.index')" :active="request()->routeIs('lecture.index')">
                         講義評価
                     </x-nav-link>
-                    <x-nav-link :href="route('gourmet.index')" :active="request()->routeIs('gourmet.index')">
-                        周辺グルメ
+                    <x-nav-link :href="route('problem.index')" :active="request()->routeIs('problem.index')">
+                        お悩み相談
                     </x-nav-link>
                     <x-nav-link :href="route('chat.index')" :active="request()->routeIs('chat.index')">
                         雑談部屋
+                    </x-nav-link>
+                    <x-nav-link :href="route('gourmet.index')" :active="request()->routeIs('gourmet.index')">
+                        周辺グルメ
                     </x-nav-link>
                 </div>
             </div>
@@ -76,8 +76,17 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
-                {{ __('Home') }}
+            <x-responsive-nav-link :href="route('lecture.index')" :active="request()->routeIs('lecture.index')">
+                講義評価
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('problem.index')" :active="request()->routeIs('problem.index')">
+                お悩み相談
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('chat.index')" :active="request()->routeIs('chat.index')">
+                雑談部屋
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('gourmet.index')" :active="request()->routeIs('gourmet.index')">
+                周辺グルメ
             </x-responsive-nav-link>
         </div>
 

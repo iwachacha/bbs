@@ -12,24 +12,24 @@ class User extends Authenticatable //implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
     
+    public function faculty() {
+        return $this->belongsTo(Faculty::class);
+    }
+    
+    public function department() {
+        return $this->belongsTo(Department::class);
+    }
+    
+    public function course() {
+        return $this->belongsTo(Course::class);
+    }
+    
     public function lectures() {
         return $this->hasMany(Lecture::class);  
     }
     
     public function reviews() {
         return $this->hasMany(Review::class);  
-    }
-    
-    public function review_questions() {
-        return $this->hasMany(ReviewQuestion::class);  
-    }
-    
-    public function clubs() {
-        return $this->hasMany(Club::class);  
-    }
-    
-    public function club_questions() {
-        return $this->hasMany(ClubQuestion::class);  
     }
     
     public function topics() {
@@ -46,10 +46,6 @@ class User extends Authenticatable //implements MustVerifyEmail
     
     public function review_goods() {
         return $this->hasMany(ReviewGood::class);  
-    }
-    
-    public function club_keeps() {
-        return $this->hasMany(ClubKeep::class);  
     }
     
     public function topic_keeps() {

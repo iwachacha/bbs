@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LectureController extends Controller
 {
-    public function index(Request $request, Lecture $lecture,){
+    public function index(Request $request, Lecture $lecture){
         
         $lectures = $lecture;
         

@@ -9,6 +9,10 @@ class Faculty extends Model
 {
     use HasFactory;
     
+    public function users() {
+        return $this->hasMany(User::class);  
+    }
+    
     public function departments() {
         return $this->hasMany(Department::class);  
     }

@@ -8,23 +8,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use App\Models\Faculty;
-use App\Models\Department;
-use App\Models\Course;
 
 class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request, Faculty $faculty, Department $department, Course $course): View
+    public function edit(Request $request): View
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-            'faculties' => $faculty->get(),
-            'departments' => $department->get(),
-            'courses' => $course->get()
-        ]);
+        return view('profile.edit', ['user' => $request->user()]);
     }
 
     /**
@@ -37,7 +29,12 @@ class ProfileController extends Controller
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
-
+        
+        $request->user()->faculty_id = $request->input('faculty_id');
+        $request->user()->department_id = $request->input('department_id');
+        $request->user()->course_id = $request->input('course_id');
+        $request->user()->grade = $request->input('grade');
+        
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
