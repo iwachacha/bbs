@@ -10,7 +10,7 @@
             <label for="year">受講年度</label>
             <select name="review[year]" id="year">
                 <option selected disabled>選択してください</option>
-                @for($i = $year - 5 ; $i <= $year; $i++)
+                @for($i = $now_year - 5 ; $i <= $now_year; $i++)
                     <option>{{ $i }}</option>
                 @endfor
             </select>

@@ -13,16 +13,16 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
-                        {{ __('Home') }}
+                        ホーム
                     </x-nav-link>
                     <x-nav-link :href="route('lecture.index')" :active="request()->routeIs('lecture.index')">
-                        {{ __('Lectures') }}
+                        講義評価
                     </x-nav-link>
-                    <x-nav-link :href="route('clubs')" :active="request()->routeIs('clubs')">
-                        {{ __('Clubs') }}
+                    <x-nav-link :href="route('gourmet.index')" :active="request()->routeIs('gourmet.index')">
+                        周辺グルメ
                     </x-nav-link>
-                    <x-nav-link :href="route('chats')" :active="request()->routeIs('chats')">
-                        {{ __('Chats') }}
+                    <x-nav-link :href="route('chat.index')" :active="request()->routeIs('chat.index')">
+                        雑談部屋
                     </x-nav-link>
                 </div>
             </div>

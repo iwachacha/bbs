@@ -50,13 +50,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('lecture_id')->constrained();
-            $table->integer('year');
-            $table->string('class_method');
-            $table->string('attedance');
-            $table->string('evaluation_method');
-            $table->string('evaluation_level');
-            $table->string('lecture_level');
-            $table->string('comp_syllabus');
+            $table->integer('year')->nullable();
+            $table->string('class_method')->nullable();
+            $table->string('attedance')->nullable();
+            $table->string('evaluation_method')->nullable();
+            $table->string('evaluation_level')->nullable();
+            $table->string('lecture_level')->nullable();
+            $table->string('comp_syllabus')->nullable();
             $table->string('title');
             $table->text('lecture_content')->nullable();
             $table->text('body')->nullable();
@@ -67,14 +67,18 @@ return new class extends Migration
             $table->softDeletes();
         });
         
-        Schema::create('lecture_keeps', function (Blueprint $table) {
+        Schema::create('lecture_likes', function (Blueprint $table) { //お気に入り機能
+            $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('lecture_id')->constrained();
+            $table->timestamps();
         });
 
-        Schema::create('review_goods', function (Blueprint $table) {
+        Schema::create('review_goods', function (Blueprint $table) {　//高評価機能
+            $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('review_id')->constrained();
+            $table->timestamps();
         });
         
         //グルメ情報
@@ -96,22 +100,60 @@ return new class extends Migration
             $table->string('name');
             $table->string('address');
             $table->string('title');
-            $table->text('body');
+            $table->text('body')->nullable();
             $table->string('price');
+            $table->text('image')->nullable();
             $table->integer('rate_taste'); //味評価
             $table->integer('rate_cost'); //コスパ評価
             $table->integer('rate_atmosphere'); //雰囲気評価
             $table->integer('rate_satisfaction'); //総合満足度評価
         });
         
-        Schema::create('gourmet_keeps', function (Blueprint $table) {
+        Schema::create('gourmet_likes', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('gourmet_id')->constrained();
+            $table->timestamps();
+        });
+        
+        //悩み相談
+        Schema::create('problem_categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+        });
+        
+        Schema::create('problems', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('problem_category_id')->constrained();
+            $table->boolean('solve'); //お悩みが解決したかどうか判定
+            $table->string('title');
+            $table->text('body');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+        
+        Schema::create('solutions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('problem_id')->constrained();
+            $table->text('body');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+        
+        Schema::create('ploblem_likes', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('ploblem_id')->constrained();
+            $table->timestamps();
         });
 
-        Schema::create('gourmet_goods', function (Blueprint $table) {
+        Schema::create('solutions_goods', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('gourmet_id')->constrained();
+            $table->foreignId('solution_id')->constrained();
+            $table->timestamps();
         });
         
         //雑談
@@ -138,17 +180,29 @@ return new class extends Migration
             $table->softDeletes();
         });
         
-        Schema::create('topic_keeps', function (Blueprint $table) {
+        Schema::create('topic_likes', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('topic_id')->constrained();
+            $table->timestamps();
         });
 
         Schema::create('post_goods', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('post_id')->constrained();
+            $table->timestamps();
         });
-    
-        //カラム追加
+        
+        //フォロー機能
+        Schema::table('follows', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('follower')->constrained('users');
+            $table->foreignId('followee')->constrained('users');
+            $table->timestamps();
+        });
+        
+        //usersカラム追加
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('faculty_id')->nullable()->constrained();
             $table->foreignId('department_id')->nullable()->constrained();

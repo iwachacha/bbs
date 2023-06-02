@@ -3,10 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\LectureCategory;
-use App\Models\Faculty;
-use App\Models\Department;
-use App\Models\Course;
 use App\Models\Lecture;
 use App\Models\Review;
 use App\Http\Requests\ReviewRequest;

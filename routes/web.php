@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LectureController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\ClubController;
+use App\Http\Controllers\GourmetController;
 use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
 
@@ -50,7 +50,7 @@ Route::controller(ReviewController::class)->group(function () {
     Route::put('/lectures/{lecture}/reviews/{review}', 'update')->name('review.update');
 });
 
-Route::get('/clubs', [ClubController::class, 'index'])->name('clubs');
-Route::get('/chats', [ChatController::class, 'index'])->name('chats');
+Route::get('/gourmets', [GourmetController::class, 'index'])->name('gourmet.index');
+Route::get('/chats', [ChatController::class, 'index'])->name('chat.index');
 
 require __DIR__.'/auth.php';

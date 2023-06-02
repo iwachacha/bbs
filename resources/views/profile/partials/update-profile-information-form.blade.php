@@ -22,7 +22,60 @@
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
-
+        
+        <div class="mt-4">
+            <x-input-label for="faculty" :value="__('Faculty')" />
+            <x-text-select id="faculty" class="block mt-1 w-full" name="faculty" :value="old('faculty', $user->faculty)" required autofocus autocomplete="faculty">
+                <option value="">登録しない</option>
+                @foreach($faculties as $faculty)
+                    <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
+                @endforeach
+            </x-text-select>
+            <x-input-error :messages="$errors->get('faculty')" class="mt-2" />
+        </div>
+        
+        <div class="mt-4">
+            <x-input-label for="department" :value="__('Department')" />
+            <x-text-select id="department" class="block mt-1 w-full" name="department" :value="old('department', $user->faculty)" required autofocus autocomplete="department">
+                <option value="">登録しない</option>
+                @foreach($departments as $department)
+                    <option value="{{ $department->id }}">{{ $department->name }}</option>
+                @endforeach
+            </x-text-select>
+            <x-input-error :messages="$errors->get('department')" class="mt-2" />
+        </div>
+        
+        <div class="mt-4">
+            <x-input-label for="course" :value="__('Course')" />
+            <x-text-select id="course" class="block mt-1 w-full" name="course" required autofocus autocomplete="course">
+                <option value="">登録しない</option>
+                @foreach($courses as $course)
+                    @if(isset($user->course_id))
+                        @if($user->course_id === $course->course_id)
+                            <option value="{{ $user->course_id }}" selected>{{ $user->course->name }}</option>
+                        @else
+                            <option value="{{ $course->id }}">{{ $course->name }}</option>
+                        @endif
+                    @else
+                        <option value="{{ $course->id }}">{{ $course->name }}</option>
+                    @endif
+                @endforeach
+            </x-text-select>
+            <x-input-error :messages="$errors->get('course')" class="mt-2" />
+        </div>
+        
+        <!-- Grade -->
+        <div class="mt-4">
+            <x-input-label for="grade" :value="__('Grade')" />
+            <x-text-select id="grade" class="block mt-1 w-full" name="grade" :value="old('grade', $user->course)" required autofocus autocomplete="grade">
+                <option value="">登録しない</option>
+                @for($i = 1; $i <= 4; $i++)
+                    <option>{{ $i }}</option>
+                @endfor
+            </x-text-select>
+            <x-input-error :messages="$errors->get('grade')" class="mt-2" />
+        </div>
+        
         <div>
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />

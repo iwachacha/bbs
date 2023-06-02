@@ -136,9 +136,5 @@
     "Faculty": "学部",
     "Department": "学科・課程",
     "Course": "コース・専修",
-    "Grade": "学年",
-    "Lectures" : "講義評価",
-    "Home" : "ホーム",
-    "Clubs" : "サークル募集",
-    "Chats" : "雑談部屋"
+    "Grade": "学年"
 }

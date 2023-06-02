@@ -66,6 +66,9 @@
                     </div>
                     <div>
                         <a href='{{ route('lecture.show', ['lecture' => $lecture->id]) }}'>講義情報</a>
+                        @if($lecture->user_id === Auth::user()->id)
+                            <a href='{{ route('lecture.edit', ['lecture' => $lecture->id]) }}'>評価を修正する</a>
+                        @endif
                         <a href='{{ route('lecture.edit', ['lecture' => $lecture->id]) }}'>講義情報修正</a>
                         <a href='{{ route('review.index', ['lecture' => $lecture->id]) }}'>評価一覧</a>
                         <a href='{{ route('review.create', ['lecture' => $lecture->id]) }}'>この講義を評価する</a>

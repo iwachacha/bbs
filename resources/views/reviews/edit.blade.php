@@ -10,7 +10,7 @@
         <div>
             <label for="year">受講年度</label>
             <select name="review[year]" id="year">
-                @for($i = $year - 5 ; $i <= $year; $i++)    <!-- 現役学生対象のサービスのため現在までの年を表示（留年考慮） -->
+                @for($i = $now_year - 5 ; $i <= $now_year; $i++)    <!-- 現役学生対象のサービスのため現在までの年を表示（留年考慮） -->
                     @if($i === $review->year)   <!--初期値を元の入力値に設定　以下同様-->
                         <option selected>{{ $i }}</option>
                     @else
@@ -129,19 +129,11 @@
         </div>
         <div>
             <label for="lecture_content">講義内容</label>
-            <textarea name="review[lecture_content]" cols="50" rows="3" maxlength="500" id="lecture_content">
-                @if( isset($review->lecture_content) ) 
-                    {{ $review->lecture_content }} 
-                @endif
-            </textarea>
+            <textarea name="review[lecture_content]" cols="50" rows="3" maxlength="500" id="lecture_content">{{ @$review->lecture_content }}</textarea>
         </div>
         <div>
             <label for="body">評価詳細</label>
-            <textarea name="review[body]" cols="50" rows="5" maxlength="500" id="body">
-                @if( isset($review->body) ) 
-                    {{ $review->body }} 
-                @endif
-            </textarea>
+            <textarea name="review[body]" cols="50" rows="5" maxlength="500" id="body">{{ @$review->body }}</textarea>
         </div>
         <input type="submit" value="保存する"/>
     </form>

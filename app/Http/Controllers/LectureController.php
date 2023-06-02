@@ -3,10 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\LectureCategory;
-use App\Models\Faculty;
-use App\Models\Department;
-use App\Models\Course;
 use App\Models\Lecture;
 use Illuminate\Http\Request;
 use App\Http\Requests\LectureRequest;
@@ -14,14 +10,8 @@ use Illuminate\Support\Facades\Auth;
 
 class LectureController extends Controller
 {
-    public function index(
-        Request $request,
-        Lecture $lecture,
-        LectureCategory $lecture_category,
-        Faculty $faculty,
-        Department $department,
-        Course $course
-    ){
+    public function index(Request $request, Lecture $lecture,){
+        
         $lectures = $lecture;
         
         //絞り込み検索処理
@@ -65,29 +55,11 @@ class LectureController extends Controller
         $lectures = $lectures->withcount('reviews')->get();
         $result_count = $lectures->count();
         
-        return view('lectures/index')->with([
-            'lectures' => $lectures,
-            'lecture_categories' => $lecture_category->get(),
-            'faculties' => $faculty->get(),
-            'departments' => $department->get(),
-            'courses' => $course->get(),
-            'result_count' => $result_count
-        ]);
-
+        return view('lectures/index')->with(['lectures' => $lectures, 'result_count' => $result_count]);
     }
 
-    public function create(
-        LectureCategory $lecture_category,
-        Faculty $faculty,
-        Department $department,
-        Course $course
-    ){
-        return view('lectures/create')->with([
-            'lecture_categories' => $lecture_category->get(),
-            'faculties' => $faculty->get(),
-            'departments' => $department->get(),
-            'courses' => $course->get()
-        ]);
+    public function create(){
+        return view('lectures/create');
     }
 
     public function store(LectureRequest $request, Lecture $lecture){
@@ -97,37 +69,22 @@ class LectureController extends Controller
         return redirect()->route('lecture.index');
     }
 
-    public function show(Lecture $lecture)
-    {
+    public function show(Lecture $lecture){
         return view('lectures/show')->with(['lecture' => $lecture]);
     }
 
-    public function edit(
-        Lecture $lecture,
-        LectureCategory $lecture_category,
-        Faculty $faculty,
-        Department $department,
-        Course $course
-    ){
-        return view('lectures/edit')->with([
-            'lecture' => $lecture,
-            'lecture_categories' => $lecture_category->get(),
-            'faculties' => $faculty->get(),
-            'departments' => $department->get(),
-            'courses' => $course->get()
-        ]);
+    public function edit(Lecture $lecture){
+        return view('lectures/edit')->with(['lecture' => $lecture]);
     }
 
-    public function update(LectureRequest $request, Lecture $lecture)
-    {
-        //編集は誰でも可能だが投稿者は上書きしない
+    public function update(LectureRequest $request, Lecture $lecture){
         $lecture_input = $request['lecture'];
+        $lecture_input['user_id'] = Auth::id();
         $lecture->fill($lecture_input)->save();
         return redirect()->route('lecture.show', ['lecture' => $lecture->id]);
     }
 
-    public function destroy(Lecture $lecture)
-    {
+    public function destroy(Lecture $lecture){
         $lecture->delete();
         return redirect()->route('lecture.index');
     }
