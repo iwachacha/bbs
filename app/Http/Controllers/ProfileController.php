@@ -26,10 +26,6 @@ class ProfileController extends Controller
     {
         $request->user()->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-        
         $request->user()->faculty_id = $request->input('faculty_id');
         $request->user()->department_id = $request->input('department_id');
         $request->user()->course_id = $request->input('course_id');
