@@ -67,7 +67,8 @@ class User extends Authenticatable //implements MustVerifyEmail
         'faculty_id',
         'department_id',
         'course_id',
-        'grade'
+        'grade',
+        'comment'
     ];
 
     /**

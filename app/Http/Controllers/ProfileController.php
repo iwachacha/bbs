@@ -24,15 +24,8 @@ class ProfileController extends Controller
 
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
-
-        $request->user()->faculty_id = $request->input('faculty_id');
-        $request->user()->department_id = $request->input('department_id');
-        $request->user()->course_id = $request->input('course_id');
-        $request->user()->grade = $request->input('grade');
-        
-        $request->user()->save();
-
+        $profile_input = $request['profile'];
+        $request->user()->fill($profile_input)->save();
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 

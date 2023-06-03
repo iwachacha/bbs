@@ -21,17 +21,9 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(
-        Faculty $faculty,
-        Department $department,
-        Course $course
-    ): View
+    public function create(): View
     {
-        return view('auth.register')->with([
-            'faculties' => $faculty->get(),
-            'departments' => $department->get(),
-            'courses' => $course->get()
-        ]);
+        return view('auth.register');
     }
 
     /**
@@ -39,15 +31,10 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(
-        Request $request,
-        Faculty $faculty,
-        Department $department,
-        Course $course
-    ): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:50'],
             'email' => ['required', 'regex:/[a-z][0-9][ehl][1-4][1-9a][0-9]{3}@bunkyo\.ac\.jp/', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);

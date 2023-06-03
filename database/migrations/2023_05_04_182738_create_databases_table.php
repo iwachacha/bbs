@@ -67,14 +67,14 @@ return new class extends Migration
             $table->softDeletes();
         });
         
-        Schema::create('lecture_likes', function (Blueprint $table) { //お気に入り機能
+        Schema::create('lecture_likes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('lecture_id')->constrained();
             $table->timestamps();
         });
 
-        Schema::create('review_goods', function (Blueprint $table) {　//高評価機能
+        Schema::create('review_goods', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('review_id')->constrained();
@@ -145,7 +145,7 @@ return new class extends Migration
         Schema::create('ploblem_likes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('ploblem_id')->constrained();
+            $table->foreignId('problem_id')->constrained();
             $table->timestamps();
         });
 
@@ -195,10 +195,10 @@ return new class extends Migration
         });
         
         //フォロー機能
-        Schema::table('follows', function (Blueprint $table) {
+        Schema::create('follows', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('follower')->constrained('users');
-            $table->foreignId('followee')->constrained('users');
+            $table->foreignId('follower_user_id')->constrained('users');
+            $table->foreignId('followee_user_id')->constrained('users');
             $table->timestamps();
         });
         
@@ -208,6 +208,7 @@ return new class extends Migration
             $table->foreignId('department_id')->nullable()->constrained();
             $table->foreignId('course_id')->nullable()->constrained();
             $table->integer('grade')->nullable();
+            $table->text('comment')->nullable();
         });
     }
     
