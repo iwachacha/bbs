@@ -72,7 +72,6 @@
             <x-input-label for="grade" :value="__('Grade')" />
             <x-text-select id="grade" class="block mt-1 w-full" name="grade">
                 <option value="">登録しない</option>
-                <option value="">コース・専修がない</option>
                 @for($i = 1; $i <= 4; $i++)
                     @if($i === $user->grade)
                         <option selected>{{ $i }}</option>

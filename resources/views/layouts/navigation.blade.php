@@ -43,8 +43,12 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        <x-dropdown-link href="{{ route('profile.show', ['user' => Auth::user()->id]) }}">
+                            プロフィール
+                        </x-dropdown-link>
+                        
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
+                            アカウント情報
                         </x-dropdown-link>
 
                         <!-- Authentication -->
