@@ -64,7 +64,6 @@ return new class extends Migration
             $table->integer('rate_adequacy'); //講義充実度評価
             $table->integer('rate_satisfaction'); //総合満足度評価
             $table->timestamps();
-            $table->softDeletes();
         });
         
         Schema::create('lecture_likes', function (Blueprint $table) {
@@ -78,6 +77,20 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('review_id')->constrained();
+            $table->timestamps();
+        });
+        
+        //レビューのタグづけ
+        Schema::create('tags', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->timestamps();
+        });
+        
+        Schema::create('review_tags', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('review_id')->constrained();
+            $table->foreignId('tag_id')->constrained();
             $table->timestamps();
         });
         
@@ -98,15 +111,17 @@ return new class extends Migration
             $table->foreignId('gourmet_category_id')->constrained();
             $table->foreignId('gourmet_scene_id')->constrained();
             $table->string('name');
-            $table->string('address');
+            $table->string('address')->nullable();
+            $table->string('station');
             $table->string('title');
             $table->text('body')->nullable();
-            $table->string('price');
+            $table->string('price')->nullable();
             $table->text('image')->nullable();
             $table->integer('rate_taste'); //味評価
             $table->integer('rate_cost'); //コスパ評価
             $table->integer('rate_atmosphere'); //雰囲気評価
             $table->integer('rate_satisfaction'); //総合満足度評価
+            $table->timestamps();
         });
         
         Schema::create('gourmet_likes', function (Blueprint $table) {
@@ -139,7 +154,6 @@ return new class extends Migration
             $table->foreignId('problem_id')->constrained();
             $table->text('body');
             $table->timestamps();
-            $table->softDeletes();
         });
         
         Schema::create('ploblem_likes', function (Blueprint $table) {
@@ -149,7 +163,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('solutions_goods', function (Blueprint $table) {
+        Schema::create('solution_goods', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('solution_id')->constrained();
@@ -177,7 +191,6 @@ return new class extends Migration
             $table->foreignId('topic_id')->constrained();
             $table->text('body');
             $table->timestamps();
-            $table->softDeletes();
         });
         
         Schema::create('topic_likes', function (Blueprint $table) {
