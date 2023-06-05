@@ -29,6 +29,6 @@ class Review extends Model
     protected $fillable = [
         'user_id', 'lecture_id', 'year', 'class_method', 'attedance', 
         'evaluation_method', 'evaluation_level', 'lecture_level', 'comp_syllabus', 
-        'lecture_content', 'title', 'body', 'rate_credit', 'rate_adequacy', 'rate_satisfaction'
+        'lecture_content', 'title', 'dtail', 'rate_credit', 'rate_adequacy', 'rate_fun'
     ];
 }

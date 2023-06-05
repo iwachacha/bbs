@@ -7,12 +7,12 @@
             </div>
             <div>
                 <label for="professor_name">担当教員名</label>
-                <input type="search" name="search_lecture_name" placeholder="担当教員名を入力してください" id="professor_name">
+                <input type="search" name="search_professor_name" placeholder="担当教員名を入力してください" id="professor_name">
             </div>
             <div>
                 <label for="category">講義カテゴリー</label>
                 <select name="search_category" id="category">
-                    <option value="" selected></option>
+                    <option value="" selected>選択してください</option>
                     @foreach($lecture_categories as $lecture_category)　
                         <option value="{{ $lecture_category->id }}">{{ $lecture_category->name }}</option>
                     @endforeach
@@ -21,7 +21,7 @@
             <div>
                 <label for="faculty">開講学部</label>
                 <select name="search_faculty" id="faculty">
-                    <option value="" selected></option>
+                    <option value="" selected>選択してください</option>
                     @foreach($faculties as $faculty)
                         <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
                     @endforeach
@@ -30,7 +30,7 @@
             <div>
                 <label for="department">開講学科・課程</label>
                 <select name="search_department" id="department">
-                    <option value="" selected></option>
+                    <option value="" selected>選択してください</option>
                     @foreach($departments as $department)
                         <option value="{{ $department->id }}">{{ $department->name }}</option>
                     @endforeach
@@ -39,7 +39,7 @@
             <div>
                 <label for="course">開講コース・専修</label>
                 <select name="search_course" id="course">
-                    <option value="" selected></option>
+                    <option value="" selected>選択してください</option>
                     @foreach($courses as $course)
                         <option value="{{ $course->id }}">{{ $course->name }}</option>
                     @endforeach
@@ -67,9 +67,8 @@
                     <div>
                         <a href='{{ route('lecture.show', ['lecture' => $lecture->id]) }}'>講義情報</a>
                         @if($lecture->user_id === Auth::user()->id)
-                            <a href='{{ route('lecture.edit', ['lecture' => $lecture->id]) }}'>評価を修正する</a>
+                            <a href='{{ route('lecture.edit', ['lecture' => $lecture->id]) }}'>講義情報修正</a>
                         @endif
-                        <a href='{{ route('lecture.edit', ['lecture' => $lecture->id]) }}'>講義情報修正</a>
                         <a href='{{ route('review.index', ['lecture' => $lecture->id]) }}'>評価一覧</a>
                         <a href='{{ route('review.create', ['lecture' => $lecture->id]) }}'>この講義を評価する</a>
                     </div>

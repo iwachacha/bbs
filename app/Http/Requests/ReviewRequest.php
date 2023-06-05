@@ -10,7 +10,9 @@ class ReviewRequest extends FormRequest
     {
         return [
             'review.title' => 'required|string|max:100',
-            'review.lecture_content' => 'nullable|string|max:500',
+            'review.rate_credit' => 'required|integer',
+            'review.rate_adequacy' => 'required|integer',
+            'review.rate_fun' => 'required|integer',
             'review.year' => 'nullable|integer',
             'review.class_method' => 'nullable|string',
             'review.attedance' => 'nullable|string',
@@ -18,10 +20,8 @@ class ReviewRequest extends FormRequest
             'review.evaluation_level' => 'nullable|string',
             'review.lecture_level' => 'nullable|string',
             'review.comp_syllabus' => 'nullable|string',
-            'review.rate_credit' => 'required|integer',
-            'review.rate_adequacy' => 'required|integer',
-            'review.rate_satisfaction' => 'required|integer',
-            'review.body' => 'nullable|string|max:500'
+            'review.lecture_content' => 'nullable|string|max:500',
+            'review.dtail' => 'nullable|string|max:500'
         ];
     }
 }

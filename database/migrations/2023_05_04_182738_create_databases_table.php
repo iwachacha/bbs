@@ -59,10 +59,10 @@ return new class extends Migration
             $table->string('comp_syllabus')->nullable();
             $table->string('title');
             $table->text('lecture_content')->nullable();
-            $table->text('body')->nullable();
+            $table->text('dtail')->nullable();
             $table->integer('rate_credit'); //単位取得難易度評価
             $table->integer('rate_adequacy'); //講義充実度評価
-            $table->integer('rate_satisfaction'); //総合満足度評価
+            $table->integer('rate_fun'); //面白さ評価
             $table->timestamps();
         });
         

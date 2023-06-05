@@ -38,7 +38,7 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'regex:/[a-z][0-9][ehl][1-4][1-9a][0-9]{3}@bunkyo\.ac\.jp/', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-
+        
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
