@@ -11,9 +11,11 @@
                 </table>
                 <div>
                     <a href='{{ route('review.show', ['lecture' => $lecture->id, 'review' => $review->id]) }}'>評価詳細</a>
-                    @if($review->user_id === Auth::user()->id)
-                        <a href='{{ route('review.edit', ['lecture' => $lecture->id, 'review' => $review->id]) }}'>評価を修正する</a>
-                    @endif
+                    @auth
+                        @if($review->user_id === Auth::user()->id)
+                            <a href='{{ route('review.edit', ['lecture' => $lecture->id, 'review' => $review->id]) }}'>評価を修正する</a>
+                        @endif
+                    @endauth
                 </div>
              </div>
         @endforeach

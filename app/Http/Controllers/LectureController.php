@@ -56,10 +56,10 @@ class LectureController extends Controller
         
     }
 
-    public function destroy(Lecture $lecture){
+    /*public function destroy(Lecture $lecture){
         
         $lecture->delete();
         return redirect()->route('lecture.index');
         
-    }
+    }*/
 }

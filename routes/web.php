@@ -51,6 +51,7 @@ Route::controller(ReviewController::class)->group(function () {
         Route::get('/lectures/{lecture}/reviews/{review}', 'show')->name('review.show');
         Route::get('/lectures/{lecture}/reviews/{review}/edit', 'edit')->name('review.edit');
         Route::put('/lectures/{lecture}/reviews/{review}', 'update')->name('review.update');
+        Route::delete('/lectures/{lecture}/reviews/{review}', 'delete');    
     });
 });
 
