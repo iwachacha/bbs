@@ -98,7 +98,9 @@ class Lecture extends Model
             
         }
         
-        return $lectures = $lectures->withcount('reviews')->get(); //講義に対するレビューの数も取得
+        $lectures = $lectures->withcount('reviews')->orderBy('created_at', 'desc')->paginate(15); //講義に対するレビューの数も取得
+        
+        return $lectures;
         
     }
 }

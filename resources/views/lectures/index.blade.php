@@ -47,35 +47,35 @@
             </div>
             <input type="submit" value="検索">
         </form>
-    <div>
-    <div class="content">
-        <a href='/lectures/create'>講義を追加する</a>
-        <p>{{ $result_count }}件取得しました<p>
-        <h1>講義一覧</h1>
-        <div class='lectures'>
-            @foreach ($lectures as $lecture)
-                <div class="lecture" style="border-bottom: solid 1px;">
-                    <h2>{{ $lecture->name }}</h2>
-                    <div>
-                        <table>
-                            <tr><th>講義名</th><td>{{ $lecture->lecture_name }}</td></tr>
-                            <tr><th>担当教員名</th><td>{{ $lecture->professor_name }}</td></tr>
-                            <tr><th>カテゴリー</th><td>{{ $lecture->lecture_category->name }}</td></tr>
-                            <tr><th>評価数</th><td>{{ $lecture->reviews_count }}</td></tr>
-                        </table>
-                    </div>
-                    <div>
-                        <a href='{{ route('lecture.show', ['lecture' => $lecture->id]) }}'>講義情報</a>
-                        @auth
-                            @if($lecture->user_id === Auth::user()->id)
-                                <a href='{{ route('lecture.edit', ['lecture' => $lecture->id]) }}'>講義情報修正</a>
-                            @endif
-                        @endauth
-                        <a href='{{ route('review.index', ['lecture' => $lecture->id]) }}'>評価一覧</a>
-                        <a href='{{ route('review.create', ['lecture' => $lecture->id]) }}'>この講義を評価する</a>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    <div>
+    </div>
+
+    <a href='/lectures/create'>講義を追加する</a>
+    <p>{{ $result_count }}件取得しました<p>
+    <h1>講義一覧</h1>
+    <x-content-card-container>
+        @foreach ($lectures as $lecture)
+            <x-content-card>
+                <x-slot name="name">{{ $lecture->lecture_name }}/{{ $lecture->professor_name }}</x-slot>
+                <x-slot name="rate">☆5</x-slot>
+                <x-slot name="route">{{ route('review.index', ['lecture' => $lecture->id]) }}</x-slot>
+                <x-slot name="route_name">評価一覧</x-slot>
+                <x-slot name="heart_icon"><span class="material-symbols-outlined">favorite</span></x-slot>
+                <x-slot name="review_icon"><span class="material-symbols-outlined">comment</span></x-slot>
+                <x-slot name="reviews_count">{{ $lecture->reviews_count }}</x-slot>
+            </x-content-card>
+        @endforeach
+    </x-content-card-container>
+    
+    <div class="mt-12">{{ $lectures->appends(request()->query())->links() }}
+    
+    </div>
+    <div class="mt-4 mb-8 text-right">
+        @if (count($lectures) >0)
+            <p>全{{ $lectures->total() }}件中 
+               {{  ($lectures->currentPage() -1) * $lectures->perPage() + 1}} - 
+               {{ (($lectures->currentPage() -1) * $lectures->perPage() + 1) + (count($lectures) -1)  }}件表示中</p>
+        @else
+            <p>データがありません</p>
+        @endif
+    </div>
 </x-app-layout>
