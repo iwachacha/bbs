@@ -12,10 +12,10 @@ class LectureController extends Controller
 {
     public function index(Request $request, Lecture $lecture){
         
-        $lectures = $lecture;
-        $lectures = $lectures->search_lectures($request); // /Models/Lecture.phpに定義した検索処理
-        $result_count = $lectures->count(); //講義の取得件数
-
+        list($result_count, $lectures) = $lecture->search_lectures($request); // /Models/Lecture.phpに定義した検索処理
+        
+        $request->session()->flash('message', $result_count.'件取得しました');
+        
         return view('lectures/index')->with(['lectures' => $lectures, 'result_count' => $result_count]);
         
     }

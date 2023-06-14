@@ -1,25 +1,26 @@
 <x-app-layout>
     <a href='/lectures/{{ $lecture->id }}/reviews/create'>この講義を評価する</a>
     <h1>講義評価一覧</h1>
-    <div class='reviews'>
+    
+    <x-review-card-container>
+        <x-slot name="title">xsxsxsxsxsxxa</x-slot>
+        <x-slot name="subtitle">xsxsxsxsxsxsxsxa</x-slot>
         @foreach ($reviews as $review)
-            <div class="review" style="border-bottom: solid 1px;">
-                <table>
-                    <tr><th>投稿者</th><td>{{ $review->user->name }}</td></tr>
-                    <tr><th>一言評価</th><td>{{ $review->title }}</td></tr>
-                    <tr><th>総合満足度</th><td>☆{{ $review->rate_satisfaction}}</td></tr>
-                </table>
-                <div>
-                    <a href='{{ route('review.show', ['lecture' => $lecture->id, 'review' => $review->id]) }}'>評価詳細</a>
-                    @auth
-                        @if($review->user_id === Auth::user()->id)
-                            <a href='{{ route('review.edit', ['lecture' => $lecture->id, 'review' => $review->id]) }}'>評価を修正する</a>
-                        @endif
-                    @endauth
-                </div>
-             </div>
+            <x-review-card>
+                <x-slot name="rate_star">
+                    <p class="mb-2">☆aaaaaaa</p>
+                    <p class="mb-2">☆aaaaaaa</p>
+                    <p>☆aaaaaaa</p>
+                </x-slot>
+                <x-slot name="user_icon">sxsxxsxsa</x-slot>
+                <x-slot name="user_name">asxsxsxsx</x-slot>
+                <x-slot name="review_title">xsxsxxsxa</x-slot>
+                <x-slot name="good_icon">axsxsxsx</x-slot>
+                <x-slot name="good_count">sxsxsxsa</x-slot>
+                <x-slot name="good_text">axsxsxsxs</x-slot>
+            </x-review-card>
         @endforeach
-    </div>
+    </x-review-card-container>
         <div>
             <a href='{{ route('lecture.index') }}'>講義一覧</a>
         </div>

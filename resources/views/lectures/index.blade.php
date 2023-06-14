@@ -1,5 +1,6 @@
 <x-app-layout>
-    <div class="search"> <!--検索機能-->
+    
+    <div> <!--検索フォーム-->
         <form action="{{ route('lecture.index') }}" method="GET">
             <div>
                 <label for="lecture_name">講義名</label>
@@ -45,12 +46,11 @@
                     @endforeach
                 </select>
             </div>
-            <input type="submit" value="検索">
+            <button type="submit">検索<button>
         </form>
     </div>
 
     <a href='/lectures/create'>講義を追加する</a>
-    <p>{{ $result_count }}件取得しました<p>
     <h1>講義一覧</h1>
     <x-content-card-container>
         @foreach ($lectures as $lecture)
@@ -60,7 +60,9 @@
                 <x-slot name="route">{{ route('review.index', ['lecture' => $lecture->id]) }}</x-slot>
                 <x-slot name="route_name">評価一覧</x-slot>
                 <x-slot name="heart_icon"><span class="material-symbols-outlined">favorite</span></x-slot>
-                <x-slot name="review_icon"><span class="material-symbols-outlined">comment</span></x-slot>
+                <x-slot name="review_icon">
+                    <a href="{{ route('review.index', ['lecture' => $lecture->id]) }}"><span class="material-symbols-outlined">comment</span></a>
+                </x-slot>
                 <x-slot name="reviews_count">{{ $lecture->reviews_count }}</x-slot>
             </x-content-card>
         @endforeach

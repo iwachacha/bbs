@@ -98,9 +98,10 @@ class Lecture extends Model
             
         }
         
-        $lectures = $lectures->withcount('reviews')->orderBy('created_at', 'desc')->paginate(15); //講義に対するレビューの数も取得
+        $result_count = $lectures->count(); //検索取得件数
+        $lectures = $lectures->withcount('reviews')->orderBy('created_at', 'desc')->paginate(5); //検索結果の講義情報をレビューの数と合わせて新着順で取得
         
-        return $lectures;
+        return [$result_count, $lectures];
         
     }
 }
