@@ -7,8 +7,14 @@
         
         <div>
             <label for="title">タイトル</label>
-            <input type="text" name="review[title]" placeholder="一言で評価してください" id="title" value="{{ old('review.title') }}"/>
+            <input type="text" name="review[title]" placeholder="一言で評価すると？" id="title" value="{{ old('review.title') }}"/>
             <x-input-error :messages="$errors->first('review.title')" class="mt-2" />
+        </div>
+        
+        <div>
+            <label for="lecture_content">講義内容</label>
+            <textarea name="review[lecture_content]" cols="50" rows="3" maxlength="300" id="lecture_content" placeholder="印象的だった内容は？">{{ old('review.lecture_content') }}</textarea>
+            <x-input-error :messages="$errors->first('review.lecture_content')" class="mt-2" />
         </div>
         
         <div>
@@ -38,7 +44,7 @@
             <x-input-error :messages="$errors->first('review.rate_fun')" class="mt-2" />
         </div>
         
-        <h2>任意入力項目（ご協力お願いします！）</h2>
+        <h2>任意入力項目</h2>
         
         <div>
             <label for="year">受講年度</label>
@@ -129,12 +135,6 @@
                 @endforeach
             </select>
             <x-input-error :messages="$errors->first('review.comp_syllabus')" class="mt-2" />
-        </div>
-        
-        <div>
-            <label for="lecture_content">講義内容</label>
-            <textarea name="review[lecture_content]" cols="50" rows="3" maxlength="500" id="lecture_content" placeholder="講義内容を記述してください">{{ old('review.lecture_content') }}</textarea>
-            <x-input-error :messages="$errors->first('review.lecture_content')" class="mt-2" />
         </div>
         
         <div>

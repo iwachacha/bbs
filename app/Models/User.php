@@ -32,34 +32,14 @@ class User extends Authenticatable //implements MustVerifyEmail
         return $this->hasMany(Review::class);  
     }
     
-    public function topics() {
-        return $this->hasMany(Topic::class);  
-    }
-    
-    public function posts() {
-        return $this->hasMany(Post::class);  
-    }
-    
-    public function lecture_keeps() {
-        return $this->hasMany(LectureKeep::class);  
+    public function lecture_likes() {
+        return $this->hasMany(LectureLike::class);  
     }
     
     public function review_goods() {
         return $this->hasMany(ReviewGood::class);  
     }
     
-    public function topic_keeps() {
-        return $this->hasMany(ToipcKeep::class);  
-    }
-    
-    public function post_goods() {
-        return $this->hasMany(PostGood::class);  
-    }
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',

@@ -10,6 +10,7 @@ class ReviewRequest extends FormRequest
     {
         return [
             'review.title' => 'required|string|max:100',
+            'review.lecture_content' => 'required|string|max:300',
             'review.rate_credit' => 'required|integer',
             'review.rate_adequacy' => 'required|integer',
             'review.rate_fun' => 'required|integer',
@@ -20,7 +21,6 @@ class ReviewRequest extends FormRequest
             'review.evaluation_level' => 'nullable|string',
             'review.lecture_level' => 'nullable|string',
             'review.comp_syllabus' => 'nullable|string',
-            'review.lecture_content' => 'nullable|string|max:500',
             'review.dtail' => 'nullable|string|max:500'
         ];
     }

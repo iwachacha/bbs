@@ -11,6 +11,11 @@ class Lecture extends Model
     use HasFactory;
     use SoftDeletes;
     
+    protected $fillable = [
+        'user_id', 'lecture_category_id', 'faculty_id', 'department_id', 'course_id', 
+        'lecture_name', 'professor_name', 'season', 'grade'
+    ];
+    
     public function user() {
         return $this->belongsTo(User::class);
     }
@@ -35,16 +40,11 @@ class Lecture extends Model
         return $this->belongsTo(Course::class);
     }
     
-    public function lecture_keeps() {
+    public function lecture_likes() {
         return $this->hasMany(LectureKeep::class);  
     }
     
-    protected $fillable = [
-        'user_id', 'lecture_category_id', 'faculty_id', 'department_id', 'course_id', 
-        'lecture_name', 'professor_name', 'season', 'grade'
-    ];
-    
-    public function search_lectures($request){
+    public function search_lectures($request) {
         
         //講義検索処理　複数条件で絞り込みしていき、最終的に残ったものを取得する　
         
