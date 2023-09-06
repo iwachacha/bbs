@@ -7,10 +7,28 @@ use App\Models\Lecture;
 use Illuminate\Http\Request;
 use App\Http\Requests\LectureRequest;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class LectureController extends Controller
 {
-    public function index(Request $request, Lecture $lecture){
+    public function index()
+    {
+        return Inertia::render('Lecture/Index');
+    }
+    
+    public function create()
+    {
+        return Inertia::render('Lecture/Create');
+    }
+
+    public function store(LectureRequest $request)
+    {
+        $input = $request->validated();
+        Lecture::create($input);
+    }
+    
+    /*public function index(Request $request, Lecture $lecture){
         
         list($result_count, $lectures) = $lecture->search_lectures($request); // /Models/Lecture.phpに定義した検索処理
         

@@ -1,22 +1,45 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+  import { ref } from 'vue'
+  import NavAvatar from '@/Components/NavAvatar.vue';
+  import NavItem from '@/Components/NavItem.vue';
+  import { Link } from '@inertiajs/vue3';
+
+  const drawer = ref(false)
+  const links = [
+        { text: '講義', icon: 'mdi-account-school', href: "/lectures" },
+        { text: 'グルメ', icon: 'mdi-silverware-fork-knife', href: "/lectures/create"},
+        { text: '教科書', icon: 'mdi-book-open-blank-variant' },
+        { text: '雑談', icon: 'mdi-chat' }
+  ]
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <v-app>
 
-    <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
-        </template>
+      <v-navigation-drawer v-model="drawer">
+        <NavAvatar />
+        
+        <v-list nav>
+          <NavItem
+            v-for="(link, i) in links"
+              :key="i"
+              :value="item"
+              :text="link.text"
+              :icon="link.icon"
+              :href="link.href"
+          />
+        </v-list>
+      </v-navigation-drawer>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">You're logged in!</div>
-                </div>
-            </div>
-        </div>
-    </AuthenticatedLayout>
+      <v-app-bar>
+        <v-app-bar-nav-icon @click="drawer = !drawer" />
+        <v-app-bar-title>文教掲示板</v-app-bar-title>
+      </v-app-bar>
+
+      <v-main class="bg-grey-lighten-2">
+        <slot />
+      </v-main>
+
+    </v-app>
+
 </template>

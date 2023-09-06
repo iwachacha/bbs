@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\LectureController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,5 +24,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/lectures', [LectureController::class, 'index'])->name('lecture.index');
+Route::get('/lectures/create', [LectureController::class, 'create'])->name('lecture.create');
+Route::post('/lectures', [LectureController::class, 'store'])->name('lecture.store');
 
 require __DIR__.'/auth.php';
