@@ -15,7 +15,7 @@
       <template v-slot:prepend>
         <v-icon :icon="icon"></v-icon>
       </template>
-      <v-list-item-title v-text="text"></v-list-item-title>
+      <v-list-item-title><slot /></v-list-item-title>
     </v-list-item>
   </Link>
 </template>

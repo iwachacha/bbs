@@ -29,4 +29,6 @@ Route::get('/lectures', [LectureController::class, 'index'])->name('lecture.inde
 Route::get('/lectures/create', [LectureController::class, 'create'])->name('lecture.create');
 Route::post('/lectures', [LectureController::class, 'store'])->name('lecture.store');
 
+Route::get('/lectures/{ lecture }/reviews/create', [ReviewController::class, 'create'])->name('review.create');
+
 require __DIR__.'/auth.php';

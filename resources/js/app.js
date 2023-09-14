@@ -1,20 +1,18 @@
 import './bootstrap.js';
 import '../css/app.css';
 
+import { vuetify } from './vuetify.js';
+
+import './validationMessage.js';
+
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+import { options } from './toastr.js';
+
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
-
-import 'vuetify/styles'
-import { createVuetify } from 'vuetify'
-import '@mdi/font/css/materialdesignicons.css'
-
-const vuetify = createVuetify({
-    icons: {
-        defaultSet: 'mdi',
-    },
-})
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -26,9 +24,10 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(vuetify)
+            .use(Toast, options)
             .mount(el);
     },
     progress: {
-        color: '#4B5563',
+        color: '#26A69A',
     },
 });

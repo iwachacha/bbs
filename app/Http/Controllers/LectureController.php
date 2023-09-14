@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Lecture;
+use App\Models\LectureCategory;
+use App\Models\Faculty;
+use App\Models\Department;
+use App\Models\Course;
 use Illuminate\Http\Request;
 use App\Http\Requests\LectureRequest;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +23,17 @@ class LectureController extends Controller
     
     public function create()
     {
-        return Inertia::render('Lecture/Create');
+        $lecture_categories = LectureCategory::all();
+        $faculties = Faculty::all();
+        $departments = Department::all();
+        $courses = Course::all();
+        
+        return Inertia::render('Lecture/Create')->with([
+            'lectureCategories' => $lecture_categories,
+            'faculties' => $faculties,
+            'departments' => $departments,
+            'courses' => $courses
+        ]);
     }
 
     public function store(LectureRequest $request)

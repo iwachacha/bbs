@@ -12,8 +12,7 @@
 </script>
 
 <script>
-  import Layout from '@/Pages/Dashboard.vue';
-
+  import Layout from '@/Layouts/Layout.vue';
   export default {
     layout: Layout,
   }

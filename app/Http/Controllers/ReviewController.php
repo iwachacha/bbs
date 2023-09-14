@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
-    public function index(Lecture $lecture, Review $review){
+    /*public function index(Lecture $lecture, Review $review){
         
         return view('reviews/index')->with(['lecture' => $lecture, 'reviews' => $review::where('lecture_id', $lecture->id)->get()]);
     
@@ -20,15 +20,14 @@ class ReviewController extends Controller
         
         return view('reviews/show')->with(['lecture' => $lecture, 'review' => $review]);
         
+    }*/
+    
+    public function create(Lecture $lecture)
+    {
+        return Inertia::render('Review/Create')->with(['lecture' => $lecture]);
     }
     
-    public function create(Lecture $lecture){
-        
-        return view('reviews/create')->with(['lecture' => $lecture]);
-        
-    }
-    
-    public function store(ReviewRequest $request, Lecture $lecture, Review $review){
+    /*public function store(ReviewRequest $request, Lecture $lecture, Review $review){
         
         $review_input = $request['review'];
         $review_input['user_id'] = Auth::id();
@@ -58,5 +57,5 @@ class ReviewController extends Controller
         $review->delete();
         return redirect()->route('review.index', ['lecture' => $lecture->id]);
         
-    }
+    }*/
 }

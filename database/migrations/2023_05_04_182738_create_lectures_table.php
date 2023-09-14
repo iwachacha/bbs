@@ -40,8 +40,6 @@ return new class extends Migration
             $table->foreignId('course_id')->nullable()->constrained();
             $table->string('lecture_name');
             $table->string('professor_name');
-            $table->string('season');
-            $table->integer('grade');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -51,18 +49,13 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('lecture_id')->constrained();
             $table->string('title');
-            $table->text('lecture_content');
-            $table->integer('rate_credit'); //単位取得難易度評価
-            $table->integer('rate_adequacy'); //講義充実度評価
-            $table->integer('rate_fun'); //面白さ評価
-            $table->integer('year')->nullable();
-            $table->string('class_method')->nullable();
-            $table->string('attedance')->nullable();
-            $table->string('evaluation_method')->nullable();
-            $table->string('evaluation_level')->nullable();
-            $table->string('lecture_level')->nullable();
-            $table->string('comp_syllabus')->nullable();
-            $table->text('dtail')->nullable();
+            $table->string('year');
+            $table->float('fulfillment_rate', 2, 1); //講義充実度評価
+            $table->float('ease_rate', 2, 1); //楽単度評価
+            $table->float('satisfaction_rate', 2, 1); //満足度評価
+            $table->text('lecture_content')->nullable();
+            $table->text('good_point')->nullable();
+            $table->text('bad_point')->nullable();
             $table->timestamps();
         });
         

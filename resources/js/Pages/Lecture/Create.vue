@@ -1,63 +1,88 @@
 <script setup>
-  import { useForm } from '@inertiajs/vue3';
+  import { ref } from 'vue'
+  import searchLecture from '@/Components/Lectures/SearchLecture.vue'
+  import LectureForm from '@/Components/Lectures/LectureForm.vue'
+  import ReviewForm from '@/Components/Reviews/ReviewForm.vue'
+  import PrimaryBtn from '@/Components/PrimaryBtn.vue'
 
-  defineProps({
+  const props = defineProps({
+    lectures: Object,
+    faculties: Object,
+    departments: Object,
+    courses: Object,
+    lectureCategories: Object,
     errors: Object
   })
 
-  const form = useForm({
-    title: null,
-    comment: null,
-  })
+  const step = ref(1)
+
+  const lectureSubmitted = false
+  const reviewSubmitted = false
 </script>
 
 <script>
-  import Layout from '@/Pages/Dashboard.vue';
-
+  import Layout from '@/Layouts/Layout.vue';
   export default {
     layout: Layout,
   }
 </script>
 
 <template>
-    <v-sheet class="bg-deep-purple pa-12" rounded>
-      <v-card class="mx-auto px-6 py-8" max-width="344">
-        <v-form @submit.prevent="form.post('/lectures')">
+  <v-stepper
+    v-model="step"
+    alt-labels
+    hide-actions
+    class="p-0"
+    style="box-shadow: none !important;"
+    :items="['講義検索', '講義作成', 'レビュー作成']"
+  >
 
-          <v-text-field
-            v-model="form.title"
-            class="mb-2"
-            clearable
-            counter="5"
-            persistent-hint
-            variant="solo"
-            label="タイトル"
-            placeholder="タイトルを入力してください"
-            hint="タイトルです"
-          ></v-text-field>
+    <template v-slot:item.1>
+      <searchLecture
+        :lectures="props.lectures"
+        :courses="courses"
+      />
+    </template>
 
-          <v-text-field
-            v-model="form.comment"
-            clearable
-            persistent-hint
-            variant="solo"
-            label="コメント"
-            placeholder="コメントを入力してください"
-            hint="コメントです"
-          ></v-text-field>
+    <template v-slot:item.2>
+      <LectureForm
+        :errors="props.errors"
+        :lecture-categories="props.lectureCategories"
+        :faculties="props.faculties"
+        :departments="props.departments"
+        :courses="props.courses"
+        @submitNotice="lectureSubmitted = true"
+      />
+    </template>
 
-          <br>
+    <template v-slot:item.3>
+      <ReviewForm
+        :errors="props.errors"
+        @submitNotice="reviewSubmitted = true"
+      />
+    </template>
 
-          <v-btn
-            block
-            color="success"
-            size="large"
-            type="submit"
-            variant="elevated"
-          >
-            送信
-          </v-btn>
-        </v-form>
-      </v-card>
-    </v-sheet>
+  </v-stepper>
+
+  <v-divider />
+
+  <v-card-actions class="mb-10">
+    <PrimaryBtn
+      variant="outlined"
+      v-if="step > 1"
+      @click="step--"
+      :disabled="step == 3 && !reviewSubmitted"
+    >
+      戻る
+    </PrimaryBtn>
+    <v-spacer />
+    <PrimaryBtn
+      variant="outlined"
+      v-if="step < 3"
+      @click="step++"
+      :disabled="step == 2 && !lectureSubmitted"
+    >
+      次へ
+    </PrimaryBtn>
+  </v-card-actions>
 </template>
