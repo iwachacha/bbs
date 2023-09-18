@@ -153,6 +153,20 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'lecture_name' => '講義名',
+        'professor_name' => '担当教員名',
+        'title' => 'タイトル',
+        'year' => '受講年度',
+        'fulfillment_rate' => '充実度評価',
+        'ease_rate' => '楽単度評価',
+        'satisfaction_rate' => '満足度評価',
+        'good_point' => '良い点',
+        'bad_point' => '悪い点',
+        'lecture_content' => '講義内容',
+        'name' => 'ユーザー名',
+        'email' => '大学メールアドレス',
+        'password' => 'パスワード'
+    ],
 
 ];

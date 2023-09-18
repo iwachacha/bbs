@@ -1,5 +1,5 @@
 <script setup>
-  defineProps({ name: String})
+  defineProps({ name: String, grade: String, faculty: String})
 </script>
 
 <template>
@@ -11,7 +11,7 @@
     <v-avatar color="grey-darken-1" />
     <div class="ms-4">
       <div>{{ name }}</div>
-      <div class="text-caption text-medium-emphasis">学部 / 学科</div>
+      <div class="text-caption text-medium-emphasis">{{ faculty && faculty + ' / ' }}{{ grade && grade}}</div>
     </div>
   </v-sheet>
 </template>

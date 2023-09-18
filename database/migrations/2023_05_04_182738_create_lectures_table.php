@@ -73,8 +73,7 @@ return new class extends Migration
             $table->foreignId('faculty_id')->nullable()->constrained();
             $table->foreignId('department_id')->nullable()->constrained();
             $table->foreignId('course_id')->nullable()->constrained();
-            $table->integer('grade')->nullable();
-            $table->text('comment')->nullable();
+            $table->string('grade')->nullable();
             $table->text('image_path')->nullable();
         });
     }

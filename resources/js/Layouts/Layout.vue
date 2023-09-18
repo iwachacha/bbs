@@ -1,16 +1,17 @@
 <script setup>
   import { ref, computed } from 'vue'
-  import { mdiSchool , mdiAccountCircle, mdiPenPlus, mdiListBox, mdiCrown, mdiChat } from '@mdi/js'
+  import { mdiSchool , mdiChatQuestion, mdiPenPlus, mdiListBox, mdiCrown, mdiChat } from '@mdi/js'
   import { usePage, Link } from '@inertiajs/vue3'
   import NavAvatar from '@/Components/NavAvatar.vue'
   import NavItem from '@/Components/NavItem.vue'
   import LinkBtn from '@/Components/LinkBtn.vue'
+  import { getFacultyName } from '@/Components/Lectures/GetNameFromId.vue'
 
   const page = usePage()
   const user = computed(() => page.props.auth.user)
 
   const drawer = ref(false)
-  const nav = ref('lectures')
+  const nav = ref(null)
 </script>
 
 <template>
@@ -18,7 +19,11 @@
 
       <v-navigation-drawer v-model="drawer" color="secondary">
 
-        <NavAvatar :name="user.name"/>
+        <NavAvatar
+          :name="user.name"
+          :faculty="getFacultyName(page.props.share.faculties, user.faculty_id)"
+          :grade="user.grade"
+        />
 
         <v-divider class="border-opacity-100" />
 
@@ -56,6 +61,7 @@
           </v-list-group>
 
           <NavItem :href="'/'" :icon="mdiChat" title="雑談部屋" />
+          <NavItem :href="'/'" :icon="mdiChatQuestion" title="お問い合わせ" />
 
         </v-list>
 
@@ -74,7 +80,7 @@
           <Link :href="route('lecture.create')" class="me-3" color="secondary">
             <v-icon :icon="mdiPenPlus" />投稿
           </Link>
-          <v-avatar color="grey-lighten-2" class="me-3">
+          <v-avatar color="grey-lighten-2" class="me-2">
             <v-menu activator="parent">
               <v-list>
                 <v-list-item link title="プロフィール"></v-list-item>
