@@ -60,8 +60,8 @@
             />
           </v-list-group>
 
-          <NavItem :href="'/'" :icon="mdiChat" title="雑談部屋" />
-          <NavItem :href="'/'" :icon="mdiChatQuestion" title="お問い合わせ" />
+          <NavItem :href="route('contact.create')" :icon="mdiChat" title="雑談部屋" />
+          <NavItem :href="route('contact.create')" :icon="mdiChatQuestion" title="お問い合わせ" />
 
         </v-list>
 

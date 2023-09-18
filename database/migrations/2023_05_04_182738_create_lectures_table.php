@@ -33,7 +33,7 @@ return new class extends Migration
         
         Schema::create('lectures', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');;
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');;
             $table->foreignId('lecture_category_id')->constrained();
             $table->foreignId('faculty_id')->nullable()->constrained();
             $table->foreignId('department_id')->nullable()->constrained();
@@ -47,15 +47,15 @@ return new class extends Migration
         
         Schema::create('lecture_bookmarks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('lecture_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('lecture_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
         
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('lecture_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('lecture_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->string('year');
             $table->float('fulfillment_rate', 2, 1);
@@ -65,6 +65,15 @@ return new class extends Migration
             $table->text('good_point')->nullable();
             $table->text('bad_point')->nullable();
             $table->text('lecture_content')->nullable();
+            $table->timestamps();
+        });
+        
+        Schema::create('contacts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->string('category')->nullable();
+            $table->string('title')->nullable();
+            $table->string('body');
             $table->timestamps();
         });
 
