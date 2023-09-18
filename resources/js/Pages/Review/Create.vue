@@ -1,5 +1,7 @@
 <script setup>
+  import { mdiPenPlus } from '@mdi/js'
   import ReviewForm from '@/Components/Reviews/ReviewForm.vue'
+  import PageSection from '@/Components/PageSection.vue'
 
   const props = defineProps({
     lecture: Object,
@@ -15,10 +17,13 @@
 </script>
 
 <template>
-  <v-sheet class="mx-auto px-5 py-10">
-    <ReviewForm
-      :lecture="lecture"
-      :errors="errors"
-    />
-  </v-sheet>
+  <PageSection title="レビュー作成" :icon="mdiPenPlus">
+    <div class="mx-sm-7">
+      <ReviewForm
+        :lecture="lecture"
+        :errors="errors"
+        style="background-color: #F5F5F5;"
+      />
+    </div>
+  </PageSection>
 </template>

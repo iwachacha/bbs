@@ -1,6 +1,7 @@
 <script setup>
   import { ref, watch } from 'vue'
   import { router } from '@inertiajs/vue3'
+  import { getCategoryName, getFacultyName, getDepartmentName, getCourseName } from '@/Components/Lectures/GetNameFromId.vue'
   import SearchInput from '@/Components/SearchInput.vue'
   import ConfirmCard from '@/Components/ConfirmCard.vue'
   import PrimaryBtn from '@/Components/PrimaryBtn.vue'
@@ -16,15 +17,26 @@
 
   const dialog = ref(false)
   const selectLectureId = ref()
-  const selectLecture = ref()
+  const selectLectureInfo = ref()
 
   watch(selectLectureId, () => {
-    if(selectLectureId._value != null){
-      selectLectureId.value = selectLectureId._value
-      selectLecture.value = props.courses.filter((course) => course.id === selectLectureId.value)
-      selectLecture.value = [
-        {key: 'コース名', value: selectLecture.value[0].name},
-        {key: 'ID', value: selectLecture.value[0].id},
+    if(selectLectureId.value != null){
+
+      selectLectureInfo.value = props.lectures.find((lecture) => lecture.id === selectLectureId.value)
+
+      let categoryName = getCategoryName(props.lectureCategories, selectLectureInfo.value.lecture_category_id)
+      let facultyName = getFacultyName(props.faculties, selectLectureInfo.value.faculty_id)
+      let departmentName = getDepartmentName(props.departments, selectLectureInfo.value.department_id)
+      let courseName = getCourseName(props.courses, selectLectureInfo.value.course_id)
+
+      selectLectureInfo.value = [
+        {key: 'ID', value: selectLectureInfo.value.id},
+        {key: '講義名', value: selectLectureInfo.value.lecture_name},
+        {key: '担当教員名', value: selectLectureInfo.value.professor_name},
+        {key: '講義区分', value: categoryName},
+        {key: '開講学部', value: facultyName ? facultyName : '未設定'},
+        {key: '開講学科', value: departmentName ? departmentName : '未設定'},
+        {key: '開講コース', value: courseName ? courseName : '未設定'},
       ]
       dialog.value = true
     }
@@ -36,16 +48,16 @@
 </script>
 
 <template>
-  <v-sheet class="py-10 px-5 rounded-lg" style="background-color: #FAFAFA;">
+  <v-sheet color="#FAFAFA" class="py-5">
 
     <v-row justify="center">
 
       <v-col cols="12" sm="8">
         <SearchInput
           v-model="selectLectureId"
-          :items="courses"
+          :items="lectures"
           item-value="id"
-          item-title="name"
+          item-title="lecture_name"
           label="講義検索"
           hint="例：対象→情報A　○情・A　×じょ・zyo"
         >
@@ -66,7 +78,7 @@
   <div>
     <ConfirmCard
       :dialog="dialog"
-      :items="selectLecture"
+      :items="selectLectureInfo"
       title="講義選択"
       subtitle="レビュー対象はこちらですか？"
       text="はいをクリックすると対象のレビューページに遷移します。"

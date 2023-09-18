@@ -1,6 +1,6 @@
 export const options = {
   position: "bottom-right",
-  timeout: 10000,
+  timeout: 7000,
   closeOnClick: true,
   pauseOnFocusLoss: true,
   pauseOnHover: true,
@@ -11,6 +11,6 @@ export const options = {
   closeButton: "button",
   icon: true,
   rtl: false,
-  maxToasts: 10,
+  maxToasts: 5,
   newestOnTop: true
 };

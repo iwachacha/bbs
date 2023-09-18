@@ -33,60 +33,41 @@ return new class extends Migration
         
         Schema::create('lectures', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');;
             $table->foreignId('lecture_category_id')->constrained();
             $table->foreignId('faculty_id')->nullable()->constrained();
             $table->foreignId('department_id')->nullable()->constrained();
             $table->foreignId('course_id')->nullable()->constrained();
             $table->string('lecture_name');
             $table->string('professor_name');
+            $table->string('season');
             $table->timestamps();
             $table->softDeletes();
         });
         
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('lecture_bookmarks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('lecture_id')->constrained();
-            $table->string('title');
-            $table->string('year');
-            $table->float('fulfillment_rate', 2, 1); //講義充実度評価
-            $table->float('ease_rate', 2, 1); //楽単度評価
-            $table->float('satisfaction_rate', 2, 1); //満足度評価
-            $table->text('lecture_content')->nullable();
-            $table->text('good_point')->nullable();
-            $table->text('bad_point')->nullable();
+            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('lecture_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
         
-        Schema::create('lecture_keeps', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('lecture_id')->constrained();
+            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('lecture_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->string('title');
+            $table->string('year');
+            $table->float('fulfillment_rate', 2, 1);
+            $table->float('ease_rate', 2, 1);
+            $table->float('satisfaction_rate', 2, 1);
+            $table->float('average_rate', 3, 2)->nullable();
+            $table->text('good_point')->nullable();
+            $table->text('bad_point')->nullable();
+            $table->text('lecture_content')->nullable();
             $table->timestamps();
         });
 
-        Schema::create('review_goods', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('review_id')->constrained();
-            $table->timestamps();
-        });
-        
-        //レビューのタグづけ
-        Schema::create('tags', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->timestamps();
-        });
-        
-        Schema::create('review_tags', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('review_id')->constrained();
-            $table->foreignId('tag_id')->constrained();
-            $table->timestamps();
-        });
-        
         //usersカラム追加
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('faculty_id')->nullable()->constrained();
@@ -94,6 +75,7 @@ return new class extends Migration
             $table->foreignId('course_id')->nullable()->constrained();
             $table->integer('grade')->nullable();
             $table->text('comment')->nullable();
+            $table->text('image_path')->nullable();
         });
     }
     

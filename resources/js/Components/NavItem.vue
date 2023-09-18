@@ -1,7 +1,7 @@
 <script setup>
   import { Link } from '@inertiajs/vue3';
 
-  defineProps(['href', 'text', 'icon']);
+  defineProps(['href', 'component', 'title', 'icon']);
 </script>
 
 <template>
@@ -10,12 +10,9 @@
       color="teal-darken-2"
       rounded="xl"
       link
-      :active="$page.url === href"
-    >
-      <template v-slot:prepend>
-        <v-icon :icon="icon"></v-icon>
-      </template>
-      <v-list-item-title><slot /></v-list-item-title>
-    </v-list-item>
+      :title="title"
+      :prepend-icon="icon"
+      :active="$page.component === component"
+    />
   </Link>
 </template>

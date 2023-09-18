@@ -1,6 +1,6 @@
 <script setup>
-  import { ref } from 'vue'
-  import { useForm, router } from '@inertiajs/vue3'
+  import { ref, computed, watch } from 'vue'
+  import { useForm, router, usePage } from '@inertiajs/vue3'
   import { mdiThumbUpOutline, mdiThumbDownOutline } from '@mdi/js'
   import { useToast } from "vue-toastification"
   import { useVuelidate } from '@vuelidate/core'
@@ -26,10 +26,18 @@
     },
   })
 
-  const emit = defineEmits(['isSubmit']);
-  const submitNotice = () => {
-    emit('isSubmit')
-  }
+  const page = usePage()
+  //レビューページから直接投稿 → props.lectureあり
+  //講義＋レビュー作成ページから投稿 → flashで対象の講義ID(lecture_id)譲渡
+  const LectureId = computed(
+    () => props.lecture ? props.lecture.id : page.props.flash.createdLectureId
+  )
+
+  watch(page.props.flash, () => {
+    if(page.props.flash.error){
+      toast.error(page.props.flash.error)
+    }
+  })
 
   let now = new Date()
   let nowYear = now.getFullYear()
@@ -45,7 +53,7 @@
     year: props.reviews ? props.reviews.year : null,
     fulfillment_rate: props.reviews ? props.reviews.fulfillment_rate : null,
     ease_rate: props.reviews ? props.reviews.ease_rate : null,
-    satisfaction_rate: props.reviews ? props.reviews.title : null,
+    satisfaction_rate: props.reviews ? props.reviews.satisfaction_rate : null,
     lecture_content: props.reviews ? props.reviews.lecture_content : null,
     good_point: props.reviews ? props.reviews.good_point : null,
     bad_point: props.reviews ? props.reviews.bad_point : null,
@@ -58,7 +66,6 @@
     },
     year: {
       required: helpers.withMessage(requiredM("受講年度"), required),
-      maxLengthValue: helpers.withMessage(maxLengthM("受講年度", 50), maxLength(50))
     },
     fulfillment_rate: {
       required: helpers.withMessage(requiredM("充実度評価"), required),
@@ -82,12 +89,11 @@
   const reviewV$ = useVuelidate(reviewRules, reviewForm)
 
   const onSubmit = () => {
-    reviewForm.post('/reviews', {
+    reviewForm.post(route('review.store', LectureId.value), {
       onSuccess: () => [
-        toast.success('レビュー作成が完了しました！\n投稿ありがとうございます！\n数秒後に講義一覧画面へ遷移します。'),
+        toast.success('レビュー作成が完了しました！\n投稿ありがとうございます！'),
         reviewForm.reset(),
         reviewV$.value.$reset(),
-        submitNotice()
       ],
       onError: () => [toast.error('入力内容に誤りがあります！\n内容の確認をお願いします。')]
     })
@@ -122,7 +128,7 @@
 </script>
 
 <template>
-  <v-sheet class="py-10 px-5 rounded-lg" style="background-color: #FAFAFA;">
+  <v-sheet color="#FAFAFA" class="py-5">
     <v-form @submit.prevent="reviewV$.$invalid ? showError() : onSubmit()" id="reviewForm">
 
       <v-row>

@@ -1,13 +1,13 @@
 <script setup>
-  import { Link } from '@inertiajs/vue3';
+  import { Link } from '@inertiajs/vue3'
+
+  defineProps(['href', 'method', 'color'])
 </script>
 
 <template>
-    <Link>
-      <div class="pa-2">
-        <v-btn block color="teal-lighten-1">
-          <slot />
-        </v-btn>
-      </div>
-    </Link>
+  <Link :href="href" :method="method ? method : 'get'" preserve-scroll preserve-state>
+    <v-btn block :color="color ? color : 'primary'" class="px-1">
+      <slot />
+    </v-btn>
+  </Link>
 </template>

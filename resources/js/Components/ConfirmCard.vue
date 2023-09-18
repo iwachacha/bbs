@@ -13,7 +13,7 @@
     <v-card>
 
       <v-toolbar
-        color="teal-lighten-1"
+        color="primary"
         :title="title"
       />
 

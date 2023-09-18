@@ -5,6 +5,7 @@
   import { useVuelidate } from '@vuelidate/core'
   import { required, maxLength, helpers } from '@vuelidate/validators'
   import { requiredM, maxLengthM } from '@/validationMessage.js'
+  import { getCategoryName, getFacultyName, getDepartmentName, getCourseName } from '@/Components/Lectures/GetNameFromId.vue'
   import MustInput from '@/Components/MustInput.vue'
   import MustSelect from '@/Components/MustSelect.vue'
   import TooltipSelect from '@/Components/TooltipSelect.vue'
@@ -35,6 +36,7 @@
     lecture_name: props.lectures ? props.lectures.lecture_name : null,
     professor_name: props.lectures ? props.lectures.professor_name : null,
     lecture_category_id: props.lectures ? props.lectures.lecture_category_id : null,
+    season: props.lectures ? props.lectures.season : null,
     faculty_id: props.lectures ? props.lectures.faculty_id : null,
     department_id: props.lectures ? props.lectures.department_id : null,
     course_id: props.lectures ? props.lectures.course_id : null,
@@ -51,6 +53,9 @@
     },
     lecture_category_id: {
       required: helpers.withMessage(requiredM("講義区分"), required),
+    },
+    season: {
+      required: helpers.withMessage(requiredM("開講時期"), required),
     }
   }
   const lectureV$ = useVuelidate(lectureRules, lectureForm)
@@ -59,18 +64,18 @@
   //カテゴリーの共通教養が選択された場合は学部・学科・コースの選択をリセット
   //共通教養以外が選択された場合は学部の選択肢を追加
 
-  const sortFaculties = ref([])
-  const sortDepartments = ref([])
-  const sortCourses = ref([])
+  const sortFaculties = ref()
+  const sortDepartments = ref()
+  const sortCourses = ref()
 
   watch(
     () => lectureForm.lecture_category_id,
     (lecture_category_id) => {
-      if(lecture_category_id === 1){
+      if(lecture_category_id == 1){
 
-        lectureForm.faculty_id = []
-        lectureForm.department_id = []
-        lectureForm.course_id = []
+        lectureForm.faculty_id = null
+        lectureForm.department_id = null
+        lectureForm.course_id = null
         sortFaculties.value = []
 
       } else {
@@ -84,8 +89,8 @@
     () => lectureForm.faculty_id,
     (faculty_id) => {
       sortDepartments.value = props.departments.filter((department) => department.faculty_id === faculty_id)
-      lectureForm.department_id = []
-      lectureForm.course_id = []
+      lectureForm.department_id = null
+      lectureForm.course_id = null
     }
   )
 
@@ -93,12 +98,12 @@
     () => lectureForm.department_id,
     (department_id) => {
       sortCourses.value = props.courses.filter((course) => course.department_id === department_id)
-      lectureForm.course_id = []
+      lectureForm.course_id = null
     }
   )
 
   const onSubmit = () => {
-    lectureForm.post('/lectures', {
+    lectureForm.post(route('lecture.store'), {
       onSuccess: () => [
         toast.success('講義作成が完了しました！\nレビュー作成にお進みください。'),
         lectureForm.reset(),
@@ -117,31 +122,31 @@
   const dialog = ref(false)
   const createLecture = ref([])
   const openDialog = () => {
-    let selectCategory = props.lectureCategories.find(e => e.id == lectureForm.lecture_category_id)
-    let selectFaculty = props.faculties.find(e => e.id == lectureForm.faculty_id)
-    let selectDepartment = props.departments.find(e => e.id == lectureForm.department_id)
-    let selectCourse = props.courses.find(e => e.id == lectureForm.course_id)
+    let selectCategoryName = getCategoryName(props.lectureCategories, lectureForm.lecture_category_id)
+    let selectFacultyName = getFacultyName(props.faculties, lectureForm.faculty_id)
+    let selectDepartmentName = getDepartmentName(props.departments, lectureForm.department_id)
+    let selectCourseName = getCourseName(props.courses, lectureForm.course_id)
 
     createLecture.value = [
       {key: '講義名', value: lectureForm.lecture_name},
       {key: '担当教員名', value: lectureForm.professor_name},
-      {key: '担当教員名', value: lectureForm.lecture_name},
-      {key: '講義区分', value: selectCategory.name},
-      {key: '開講学部', value: selectFaculty ? selectFaculty.name : 'なし'},
-      {key: '開講学科', value: selectDepartment ? selectDepartment.name : 'なし'},
-      {key: '開講コース', value: selectCourse ? selectCourse.name : 'なし'}
+      {key: '講義区分', value: selectCategoryName},
+      {key: '開講時期', value:  lectureForm.season},
+      {key: '開講学部', value: selectFacultyName ? selectFacultyName : 'なし'},
+      {key: '開講学科', value: selectDepartmentName ? selectDepartmentName : 'なし'},
+      {key: '開講コース', value: selectCourseName ? selectCourseName : 'なし'}
     ]
     dialog.value = true
   }
 </script>
 
 <template>
-  <v-sheet class="py-10 px-5 rounded-lg" style="background-color: #FAFAFA;">
+  <v-sheet color="#FAFAFA" class="py-5">
     <v-form @submit.prevent="lectureV$.$invalid ? showError() : onSubmit()" id="lectureForm">
 
       <v-row>
 
-        <v-col cols="12" sm="4">
+        <v-col cols="12" sm="6">
           <MustInput
             v-model="lectureForm.lecture_name"
             counter="50"
@@ -155,11 +160,12 @@
           </MustInput>
         </v-col>
 
-        <v-col cols="12" sm="4">
+        <v-col cols="12" sm="6">
           <MustInput
             v-model="lectureForm.professor_name"
             counter="50"
             placeholder="フルネームを入力してください"
+            suffix="先生"
             hint="例：○田中太郎　×田中"
             :error-messages="props.errors.professor_name ? props.errors.professor_name : lectureV$.professor_name.$errors.map(e => e.$message)"
             @input="lectureV$.professor_name.$touch"
@@ -169,7 +175,7 @@
           </MustInput>
         </v-col>
 
-        <v-col cols="12" sm="4">
+        <v-col cols="12" sm="6">
           <MustSelect
             v-model="lectureForm.lecture_category_id"
             hint="最も近いものを選択してください"
@@ -180,6 +186,18 @@
             @blur="lectureV$.lecture_category_id.$touch"
           >
             講義区分
+          </MustSelect>
+        </v-col>
+
+        <v-col cols="12" sm="6">
+          <MustSelect
+            v-model="lectureForm.season"
+            hint="最も近いものを選択してください"
+            :items="['春学期', '秋学期', '通年', 'その他']"
+            :error-messages="props.errors.season ? props.errors.season : lectureV$.season.$errors.map(e => e.$message)"
+            @blur="lectureV$.season.$touch"
+          >
+            開講時期
           </MustSelect>
         </v-col>
 

@@ -1,43 +1,92 @@
 <script setup>
   import { ref, computed } from 'vue'
-  import { mdiAccountSchool, mdiSilverwareForkKnife, mdiBookOpenBlankVariant, mdiChat } from '@mdi/js'
-  import { usePage, } from '@inertiajs/vue3'
-  import NavAvatar from '@/Components/NavAvatar.vue';
-  import NavItem from '@/Components/NavItem.vue';
-  import LinkBtn from '@/Components/LinkBtn.vue';
+  import { mdiSchool , mdiAccountCircle, mdiPenPlus, mdiListBox, mdiCrown, mdiChat } from '@mdi/js'
+  import { usePage, Link } from '@inertiajs/vue3'
+  import NavAvatar from '@/Components/NavAvatar.vue'
+  import NavItem from '@/Components/NavItem.vue'
+  import LinkBtn from '@/Components/LinkBtn.vue'
 
   const page = usePage()
   const user = computed(() => page.props.auth.user)
 
   const drawer = ref(false)
+  const nav = ref('lectures')
 </script>
 
 <template>
     <v-app>
 
-      <v-navigation-drawer v-model="drawer">
+      <v-navigation-drawer v-model="drawer" color="secondary">
 
         <NavAvatar :name="user.name"/>
 
-        <v-list nav>
-          <NavItem :href="'/lectures'" :icon="mdiAccountSchool">講義評価</NavItem>
-          <NavItem :href="'/lectures/create'" :icon="mdiSilverwareForkKnife">グルメ</NavItem>
-          <NavItem :href="'/'" :icon="mdiBookOpenBlankVariant">教科書</NavItem>
-          <NavItem :href="'/'" :icon="mdiChat">雑談</NavItem>
+        <v-divider class="border-opacity-100" />
+
+        <v-list nav v-model:opened="nav">
+
+          <v-list-group value="lectures">
+            <template v-slot:activator="{ props }">
+              <v-list-item
+                v-bind="props"
+                :prepend-icon="mdiSchool"
+                title="講義評価"
+                rounded="xl"
+                color="primary"
+                :active="$page.component.startsWith('Lecture') || $page.component.startsWith('Review')"
+              />
+            </template>
+            <NavItem
+              :href="route('lecture.index')"
+              title="講義一覧"
+              :icon="mdiListBox"
+              component="Lecture/Index"
+            />
+            <NavItem
+              :href="route('lecture.create')"
+              title="レビュー作成"
+              :icon="mdiPenPlus"
+              component="Lecture/Create"
+            />
+            <NavItem
+              :href="route('lecture.create')"
+              title="ランキング"
+              :icon="mdiCrown"
+              component="Lecture/Create"
+            />
+          </v-list-group>
+
+          <NavItem :href="'/'" :icon="mdiChat" title="雑談部屋" />
+
         </v-list>
 
         <template v-slot:append>
-          <LinkBtn :href="route('logout')" method="post">ログアウト</LinkBtn>
+          <div class="pa-2"><LinkBtn :href="route('logout')" method="post">ログアウト</LinkBtn></div>
         </template>
 
       </v-navigation-drawer>
 
-      <v-app-bar density="compact">
-        <v-app-bar-nav-icon @click="drawer = !drawer" />
-        <v-app-bar-title>文教掲示板</v-app-bar-title>
+      <v-app-bar color="primary">
+
+        <v-app-bar-nav-icon @click="drawer = !drawer" size="x-large" />
+        <h1><v-app-bar-title class="text-h5">文教掲示板</v-app-bar-title></h1>
+
+        <template v-slot:append>
+          <Link :href="route('lecture.create')" class="me-3" color="secondary">
+            <v-icon :icon="mdiPenPlus" />投稿
+          </Link>
+          <v-avatar color="grey-lighten-2" class="me-3">
+            <v-menu activator="parent">
+              <v-list>
+                <v-list-item link title="プロフィール"></v-list-item>
+                <v-list-item link title="アカウント情報"></v-list-item>
+              </v-list>
+            </v-menu>
+          </v-avatar>
+        </template>
+
       </v-app-bar>
 
-      <v-main class="mx-auto" style="width: 95%;">
+      <v-main class="mx-auto" style="width: 100%;">
         <slot />
       </v-main>
 
