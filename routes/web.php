@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LectureController;
 use App\Http\Controllers\LectureBookmarkController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -35,5 +36,8 @@ Route::post('/lectures/{lecture}/reviews', [ReviewController::class, 'store'])->
 Route::put('/lectures/{lecture}/bookmark/set', [LectureBookmarkController::class, 'setBookmark'])->name('bookmark.set');
 Route::delete('/lectures/{lecture}/bookmark/remove', [LectureBookmarkController::class, 'removeBookmark'])->name('bookmark.remove');
 });
+
+Route::get('/contacts/create', [ContactController::class, 'create'])->name('contact.create');
+Route::post('/contacts', [ContactController::class, 'store'])->name('contact.store');
 
 require __DIR__.'/auth.php';
