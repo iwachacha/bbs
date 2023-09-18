@@ -9,19 +9,14 @@ class ReviewRequest extends FormRequest
     public function rules()
     {
         return [
-            'review.title' => 'required|string|max:100',
-            'review.rate_credit' => 'required|integer',
-            'review.rate_adequacy' => 'required|integer',
-            'review.rate_fun' => 'required|integer',
-            'review.year' => 'nullable|integer',
-            'review.class_method' => 'nullable|string',
-            'review.attedance' => 'nullable|string',
-            'review.evaluation_method' => 'nullable|string',
-            'review.evaluation_level' => 'nullable|string',
-            'review.lecture_level' => 'nullable|string',
-            'review.comp_syllabus' => 'nullable|string',
-            'review.lecture_content' => 'nullable|string|max:500',
-            'review.dtail' => 'nullable|string|max:500'
+            'title' => 'required|string|max:50',
+            'year' => 'required|string',
+            'fulfillment_rate' => 'required|numeric|max:5|decimal:0,1',
+            'ease_rate' => 'required|numeric|max:5|decimal:0,1',
+            'satisfaction_rate' => 'required|numeric|max:5|decimal:0,1',
+            'good_point' => 'nullable|max:500',
+            'bad_point' => 'nullable|max:500',
+            'lecture_content' => 'nullable|max:500',
         ];
     }
 }

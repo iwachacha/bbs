@@ -2,61 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 use App\Models\Lecture;
 use App\Models\Review;
 use App\Http\Requests\ReviewRequest;
-use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
-    public function index(Lecture $lecture, Review $review){
-        
-        return view('reviews/index')->with(['lecture' => $lecture, 'reviews' => $review::where('lecture_id', $lecture->id)->get()]);
-    
-    }
-    
-    public function show(Lecture $lecture, Review $review){
-        
-        return view('reviews/show')->with(['lecture' => $lecture, 'review' => $review]);
-        
-    }
-    
-    public function create(Lecture $lecture){
-        
-        return view('reviews/create')->with(['lecture' => $lecture]);
-        
-    }
-    
-    public function store(ReviewRequest $request, Lecture $lecture, Review $review){
-        
-        $review_input = $request['review'];
-        $review_input['user_id'] = Auth::id();
-        $review_input['lecture_id'] = $lecture->id;
-        $review->fill($review_input)->save();
-        return redirect()->route('review.index', ['lecture' => $lecture->id, 'review' => $review->id]);
-        
-    }
-    
-    public function edit(Lecture $lecture, Review $review){
-        
-        return view('reviews/edit')->with(['lecture' => $lecture, 'review' => $review]);
+    public function index($lecture_id)
+    {
+        $lecture = Lecture::with('reviews')
+          ->withCount('reviews')
+          ->withAvg('reviews as average_rate', 'average_rate')
+          ->find($lecture_id);
+
+        return Inertia::render('Review/Index')->with([
+          'lecture' => $lecture
+        ]);
     }
 
-    public function update(ReviewRequest $request, Lecture $lecture, Review $review){
-        
-        $review_input = $request['review'];
-        $review_input['user_id'] = Auth::id();
-        $review_input['lecture_id'] = $lecture->id;
-        $review->fill($review_input)->save();
-        return redirect()->route('review.show', ['lecture' => $lecture->id, 'review' => $review->id]);
-        
+    public function create(Lecture $lecture)
+    {
+        return Inertia::render('Review/Create')->with(['lecture' => $lecture]);
     }
-    
-    public function delete(Lecture $lecture, Review $review){
-        
-        $review->delete();
-        return redirect()->route('review.index', ['lecture' => $lecture->id]);
-        
+
+    public function store(Lecture $lecture, ReviewRequest $request, Review $review)
+    {
+        $input = $request->validated();
+        $input['lecture_id'] = $lecture->id;
+        $input['user_id'] = Auth::id();
+        $input['average_rate'] = $review->getAverageRate($request);
+
+        /*$duplicate_check = Review::where('lecture_id', $lecture->id)->where('user_id', Auth::id())->exists(); //レビュー重複チェック
+        if($duplicate_check){
+          return redirect()->back()->with('error', '1つの講義に対して2件目のレビューはできません。');
+        }else {
+          Review::create($input);
+        }*/
+
+        $review->create($input);
+        return to_route('lecture.index');
     }
 }

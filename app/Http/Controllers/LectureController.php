@@ -2,64 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Models\Lecture;
-use Illuminate\Http\Request;
-use App\Http\Requests\LectureRequest;
+use App\Http\Controllers\Controller;
+use App\Models\LectureBookmark;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+use App\Models\Lecture;
+use App\Models\LectureCategory;
+use App\Models\Faculty;
+use App\Models\Department;
+use App\Models\Course;
+use App\Models\Review;
+use App\Http\Requests\LectureRequest;
+use Illuminate\Support\Facades\DB;
 
 class LectureController extends Controller
 {
-    public function index(Request $request, Lecture $lecture){
-        
-        list($result_count, $lectures) = $lecture->search_lectures($request); // /Models/Lecture.phpに定義した検索処理
-        
-        $request->session()->flash('message', $result_count.'件取得しました');
-        
-        return view('lectures/index')->with(['lectures' => $lectures, 'result_count' => $result_count]);
-        
+    public function index(Lecture $lecture)
+    {
+        $lectures = $lecture->withCount('reviews', 'lecture_bookmarks')
+            ->withAvg('reviews as average_rate', 'average_rate')
+            ->get();
+
+        $bookmarked_lecture_id = LectureBookmark::select('lecture_id')
+            ->where('user_id', Auth::id())->get();
+
+        return Inertia::render('Lecture/Index')->with([
+            'lectures' => $lectures,
+            'BookmarkedLectureId' => $bookmarked_lecture_id,
+            'lectureCategories' => LectureCategory::get(),
+            'faculties' => Faculty::get(),
+        ]);
     }
 
-    public function create(){
-        
-        return view('lectures/create'); // ビューで使用する変数は /Composers/LectureComposerに定義
-        
+    public function create()
+    {
+        $lectures = Lecture::all();
+        $faculties = Faculty::all();
+        $departments = Department::all();
+        $courses = Course::all();
+        $lecture_categories = LectureCategory::all();
+
+        return Inertia::render('Lecture/Create')->with([
+            'lectures' => $lectures,
+            'faculties' => $faculties,
+            'departments' => $departments,
+            'courses' => $courses,
+            'lectureCategories' => $lecture_categories
+        ]);
     }
 
-    public function store(LectureRequest $request, Lecture $lecture){
-        
-        $lecture_input = $request['lecture'];
-        $lecture_input['user_id'] = Auth::id();
-        $lecture->fill($lecture_input)->save();
-        return redirect()->route('lecture.index');
-        
-    }
+    public function store(LectureRequest $request, Lecture $lecture)
+    {
+        $input = $request->validated();
+        $input['user_id'] = Auth::id();
+        $lecture->fill($input)->save();
 
-    public function show(Lecture $lecture){
-        
-        return view('lectures/show')->with(['lecture' => $lecture]);
-        
+        return redirect()->back()->with('createdLectureId', $lecture->id);
     }
-    
-    public function edit(Lecture $lecture){
-        
-        return view('lectures/edit')->with(['lecture' => $lecture]); // ビューで使用する変数は /Composers/LectureComposerに定義
-        
-    }
-
-    public function update(LectureRequest $request, Lecture $lecture){
-        
-        $lecture_input = $request['lecture']; //name = "lecture['hoge']"の形で送られる
-        $lecture_input['user_id'] = Auth::id();
-        $lecture->fill($lecture_input)->save();
-        return redirect()->route('lecture.show', ['lecture' => $lecture->id]);
-        
-    }
-
-    /*public function destroy(Lecture $lecture){
-        
-        $lecture->delete();
-        return redirect()->route('lecture.index');
-        
-    }*/
 }

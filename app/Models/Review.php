@@ -9,26 +9,19 @@ class Review extends Model
 {
     use HasFactory;
 
-    
-    public function user() {
-        return $this->belongsTo(User::class);
-    }
-    
-    public function lecture() {
+    protected $fillable = [
+        'user_id', 'lecture_id', 'title', 'year',
+        'fulfillment_rate', 'ease_rate', 'satisfaction_rate', 'average_rate',
+        'good_point', 'bad_point', 'lecture_content'
+    ];
+
+    public function lecture()
+    {
         return $this->belongsTo(Lecture::class);
     }
-    
-    public function review_questions() {
-        return $this->hasMany(ReviewQuestion::class);
+
+    public function getAverageRate($request)
+    {
+        return round(($request->fulfillment_rate + $request->ease_rate + $request->satisfaction_rate) / 3, 2);
     }
-    
-    public function review_goods() {
-        return $this->hasMany(ReviewGood::class);  
-    }
-    
-    protected $fillable = [
-        'user_id', 'lecture_id', 'year', 'class_method', 'attedance', 
-        'evaluation_method', 'evaluation_level', 'lecture_level', 'comp_syllabus', 
-        'lecture_content', 'title', 'dtail', 'rate_credit', 'rate_adequacy', 'rate_fun'
-    ];
 }
