@@ -1,42 +1,43 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import DeleteUserForm from './Partials/DeleteUserForm.vue';
-import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
-import { Head } from '@inertiajs/vue3';
+  import { Head } from '@inertiajs/vue3'
+  import { mdiAccount, mdiLockOutline, mdiAlertCircle } from '@mdi/js'
+  import DeleteUserForm from './Partials/DeleteUserForm.vue'
+  import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue'
+  import UpdateUserInformationForm from './Partials/UpdateUserInformationForm.vue'
+  import PageSection from '@/Components/PageSection.vue'
 
-defineProps({
-    mustVerifyEmail: Boolean,
-    status: String,
-});
+
+const props = defineProps({
+  status: String,
+  faculties: Object,
+	departments: Object,
+	courses: Object,
+})
+</script>
+
+<script>
+  import Layout from '@/Layouts/Layout.vue'
+  export default {
+    layout: Layout,
+  }
 </script>
 
 <template>
-    <Head title="Profile" />
+  <Head title="アカウント情報" />
 
-    <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Profile</h2>
-        </template>
+  <PageSection title="プロフィール編集" :icon="mdiAccount">
+    <UpdateUserInformationForm
+      :faculties="props.faculties"
+      :departments="props.departments"
+      :courses="props.courses"
+    />
+  </PageSection>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <UpdateProfileInformationForm
-                        :must-verify-email="mustVerifyEmail"
-                        :status="status"
-                        class="max-w-xl"
-                    />
-                </div>
+  <PageSection title="パスワード変更" :icon="mdiLockOutline">
+    <UpdatePasswordForm />
+  </PageSection>
 
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <UpdatePasswordForm class="max-w-xl" />
-                </div>
-
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <DeleteUserForm class="max-w-xl" />
-                </div>
-            </div>
-        </div>
-    </AuthenticatedLayout>
+  <PageSection title="アカウント削除" :icon="mdiAlertCircle">
+    <DeleteUserForm />
+  </PageSection>
 </template>

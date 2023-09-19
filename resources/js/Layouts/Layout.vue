@@ -15,7 +15,7 @@
 </script>
 
 <template>
-    <v-app>
+    <v-app style="background-color: #F5F5F5;">
 
       <v-navigation-drawer v-model="drawer" color="secondary">
 
@@ -56,12 +56,16 @@
               :href="route('lecture.create')"
               title="ランキング"
               :icon="mdiCrown"
-              component="Lecture/Create"
             />
           </v-list-group>
 
           <NavItem :href="route('contact.create')" :icon="mdiChat" title="雑談部屋" />
-          <NavItem :href="route('contact.create')" :icon="mdiChatQuestion" title="お問い合わせ" />
+          <NavItem
+            :href="route('contact.create')"
+            :icon="mdiChatQuestion"
+            title="お問い合わせ"
+            component="Contact/Create"
+          />
 
         </v-list>
 
@@ -83,8 +87,11 @@
           <v-avatar color="grey-lighten-2" class="me-2">
             <v-menu activator="parent">
               <v-list>
-                <v-list-item link title="プロフィール"></v-list-item>
-                <v-list-item link title="アカウント情報"></v-list-item>
+                <NavItem
+                  :href="route('profile.edit')"
+                  title="アカウント情報"
+                />
+                <v-list-item link title="プロフィール" ></v-list-item>
               </v-list>
             </v-menu>
           </v-avatar>
