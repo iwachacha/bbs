@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Faculty;
+use App\Models\Department;
+use App\Models\Course;
 
 class ProfileController extends Controller
 {
@@ -19,8 +22,11 @@ class ProfileController extends Controller
     public function edit(Request $request): Response
     {
         return Inertia::render('Profile/Edit', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            //'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'faculties' => Faculty::all(),
+            'departments' => Department::all(),
+            'courses' => Course::all(),
         ]);
     }
 
@@ -31,9 +37,9 @@ class ProfileController extends Controller
     {
         $request->user()->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
+        /*if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
-        }
+        }*/
 
         $request->user()->save();
 

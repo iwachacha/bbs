@@ -1,90 +1,111 @@
 <script setup>
-import Checkbox from '@/Components/Checkbox.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+	import { ref } from 'vue'
+  import { mdiAccount, mdiLogin, mdiEyeOff, mdiEye, mdiLockOutline, mdiChevronRight } from '@mdi/js'
+	import { Head, Link, useForm } from '@inertiajs/vue3'
+  import { useToast } from "vue-toastification"
+  import MustInput from '@/Components/MustInput.vue'
+  import PrimaryBtn from '@/Components/PrimaryBtn.vue'
 
-defineProps({
-    canResetPassword: Boolean,
+	const props = defineProps({
+    errors: Object,
+		canResetPassword: Boolean,
     status: String,
-});
+	})
 
-const form = useForm({
-    email: '',
+	const form = useForm({
+    name: '',
     password: '',
     remember: false,
-});
+  })
 
-const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
-    });
-};
+	const toast = useToast()
+	const visiblePassword = ref(false)
+
+	const submit = () => {
+		form.post(route('login'), {
+			onFinish: () => form.reset('password'),
+			onSuccess: () => [
+        toast.success('ログインが完了しました。\nお帰りなさい ' + form.name + 'さん！'),
+      ],
+      onError: () => [toast.error('ユーザー情報が存在しません')]
+		})
+	}
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Log in" />
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
+  <Head title="ログイン" />
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="メールアドレス" />
+  <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+    {{ status }}
+  </div>
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
+	<v-card
+		color="secondary"
+		class="px-5 px-sm-10 py-7"
+	>
 
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
+		<v-card-title class="text-medium-emphasis text-h5 my-5 px-0">
+			<v-icon :icon="mdiLogin" class="me-2" />
+			<span>ログイン</span>
+		</v-card-title>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="パスワード" />
+		<v-sheet class="my-8 mx-md-10" color="secondary">
+      <form @submit.prevent="submit" id="loginForm">
+        <v-row>
 
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
+          <v-col cols="12" class="py-2">
+            <MustInput
+              v-model="form.name"
+              variant="outlined"
+              counter="50"
+              :prepend-inner-icon="mdiAccount"
+            >ユーザー名</MustInput>
+          </v-col>
 
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
+          <v-col cols="12" class="py-2">
+            <MustInput
+              v-model="form.password"
+              :type="visiblePassword ? 'text' : 'password'"
+              variant="outlined"
+              counter="16"
+              :prepend-inner-icon="mdiLockOutline"
+              :append-inner-icon="visiblePassword ? mdiEye : mdiEyeOff"
+              @click:append-inner="visiblePassword = !visiblePassword"
+            >パスワード</MustInput>
+          </v-col>
 
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ml-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
+          <v-col cols="12" class="py-2">
+            <v-card
+              class="mb-10"
+              color="surface-variant"
+              variant="tonal"
+            >
+              <v-card-text class="text-medium-emphasis text-caption">
+                パスワードを忘れた場合は、Twitterかお問い合わせページより「ユーザー名」を合わせてお知らせください。
+              </v-card-text>
+            </v-card>
+          </v-col>
 
-            <div class="flex items-center justify-end mt-4">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    パスワードを忘れた場合はこちら
-                </Link>
+        </v-row>
 
-                <PrimaryButton class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    ログイン
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
+        <PrimaryBtn
+          type="submit"
+          block
+          class="mb-2"
+          :disabled="form.processing"
+        >
+          ログイン
+        </PrimaryBtn>
+
+      </form>
+
+			<Link :href="route('register')">
+				<v-card-text class="text-center" style="color: #26A69A;">
+					新規登録はこちら<v-icon :icon="mdiChevronRight" />
+				</v-card-text>
+			</Link>
+
+		</v-sheet>
+	</v-card>
 </template>
