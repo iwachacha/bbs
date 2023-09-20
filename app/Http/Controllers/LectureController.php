@@ -38,25 +38,18 @@ class LectureController extends Controller
 
     public function create()
     {
-        $lectures = Lecture::all();
-        $faculties = Faculty::all();
-        $departments = Department::all();
-        $courses = Course::all();
-        $lecture_categories = LectureCategory::all();
-
         return Inertia::render('Lecture/Create')->with([
-            'lectures' => $lectures,
-            'faculties' => $faculties,
-            'departments' => $departments,
-            'courses' => $courses,
-            'lectureCategories' => $lecture_categories
+            'lectures' => Lecture::all(),
+            'faculties' => Faculty::all(),
+            'departments' => Department::all(),
+            'courses' => Course::all(),
+            'lectureCategories' => LectureCategory::all()
         ]);
     }
 
     public function store(LectureRequest $request, Lecture $lecture)
     {
         $input = $request->validated();
-        $input['user_id'] = Auth::id();
         $lecture->fill($input)->save();
 
         return redirect()->back()->with('createdLectureId', $lecture->id);

@@ -11,10 +11,6 @@
 	import SecondaryBtn from '@/Components/SecondaryBtn.vue'
   import ConfirmCard from '@/Components/ConfirmCard.vue'
 
-	const props = defineProps({
-		errors: Object,
-	})
-
   const passwordInput = ref(null)
   const currentPasswordInput = ref(null)
 
@@ -50,13 +46,13 @@
   const submit = () => {
     form.put(route('password.update'), {
       preserveScroll: true,
-      onSuccess: () => [form.reset(), toast.success('パスワードの変更が完了しました。')],
+      onSuccess: () => [form.reset(), passwordV$.value.$reset(), toast.success('パスワードの変更が完了しました。')],
       onError: () => {
-        if (props.errors.password) {
+        if (form.errors.password) {
           form.reset('password', 'password_confirmation');
           passwordInput.value.focus()
         }
-        if (props.errors.current_password) {
+        if (form.errors.current_password) {
           form.reset('current_password');
           currentPasswordInput.value.focus()
         }
@@ -94,13 +90,14 @@
 					variant="outlined"
 					counter="16"
 					:append-inner-icon="visibleCurrentPassword ? mdiEye : mdiEyeOff"
+          :error-messages="form.errors.current_password ? form.errors.current_password : passwordV$.current_password.$errors.map(e => e.$message)"
 					@input="passwordV$.current_password.$touch"
 					@blur="passwordV$.current_password.$touch"
 					@click:append-inner="visibleCurrentPassword = !visibleCurrentPassword"
 				>現在のパスワード</MustInput>
 			</v-col>
 
-			<v-col cols="12" class="py-0">
+			<v-col cols="12" class="pb-0">
 				<MustInput
           id="password"
           ref="passwordInput"
@@ -109,13 +106,14 @@
 					variant="outlined"
 					counter="16"
 					:append-inner-icon="visiblePassword ? mdiEye : mdiEyeOff"
+          :error-messages="form.errors.password ? form.errors.password : passwordV$.password.$errors.map(e => e.$message)"
 					@input="passwordV$.password.$touch"
 					@blur="passwordV$.password.$touch"
 					@click:append-inner="visiblePassword = !visiblePassword"
 				>変更後のパスワード</MustInput>
 			</v-col>
 
-			<v-col cols="12" class="pt-0">
+			<v-col cols="12" class="pb-0">
 				<MustInput
           id="password_confirmation"
 					v-model="form.password_confirmation"
@@ -123,6 +121,7 @@
 					variant="outlined"
 					counter="16"
 					:append-inner-icon="visibleConfirmPassword ? mdiEye : mdiEyeOff"
+          :error-messages="form.errors.password_confirmation ? form.errors.password_confirmation : passwordV$.password_confirmation.$errors.map(e => e.$message)"
 					@input="passwordV$.password_confirmation.$touch"
 					@blur="passwordV$.password_confirmation.$touch"
 					@click:append-inner="visibleConfirmPassword = !visibleConfirmPassword"
@@ -134,7 +133,7 @@
 
 	<PrimaryBtn
 		block
-		class="mb-2"
+		class="mb-5 mt-8"
 		@click="passwordV$.$invalid ? showError() : openDialog()"
 		:disabled="form.processing"
 	>
@@ -151,7 +150,7 @@
         <SecondaryBtn @click="dialog = false">いいえ</SecondaryBtn>
       </template>
       <template v-slot:okBtn>
-        <PrimaryBtn type="submit" @click="dialog = false" form="registerForm">はい</PrimaryBtn>
+        <PrimaryBtn type="submit" @click="dialog = false" form="passwordForm">はい</PrimaryBtn>
       </template>
     </ConfirmCard>
 

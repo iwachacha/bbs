@@ -1,5 +1,5 @@
 <script setup>
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
   import { mdiPenPlus } from '@mdi/js'
   import PageSection from '@/Components/PageSection.vue'
   import searchLectureForm from '@/Components/Lectures/SearchLectureForm.vue'
@@ -17,17 +17,34 @@
   })
 
   const step = ref(1)
+
+  const currentSection = computed(() => {
+    switch (step.value) {
+      case 1: return {
+        title: '講義検索',
+        tipText: '作成済みの講義を検索できます。\n\nレビュー対象の講義が見つかった場合は検索結果をクリックし、\nページの遷移先でレビューを作成してください。\n\n見つからなかった場合は次のステップにお進みください。'
+      }
+
+      case 2: return {
+        title: '講義作成',
+        tipText: 'レビューの対象となる講義を作成してください。\n*マーク付きの項目は回答必須です。' }
+
+      case 3: return {
+        title: 'レビュー作成',
+        tipText: '講義のレビューを作成してください。\n*マーク付きの項目は回答必須です。' }
+    }
+  })
 </script>
 
 <script>
-  import Layout from '@/Layouts/Layout.vue';
+  import Layout from '@/Layouts/Layout.vue'
   export default {
     layout: Layout,
   }
 </script>
 
 <template>
-  <PageSection title="講義・レビュー作成" :icon="mdiPenPlus">
+  <PageSection :title="currentSection.title" :tip-text="currentSection.tipText" :icon="mdiPenPlus">
     <v-stepper
       v-model="step"
       alt-labels

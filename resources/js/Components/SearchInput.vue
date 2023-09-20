@@ -1,5 +1,5 @@
 <script setup>
-  import { mdiMagnify, mdiHelpCircleOutline } from '@mdi/js'
+  import { mdiMagnify } from '@mdi/js'
   defineProps(['searchData'])
 </script>
 
@@ -11,14 +11,5 @@
     clearable
     persistent-hint
     variant="solo"
-  >
-    <template v-slot:prepend-inner>
-      <v-tooltip location="bottom">
-        <template v-slot:activator="{ props }">
-          <v-icon v-bind="props" :icon="mdiHelpCircleOutline"></v-icon>
-        </template>
-        <slot />
-      </v-tooltip>
-    </template>
-  </v-autocomplete>
+  />
 </template>

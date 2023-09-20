@@ -1,7 +1,7 @@
 <script setup>
 	import { ref } from 'vue'
 	import { Head, Link } from '@inertiajs/vue3'
-	import ContactForm from '@/Components/Contact/ContactForm.vue'
+	import ContactForm from '@/Components/Contacts/ContactForm.vue'
 
 	defineProps({ canLogin: Boolean, canRegister: Boolean,})
 
@@ -13,9 +13,9 @@
 	<Head title="文教大学・越谷キャンパス情報掲示板" />
 	<v-app>
 
-  <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-    {{ status }}
-  </div>
+	  <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+	    {{ status }}
+	  </div>
 
 		<v-card
 			class="px-5 px-sm-10 py-7"
@@ -53,11 +53,14 @@
 			</v-carousel>
 
 			<div v-if="canLogin" class="mb-10 mt-7 text-button text-center text-sm-right">
-				<div v-if="$page.props.auth.user">
-					<Link :href="route('lecture.index')">
-						<v-btn color="primary">ホーム</v-btn>
-					</Link>
-				</div>
+				<Link
+					v-if="$page.props.auth.user"
+					:href="route('lecture.index')"
+				>
+					<v-btn color="primary">
+					ホーム
+					</v-btn>
+				</Link>
 
 				<div v-if="!$page.props.auth.user">
 					<Link :href="route('login')">

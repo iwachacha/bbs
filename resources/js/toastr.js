@@ -1,5 +1,5 @@
 export const options = {
-  position: "bottom-right",
+  position: "top-right",
   timeout: 5000,
   closeOnClick: true,
   pauseOnFocusLoss: false,

@@ -130,8 +130,8 @@
     createLecture.value = [
       {key: '講義名', value: lectureForm.lecture_name},
       {key: '担当教員名', value: lectureForm.professor_name},
-      {key: '講義区分', value: selectCategoryName},
       {key: '開講時期', value:  lectureForm.season},
+      {key: '講義区分', value: selectCategoryName},
       {key: '開講学部', value: selectFacultyName ? selectFacultyName : 'なし'},
       {key: '開講学科', value: selectDepartmentName ? selectDepartmentName : 'なし'},
       {key: '開講コース', value: selectCourseName ? selectCourseName : 'なし'}
@@ -144,7 +144,7 @@
   <v-sheet color="#FAFAFA" class="py-5">
     <v-form @submit.prevent="lectureV$.$invalid ? showError() : onSubmit()" id="lectureForm">
 
-      <v-row>
+      <v-row justify="space-around">
 
         <v-col cols="12" sm="6">
           <MustInput
@@ -177,6 +177,18 @@
 
         <v-col cols="12" sm="6">
           <MustSelect
+            v-model="lectureForm.season"
+            hint="最も近いものを選択してください"
+            :items="['春学期', '秋学期', '通年', 'その他']"
+            :error-messages="props.errors.season ? props.errors.season : lectureV$.season.$errors.map(e => e.$message)"
+            @blur="lectureV$.season.$touch"
+          >
+            開講時期
+          </MustSelect>
+        </v-col>
+        
+        <v-col cols="12" sm="6">
+          <MustSelect
             v-model="lectureForm.lecture_category_id"
             hint="最も近いものを選択してください"
             :items="lectureCategories"
@@ -189,19 +201,7 @@
           </MustSelect>
         </v-col>
 
-        <v-col cols="12" sm="6">
-          <MustSelect
-            v-model="lectureForm.season"
-            hint="最も近いものを選択してください"
-            :items="['春学期', '秋学期', '通年', 'その他']"
-            :error-messages="props.errors.season ? props.errors.season : lectureV$.season.$errors.map(e => e.$message)"
-            @blur="lectureV$.season.$touch"
-          >
-            開講時期
-          </MustSelect>
-        </v-col>
-
-        <v-col cols="12" sm="4">
+        <v-col cols="12" sm="5" md="4">
           <TooltipSelect
             v-model="lectureForm.faculty_id"
             label="開講学部"
@@ -218,7 +218,7 @@
           </TooltipSelect>
         </v-col>
 
-        <v-col cols="12" sm="4">
+        <v-col cols="12" sm="5" md="4">
           <TooltipSelect
             v-model="lectureForm.department_id"
             label="開講学科"
@@ -231,7 +231,7 @@
           </TooltipSelect>
         </v-col>
 
-        <v-col cols="12" sm="4">
+        <v-col cols="12" sm="5" md="4">
           <TooltipSelect
             v-model="lectureForm.course_id"
             label="開講コース"
