@@ -1,8 +1,9 @@
 <script setup>
 	import { ref } from 'vue'
   import { mdiAccount, mdiLogin, mdiEyeOff, mdiEye, mdiLockOutline, mdiChevronRight } from '@mdi/js'
-	import { Head, Link, useForm } from '@inertiajs/vue3'
+	import { Link, useForm } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
+  import PageSection from '@/Components/PageSection.vue'
   import MustInput from '@/Components/MustInput.vue'
   import PrimaryBtn from '@/Components/PrimaryBtn.vue'
 
@@ -33,79 +34,69 @@
 </script>
 
 <template>
+  <v-app style="background-color: #F5F5F5;">
 
-  <Head title="ログイン" />
+    <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+      {{ status }}
+    </div>
 
-  <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-    {{ status }}
-  </div>
+    <PageSection title="ログイン" :icon="mdiLogin" style="max-width: 700px;">
 
-	<v-card
-		color="secondary"
-		class="px-5 px-sm-10 py-7"
-	>
+        <form @submit.prevent="submit" id="loginForm">
+          <v-row>
 
-		<v-card-title class="text-medium-emphasis text-h5 my-5 px-0">
-			<v-icon :icon="mdiLogin" class="me-2" />
-			<span>ログイン</span>
-		</v-card-title>
+            <v-col cols="12" class="py-2">
+              <MustInput
+                v-model="form.name"
+                variant="outlined"
+                counter="50"
+                :prepend-inner-icon="mdiAccount"
+              >ユーザー名</MustInput>
+            </v-col>
 
-		<v-sheet class="my-8 mx-md-10" color="secondary">
-      <form @submit.prevent="submit" id="loginForm">
-        <v-row>
+            <v-col cols="12" class="py-2">
+              <MustInput
+                v-model="form.password"
+                :type="visiblePassword ? 'text' : 'password'"
+                variant="outlined"
+                counter="16"
+                :prepend-inner-icon="mdiLockOutline"
+                :append-inner-icon="visiblePassword ? mdiEye : mdiEyeOff"
+                @click:append-inner="visiblePassword = !visiblePassword"
+              >パスワード</MustInput>
+            </v-col>
 
-          <v-col cols="12" class="py-2">
-            <MustInput
-              v-model="form.name"
-              variant="outlined"
-              counter="50"
-              :prepend-inner-icon="mdiAccount"
-            >ユーザー名</MustInput>
-          </v-col>
+            <v-col cols="12" class="py-2">
+              <v-card
+                class="mb-10"
+                color="surface-variant"
+                variant="tonal"
+              >
+                <v-card-text class="text-medium-emphasis text-caption">
+                  パスワードを忘れた場合は、Twitterかお問い合わせページより「ユーザー名」を合わせてお知らせください。
+                </v-card-text>
+              </v-card>
+            </v-col>
 
-          <v-col cols="12" class="py-2">
-            <MustInput
-              v-model="form.password"
-              :type="visiblePassword ? 'text' : 'password'"
-              variant="outlined"
-              counter="16"
-              :prepend-inner-icon="mdiLockOutline"
-              :append-inner-icon="visiblePassword ? mdiEye : mdiEyeOff"
-              @click:append-inner="visiblePassword = !visiblePassword"
-            >パスワード</MustInput>
-          </v-col>
+          </v-row>
 
-          <v-col cols="12" class="py-2">
-            <v-card
-              class="mb-10"
-              color="surface-variant"
-              variant="tonal"
-            >
-              <v-card-text class="text-medium-emphasis text-caption">
-                パスワードを忘れた場合は、Twitterかお問い合わせページより「ユーザー名」を合わせてお知らせください。
-              </v-card-text>
-            </v-card>
-          </v-col>
+          <PrimaryBtn
+            type="submit"
+            block
+            class="mb-2"
+            :disabled="form.processing"
+          >
+            ログイン
+          </PrimaryBtn>
 
-        </v-row>
+        </form>
 
-        <PrimaryBtn
-          type="submit"
-          block
-          class="mb-2"
-          :disabled="form.processing"
-        >
-          ログイン
-        </PrimaryBtn>
+        <Link :href="route('register')">
+          <v-card-text class="text-center" style="color: #26A69A;">
+            新規登録はこちら<v-icon :icon="mdiChevronRight" />
+          </v-card-text>
+        </Link>
 
-      </form>
-
-			<Link :href="route('register')">
-				<v-card-text class="text-center" style="color: #26A69A;">
-					新規登録はこちら<v-icon :icon="mdiChevronRight" />
-				</v-card-text>
-			</Link>
-
-		</v-sheet>
-	</v-card>
+    </PageSection>
+  </v-app>
 </template>

@@ -1,93 +1,178 @@
 <script setup>
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Link, useForm, usePage } from '@inertiajs/vue3';
+	import { ref, watch } from 'vue'
+	import { useForm, usePage } from '@inertiajs/vue3'
+  import { useToast } from "vue-toastification"
+  import { useVuelidate } from '@vuelidate/core'
+  import { required, maxLength, helpers } from '@vuelidate/validators'
+  import { requiredM, maxLengthM } from '@/validationMessage.js'
+  import { getFacultyName, getDepartmentName, getCourseName } from '@/Components/Lectures/GetNameFromId.vue'
+  import MustInput from '@/Components/MustInput.vue'
+  import Select from '@/Components/Select.vue'
+  import PrimaryBtn from '@/Components/PrimaryBtn.vue'
+	import SecondaryBtn from '@/Components/SecondaryBtn.vue'
+  import ConfirmCard from '@/Components/ConfirmCard.vue'
 
-const props = defineProps({
-    mustVerifyEmail: Boolean,
-    status: String,
-});
+	const props = defineProps({
+		faculties: Object,
+		departments: Object,
+		courses: Object,
+	})
 
-const user = usePage().props.auth.user;
+  const user = usePage().props.auth.user
 
-const form = useForm({
-    name: user.name,
-    email: user.email,
-});
+	const form = useForm({
+		name: user.name,
+		grade: user.grade,
+		faculty_id: user.faculty_id,
+		department_id: user.department_id,
+		course_id: user.course_id,
+	})
+
+	const profileRules = {
+    name: {
+      required: helpers.withMessage(requiredM("ユーザー名"), required),
+      maxLengthValue: helpers.withMessage(maxLengthM("ユーザー名", 50), maxLength(50))
+    }
+  }
+  const profileV$ = useVuelidate(profileRules, form)
+
+	const toast = useToast()
+	
+  const sortDepartments = ref(props.departments.filter((department) => department.faculty_id === user.faculty_id))
+  const sortCourses = ref(props.courses.filter((course) => course.department_id === user.department_id))
+  watch(
+    () => form.faculty_id,
+    (faculty_id) => {
+      sortDepartments.value = props.departments.filter((department) => department.faculty_id === faculty_id)
+      form.department_id = null
+      form.course_id = null
+    }
+  )
+
+  watch(
+    () => form.department_id,
+    (department_id) => {
+      sortCourses.value = props.courses.filter((course) => course.department_id === department_id)
+      form.course_id = null
+    }
+  )
+
+	const submit = () => {
+		form.patch(route('profile.update'), {
+			onSuccess: () => [
+        [toast.success('アカウント情報が修正されました。'), profileV$.value.$reset()],
+      ],
+      onError: () => [toast.error('入力内容に誤りがあります！\n内容の確認をお願いします。')]
+		})
+	}
+
+	const showError = () => {
+    profileV$.value.$touch()
+    toast.error('入力内容に誤りがあります！\n内容の確認をお願いします。')
+  }
+
+	const dialog = ref(false)
+  const UpdateUser = ref([])
+  const openDialog = () => {
+    let selectFacultyName = getFacultyName(props.faculties, form.faculty_id)
+    let selectDepartmentName = getDepartmentName(props.departments, form.department_id)
+    let selectCourseName = getCourseName(props.courses, form.course_id)
+
+    UpdateUser.value = [
+      {key: 'ユーザー名', value: form.name},
+      {key: '学年', value: form.grade ? form.grade : '未設定'},
+      {key: '所属学部', value: selectFacultyName ? selectFacultyName : '未設定'},
+      {key: '所属学科・課程', value: selectDepartmentName ? selectDepartmentName : '未設定'},
+      {key: '所属コース・専修', value: selectCourseName ? selectCourseName : '未設定'},
+    ]
+    dialog.value = true
+  }
 </script>
 
 <template>
-    <section>
-        <header>
-            <h2 class="text-lg font-medium text-gray-900">Profile Information</h2>
+	<form @submit.prevent="profileV$.$invalid ? showError() : submit()" id="profileForm">
+		<v-row>
 
-            <p class="mt-1 text-sm text-gray-600">
-                Update your account's profile information and email address.
-            </p>
-        </header>
+		  <v-col cols="12" class="pb-0">
+		  	<MustInput
+		  		v-model="form.name"
+		  		variant="outlined"
+		  		counter="50"
+					:error-messages="form.errors.name ? form.errors.name : profileV$.name.$errors.map(e => e.$message)"
+		  		@input="profileV$.name.$touch"
+		  		@blur="profileV$.name.$touch"
+		  	>ユーザー名</MustInput>
+		  </v-col>
 
-        <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
-            <div>
-                <InputLabel for="name" value="Name" />
+			<v-col cols="12" sm="6">
+				<Select
+					v-model="form.grade"
+					variant="outlined"
+					label="学年"
+					:items="['1年', '2年', '3年', '4年', 'その他']"
+				/>
+			</v-col>
 
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.name"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
+			<v-col cols="12" sm="6">
+				<Select
+					v-model="form.faculty_id"
+					variant="outlined"
+					label="学部"
+					:items="props.faculties"
+					item-title="name"
+        	item-value="id"
+				/>
+			</v-col>
 
-                <InputError class="mt-2" :message="form.errors.name" />
-            </div>
+			<v-col cols="12" sm="6">
+				<Select
+					v-model="form.department_id"
+					variant="outlined"
+					label="学科・課程"
+					:items="sortDepartments"
+					item-title="name"
+        	item-value="id"
+					hint="学部選択時のみ選択できます"
+				/>
+			</v-col>
 
-            <div>
-                <InputLabel for="email" value="Email" />
+			<v-col cols="12" sm="6">
+				<Select
+					v-model="form.course_id"
+					variant="outlined"
+					label="コース・専修"
+					:items="sortCourses"
+					item-title="name"
+        	item-value="id"
+					hint="学科選択時のみ選択できます"
+				/>
+			</v-col>
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autocomplete="username"
-                />
+		</v-row>
+	</form>
 
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
+	<PrimaryBtn
+		block
+		class="mb-5 mt-8"
+		@click="profileV$.$invalid ? showError() : openDialog()"
+		:disabled="form.processing"
+	>
+		確認する
 
-            <div v-if="props.mustVerifyEmail && user.email_verified_at === null">
-                <p class="text-sm mt-2 text-gray-800">
-                    Your email address is unverified.
-                    <Link
-                        :href="route('verification.send')"
-                        method="post"
-                        as="button"
-                        class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Click here to re-send the verification email.
-                    </Link>
-                </p>
+		<ConfirmCard
+			:dialog="dialog"
+			title="アカウント情報修正"
+			subtitle="送信してもよろしいですか？"
+			:items="UpdateUser"
+		>
+			<template v-slot:cancelBtn>
+				<SecondaryBtn @click="dialog = false">いいえ</SecondaryBtn>
+			</template>
+			<template v-slot:okBtn>
+				<PrimaryBtn type="submit" @click="dialog = false" form="profileForm">はい</PrimaryBtn>
+			</template>
+		</ConfirmCard>
 
-                <div
-                    v-show="props.status === 'verification-link-sent'"
-                    class="mt-2 font-medium text-sm text-green-600"
-                >
-                    A new verification link has been sent to your email address.
-                </div>
-            </div>
+	</PrimaryBtn>
 
-            <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
-
-                <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
-                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
-                </Transition>
-            </div>
-        </form>
-    </section>
 </template>

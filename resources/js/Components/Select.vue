@@ -8,7 +8,7 @@
     density="compact"
     variant="underlined"
     persistent-hint
-    class="mb-3"
+    class="mb-1"
   >
   </v-select>
 </template>

@@ -10,7 +10,7 @@
     persistent-hint
     class="mb-1"
   >
-    <template v-slot:prepend-inner>
+    <template v-slot:prepend>
       <v-tooltip location="bottom">
         <template v-slot:activator="{ props }">
           <v-icon v-bind="props" :icon="mdiHelpCircleOutline"></v-icon>

@@ -8,7 +8,7 @@
     density="compact"
     variant="underlined"
     persistent-hint
-    class="mb-5"
+    class="mb-3"
   >
     <template v-slot:label>
       <slot /><span style="color: red">*</span>

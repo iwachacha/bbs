@@ -10,10 +10,6 @@
 	import SecondaryBtn from '@/Components/SecondaryBtn.vue'
   import ConfirmCard from '@/Components/ConfirmCard.vue'
 
-  const props = defineProps({
-		errors: Object,
-	})
-
   const toast = useToast()
   const passwordInput = ref(null)
   const visible = ref(false)
@@ -47,7 +43,7 @@
 <template>
   <form @submit.prevent="deleteUserV$.$invalid ? showError() : deleteUser()" id="deleteUserForm">
     <v-row>
-      <v-col cols="12" class="py-2">
+      <v-col cols="12" class="pb-0">
         <MustInput
           ref="passwordInput"
           v-model="form.password"
@@ -55,6 +51,7 @@
           variant="outlined"
           counter="16"
           :append-inner-icon="visible ? mdiEye : mdiEyeOff"
+          :error-messages="form.errors.password ? form.errors.password : deleteUserV$.password.$errors.map(e => e.$message)"
           @input="deleteUserV$.password.$touch"
           @blur="deleteUserV$.password.$touch"
           @click:append-inner="visible = !visible"
@@ -65,7 +62,7 @@
 
   <PrimaryBtn
     block
-    class="mb-2"
+    class="mb-5 mt-8"
     @click="deleteUserV$.$invalid ? showError() : dialog = true"
     :disabled="form.processing"
     color="#D50000"

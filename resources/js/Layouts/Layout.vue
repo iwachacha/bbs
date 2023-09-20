@@ -81,9 +81,11 @@
         <h1><v-app-bar-title class="text-h5">文教掲示板</v-app-bar-title></h1>
 
         <template v-slot:append>
-          <Link :href="route('lecture.create')" class="me-3" color="secondary">
+
+          <Link :href="route('lecture.create')" class="me-4" color="secondary">
             <v-icon :icon="mdiPenPlus" />投稿
           </Link>
+
           <v-avatar color="grey-lighten-2" class="me-2">
             <v-menu activator="parent">
               <v-list>
@@ -91,6 +93,7 @@
                   :href="route('profile.edit')"
                   title="アカウント情報"
                 />
+                <v-divider class="border-opacity-100" />
                 <v-list-item link title="プロフィール" ></v-list-item>
               </v-list>
             </v-menu>

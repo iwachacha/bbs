@@ -2,53 +2,25 @@
 
 namespace App\Models;
 
-//use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable //implements MustVerifyEmail
+class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-    
-    public function faculty() {
-        return $this->belongsTo(Faculty::class);
-    }
-    
-    public function department() {
-        return $this->belongsTo(Department::class);
-    }
-    
-    public function course() {
-        return $this->belongsTo(Course::class);
-    }
-    
-    public function lectures() {
-        return $this->hasMany(Lecture::class);  
-    }
-    
-    public function reviews() {
-        return $this->hasMany(Review::class);  
-    }
-    
-    public function lecture_likes() {
-        return $this->hasMany(LectureLike::class);  
-    }
-    
-    public function review_goods() {
-        return $this->hasMany(ReviewGood::class);  
-    }
-    
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'faculty_id',
-        'department_id',
-        'course_id',
-        'grade',
-        'comment'
+        'name', 'email', 'password',
+        'grade', 'faculty_id', 'department_id', 'course_id',
+        'image_path'
     ];
 
     /**

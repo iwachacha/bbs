@@ -33,7 +33,6 @@ return new class extends Migration
         
         Schema::create('lectures', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');;
             $table->foreignId('lecture_category_id')->constrained();
             $table->foreignId('faculty_id')->nullable()->constrained();
             $table->foreignId('department_id')->nullable()->constrained();

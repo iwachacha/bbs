@@ -1,14 +1,14 @@
 <script setup>
 	import { ref, watch, computed } from 'vue'
   import { mdiAccount, mdiEmailOutline, mdiEyeOff, mdiEye, mdiLockOutline, mdiChevronRight } from '@mdi/js'
-	import { Head, Link, useForm } from '@inertiajs/vue3'
+	import { Link, useForm } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
   import { useVuelidate } from '@vuelidate/core'
   import { required, email, sameAs, maxLength, minLength, helpers } from '@vuelidate/validators'
   import { requiredM, maxLengthM, minLengthM } from '@/validationMessage.js'
   import { getFacultyName, getDepartmentName, getCourseName } from '@/Components/Lectures/GetNameFromId.vue'
   import MustInput from '@/Components/MustInput.vue'
-	import TooltipSelect from '@/Components/TooltipSelect.vue'
+	import PageSection from '@/Components/PageSection.vue'
   import Select from '@/Components/Select.vue'
   import PrimaryBtn from '@/Components/PrimaryBtn.vue'
 	import SecondaryBtn from '@/Components/SecondaryBtn.vue'
@@ -58,7 +58,7 @@
 
 	const toast = useToast()
 	const visiblePassword = ref(false)
-	const visibleConfirmPass = ref(false)
+	const visibleConfirmPassword = ref(false)
 
   const sortDepartments = ref()
   const sortCourses = ref()
@@ -115,24 +115,13 @@
 </script>
 
 <template>
-
-  <Head title="ユーザー登録" />
-		<v-card
-			color="secondary"
-			class="px-5 px-sm-10 py-7"
-		>
-
-			<v-card-title class="text-medium-emphasis text-h5 my-5 px-0">
-				<v-icon :icon="mdiAccount" class="me-2" />
-				<span>ユーザー登録</span>
-			</v-card-title>
-
-		<v-sheet class="my-8 mx-md-10" color="secondary">
+	<v-app style="background-color: #F5F5F5;">
+		<PageSection title="ユーザー登録" :icon="mdiAccount" style="max-width: 900px;">
 			<form @submit.prevent="registerV$.$invalid ? showError() : submit()" id="registerForm">
 
 				<v-row>
 
-					<v-col cols="12" sm="6" class="py-2">
+					<v-col cols="12" md="6">
 						<MustInput
 							v-model="form.name"
 							variant="outlined"
@@ -144,16 +133,16 @@
 						>ユーザー名</MustInput>
 					</v-col>
 
-					<v-col cols="12" sm="6" class="py-2">
+					<v-col cols="12" sm="6">
 						<Select
-						v-model="form.grade"
+							v-model="form.grade"
 							variant="outlined"
 							label="学年"
 							:items="['1年', '2年', '3年', '4年', 'その他']"
 						/>
 					</v-col>
 
-					<v-col cols="12" sm="4" class="py-3">
+					<v-col cols="12" sm="6" md="4">
 						<Select
 							v-model="form.faculty_id"
 							variant="outlined"
@@ -164,33 +153,31 @@
 						/>
 					</v-col>
 
-					<v-col cols="12" sm="4" class="py-3">
-						<TooltipSelect
+					<v-col cols="12" sm="6" md="4">
+						<Select
 							v-model="form.department_id"
 							variant="outlined"
 							label="学科・課程"
 							:items="sortDepartments"
 							item-title="name"
             	item-value="id"
-						>
-							<span>学部を選択した場合のみ選択できます！</span>
-						</TooltipSelect>
+							hint="学部選択時のみ選択できます"
+						/>
 					</v-col>
 
-					<v-col cols="12" sm="4" class="py-3">
-						<TooltipSelect
+					<v-col cols="12" sm="6" md="4">
+						<Select
 							v-model="form.course_id"
 							variant="outlined"
 							label="コース・専修"
 							:items="sortCourses"
 							item-title="name"
             	item-value="id"
-						>
-							<span>学科を選択した場合のみ選択できます！</span>
-						</TooltipSelect>
+							hint="学科選択時のみ選択できます"
+						/>
 					</v-col>
 
-					<v-col cols="12" sm="6" class="py-2">
+					<v-col cols="12" md="6">
 						<MustInput
 							v-model="form.password"
 							:type="visiblePassword ? 'text' : 'password'"
@@ -206,23 +193,23 @@
 						>パスワード</MustInput>
 					</v-col>
 
-					<v-col cols="12" sm="6" class="py-2">
+					<v-col cols="12" md="6">
 						<MustInput
 							v-model="form.password_confirmation"
-							:type="visibleConfirmPass ? 'text' : 'password'"
+							:type="visibleConfirmPassword ? 'text' : 'password'"
 							variant="outlined"
 							hint="同じパスワードを入力してください"
 							counter="16"
 							:prepend-inner-icon="mdiLockOutline"
-							:append-inner-icon="visibleConfirmPass ? mdiEye : mdiEyeOff"
+							:append-inner-icon="visibleConfirmPassword ? mdiEye : mdiEyeOff"
 							:error-messages="props.errors.password_confirmation ? props.errors.password_confirmation : registerV$.password_confirmation.$errors.map(e => e.$message)"
 							@input="registerV$.password_confirmation.$touch"
 							@blur="registerV$.password_confirmation.$touch"
-							@click:append-inner="visibleConfirmPass = !visibleConfirmPass"
+							@click:append-inner="visibleConfirmPassword = !visibleConfirmPassword"
 						>確認用パスワード</MustInput>
 					</v-col>
 
-					<v-col cols="12" class="py-2">
+					<v-col cols="12">
 						<MustInput
 							v-model="form.email"
 							type="email"
@@ -235,7 +222,7 @@
 						>大学メールアドレス</MustInput>
 					</v-col>
 
-					<v-col cols="12" class="py-2">
+					<v-col cols="12">
 						<v-card
 							class="mb-10"
 							color="surface-variant"
@@ -280,7 +267,6 @@
 					ログインはこちら<v-icon :icon="mdiChevronRight" />
 				</v-card-text>
 			</Link>
-
-		</v-sheet>
-	</v-card>
+		</PageSection>
+	</v-app>
 </template>
