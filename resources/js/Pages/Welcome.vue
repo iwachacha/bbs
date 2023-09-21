@@ -1,5 +1,4 @@
 <script setup>
-	import { ref } from 'vue'
 	import { Head, Link } from '@inertiajs/vue3'
 	import ContactForm from '@/Components/Contacts/ContactForm.vue'
 
@@ -13,9 +12,9 @@
 	<Head title="文教大学・越谷キャンパス情報掲示板" />
 	<v-app>
 
-	  <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-	    {{ status }}
-	  </div>
+  <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+    {{ status }}
+  </div>
 
 		<v-card
 			class="px-5 px-sm-10 py-7"

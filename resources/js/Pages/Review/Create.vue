@@ -10,14 +10,17 @@
 </script>
 
 <script>
-  import Layout from '@/Layouts/Layout.vue';
+  import Layout from '@/Layouts/Layout.vue'
   export default {
     layout: Layout,
   }
 </script>
 
 <template>
-  <PageSection title="レビュー作成" :icon="mdiPenPlus">
+  <PageSection
+    :title="props.lecture.lecture_name + ' / ' + props.lecture.professor_name + 'のレビュー作成'"
+    :icon="mdiPenPlus"
+  >
     <div class="mx-sm-7">
       <ReviewForm
         :lecture="lecture"
