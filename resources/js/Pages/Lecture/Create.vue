@@ -22,16 +22,16 @@
     switch (step.value) {
       case 1: return {
         title: '講義検索',
-        tipText: '作成済みの講義を検索できます。\n\nレビュー対象の講義が見つかった場合は検索結果をクリックし、\nページの遷移先でレビューを作成してください。\n\n見つからなかった場合は次のステップにお進みください。'
+        subtitle: '作成済みの講義を検索できます。\nレビュー対象の講義が見つかった場合は検索結果をクリックし、ページの遷移先でレビューを作成してください。'
       }
 
       case 2: return {
         title: '講義作成',
-        tipText: 'レビューの対象となる講義を作成してください。\n*マーク付きの項目は回答必須です。' }
+        subtitle: 'レビューの対象となる講義を作成してください。\n*マーク付きの項目は回答必須です。' }
 
       case 3: return {
         title: 'レビュー作成',
-        tipText: '講義のレビューを作成してください。\n*マーク付きの項目は回答必須です。' }
+        subtitle: '講義のレビューを作成してください。\n*マーク付きの項目は回答必須です。' }
     }
   })
 </script>
@@ -44,7 +44,7 @@
 </script>
 
 <template>
-  <PageSection :title="currentSection.title" :tip-text="currentSection.tipText" :icon="mdiPenPlus">
+  <PageSection :title="currentSection.title" :subtitle="currentSection.subtitle" :icon="mdiPenPlus">
     <v-stepper
       v-model="step"
       alt-labels
