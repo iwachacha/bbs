@@ -23,16 +23,21 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-Route::get('/lectures', [LectureController::class, 'index'])->name('lecture.index');
-Route::get('/lectures/create', [LectureController::class, 'create'])->name('lecture.create');
-Route::post('/lectures', [LectureController::class, 'store'])->name('lecture.store');
+    
+    Route::controller(LectureController::class)->group(function () { 
+        Route::get('/lectures', 'index')->name('lecture.index');
+        Route::post('/lectures', 'store')->name('lecture.store');
+        Route::get('/lectures/create', 'create')->name('lecture.create');
+        Route::get('/lectures/{lecture_id}', 'show')->name('lecture.show');
+    });
+    Route::controller(ReviewController::class)->group(function () { 
+        Route::get('/lectures/{lecture}/reviews/create', [ReviewController::class, 'create'])->name('review.create');
+        Route::post('/lectures/{lecture}/reviews', [ReviewController::class, 'store'])->name('review.store');
+    });
+    
+    Route::put('/lectures/{lecture}/bookmark/set', [LectureBookmarkController::class, 'setBookmark'])->name('bookmark.set');
+    Route::delete('/lectures/{lecture}/bookmark/remove', [LectureBookmarkController::class, 'removeBookmark'])->name('bookmark.remove');
 
-Route::get('/lectures/{lecture}/reviews', [ReviewController::class, 'index'])->name('review.index');
-Route::get('/lectures/{lecture}/reviews/create', [ReviewController::class, 'create'])->name('review.create');
-Route::post('/lectures/{lecture}/reviews', [ReviewController::class, 'store'])->name('review.store');
-
-Route::put('/lectures/{lecture}/bookmark/set', [LectureBookmarkController::class, 'setBookmark'])->name('bookmark.set');
-Route::delete('/lectures/{lecture}/bookmark/remove', [LectureBookmarkController::class, 'removeBookmark'])->name('bookmark.remove');
 });
 
 Route::get('/contacts/create', [ContactController::class, 'create'])->name('contact.create');

@@ -9,7 +9,7 @@
   import MustInput from '@/Components/MustInput.vue'
   import MustSelect from '@/Components/MustSelect.vue'
   import TextArea from '@/Components/TextArea.vue'
-  import StarRate from '@/Components/StarRate.vue'
+  import InputStarRate from '@/Components/InputStarRate.vue'
   import PrimaryBtn from '@/Components/PrimaryBtn.vue'
   import SecondaryBtn from '@/Components/SecondaryBtn.vue'
   import ConfirmCard from '@/Components/ConfirmCard.vue'
@@ -170,7 +170,7 @@
             講義充実度<span  style="color: red">*</span>　☆ {{ reviewForm.fulfillment_rate }}
           </v-list-subheader>
           <v-label>低</v-label>
-          <StarRate v-model="reviewForm.fulfillment_rate" />
+          <InputStarRate v-model="reviewForm.fulfillment_rate" />
           <v-label>高</v-label>
           <v-input
             readonly
@@ -189,7 +189,7 @@
             楽単度<span  style="color: red">*</span>　☆ {{ reviewForm.ease_rate }}
           </v-list-subheader>
           <v-label>低</v-label>
-          <StarRate v-model="reviewForm.ease_rate" />
+          <InputStarRate v-model="reviewForm.ease_rate" />
           <v-label>高</v-label>
           <v-input
             readonly
@@ -208,7 +208,7 @@
             履修満足度<span  style="color: red">*</span>　☆ {{ reviewForm.satisfaction_rate }}
           </v-list-subheader>
           <v-label>低</v-label>
-          <StarRate v-model="reviewForm.satisfaction_rate" />
+          <InputStarRate v-model="reviewForm.satisfaction_rate" />
           <v-label>高</v-label>
           <v-input
             readonly

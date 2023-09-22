@@ -13,18 +13,6 @@ use App\Http\Requests\ReviewRequest;
 
 class ReviewController extends Controller
 {
-    public function index($lecture_id)
-    {
-        $lecture = Lecture::with('reviews')
-          ->withCount('reviews')
-          ->withAvg('reviews as average_rate', 'average_rate')
-          ->find($lecture_id);
-
-        return Inertia::render('Review/Index')->with([
-          'lecture' => $lecture
-        ]);
-    }
-
     public function create(Lecture $lecture)
     {
         return Inertia::render('Review/Create')->with(['lecture' => $lecture]);

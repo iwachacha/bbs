@@ -70,7 +70,7 @@
         </v-list>
 
         <template v-slot:append>
-          <div class="pa-2"><LinkBtn :href="route('logout')" method="post">ログアウト</LinkBtn></div>
+          <div class="pa-2"><LinkBtn :href="route('logout')" method="post" :block="true">ログアウト</LinkBtn></div>
         </template>
 
       </v-navigation-drawer>
@@ -102,7 +102,7 @@
 
       </v-app-bar>
 
-      <v-main class="mx-auto" style="width: 100%;">
+      <v-main class="mx-auto" style="width: 100%; overflow: hidden;">
         <slot />
       </v-main>
 

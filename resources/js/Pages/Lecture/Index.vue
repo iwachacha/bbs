@@ -21,7 +21,7 @@
 </script>
 
 <script>
-  import Layout from '@/Layouts/Layout.vue';
+  import Layout from '@/Layouts/Layout.vue'
   export default {
     layout: Layout,
   }
@@ -36,17 +36,20 @@
           <PostCard
             :bar-title="lecture.lecture_name"
             :card-title="lecture.professor_name"
+            :read-more="false"
           >
 
             <template v-slot:menuItem>
-              <v-list-item link :prepend-icon="mdiSquareEditOutline">
-                <v-list-item-title class="align-center">編集リクエスト(未完成)</v-list-item-title>
+              <v-list-item link :prepend-icon="mdiSquareEditOutline" style="color: #26A69A;">
+                <v-list-item-title class="align-center">編集リクエスト</v-list-item-title>
               </v-list-item>
-              <v-divider class="border-opacity-50" />
-              <v-list-item link :prepend-icon="mdiTrashCan">
-                <v-list-item-title>削除依頼(未完成)</v-list-item-title>
+              <v-divider class="border-opacity-100" />
+
+              <v-list-item link :prepend-icon="mdiTrashCan" style="color: red;">
+                <v-list-item-title>削除リクエスト</v-list-item-title>
               </v-list-item>
-              <v-divider class="border-opacity-50" />
+              <v-divider class="border-opacity-100" />
+
               <v-list-item link :prepend-icon="mdiAlertCircle">
                 <v-list-item-title>不適切な投稿として報告(未完成)</v-list-item-title>
               </v-list-item>
@@ -58,7 +61,7 @@
             </template>
 
             <template v-slot:text>
-              総合平均評価
+              <span class="text-medium-emphasis me-1">総合平均評価</span>
               <v-rating
                 v-model="lecture.average_rate"
                 size="18"
@@ -80,7 +83,7 @@
                 :lecture-id="lecture.id"
                 :count="lecture.lecture_bookmarks_count"
               />
-              <LinkBtn :href="route('review.index', lecture.id)">
+              <LinkBtn :href="route('lecture.show', lecture.id)" :block="true">
                 <v-icon :icon="mdiMessageText" size="large"/>
                 {{ lecture.reviews_count }}
               </LinkBtn>

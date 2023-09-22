@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Carbon;
 
 class Lecture extends Model
 {
@@ -36,6 +37,13 @@ class Lecture extends Model
             get: fn ($value) => strpos($value, "先生") || strpos($value, "さん") || strpos($value, "教授")
                 ? $value
                 : $value.'先生'
+        );
+    }
+
+    protected function createdAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::parse($value)->format('Y年m月d日'),
         );
     }
 }

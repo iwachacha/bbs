@@ -11,9 +11,9 @@ class ReviewRequest extends FormRequest
         return [
             'title' => 'required|string|max:50',
             'year' => 'required|string',
-            'fulfillment_rate' => 'required|numeric|max:5|decimal:0,1',
-            'ease_rate' => 'required|numeric|max:5|decimal:0,1',
-            'satisfaction_rate' => 'required|numeric|max:5|decimal:0,1',
+            'fulfillment_rate' => 'required|numeric|between:1,5',
+            'ease_rate' => 'required|numeric|between:1,5',
+            'satisfaction_rate' => 'required|numeric|between:1,5',
             'good_point' => 'nullable|max:500',
             'bad_point' => 'nullable|max:500',
             'lecture_content' => 'nullable|max:500',
