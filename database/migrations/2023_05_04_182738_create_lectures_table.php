@@ -57,9 +57,9 @@ return new class extends Migration
             $table->foreignId('lecture_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->string('year');
-            $table->float('fulfillment_rate', 2, 1);
-            $table->float('ease_rate', 2, 1);
-            $table->float('satisfaction_rate', 2, 1);
+            $table->integer('fulfillment_rate');
+            $table->integer('ease_rate');
+            $table->integer('satisfaction_rate');
             $table->float('average_rate', 3, 2)->nullable();
             $table->text('good_point')->nullable();
             $table->text('bad_point')->nullable();

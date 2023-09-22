@@ -5,7 +5,7 @@
 <template>
   <v-sheet rounded="0" color="secondary" class="pb-10 mx-auto">
 
-    <v-card-title class="mt-7 mx-sm-3 mx-md-7 text-h6 text-sm-h5 text-medium-emphasis d-flex">
+    <v-card-title class="mx-n1 mt-7 mx-sm-3 mx-md-7 text-h6 text-sm-h5 text-medium-emphasis d-flex align-center">
       <v-icon :icon="icon" class="me-2" size="small" />
       <h3>{{ title }}</h3>
     </v-card-title>
@@ -14,7 +14,7 @@
       {{ subtitle }}
     </v-card-subtitle>
 
-    <div class="mt-5 px-5 px-sm-10 px-md-16 py-0">
+    <div class="mt-5 px-3 px-sm-10 px-md-16 py-0">
       <slot />
     </div>
 

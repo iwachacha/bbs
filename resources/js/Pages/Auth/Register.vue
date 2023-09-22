@@ -116,7 +116,7 @@
 
 <template>
 	<v-app style="background-color: #F5F5F5;">
-		<PageSection title="ユーザー登録" :icon="mdiAccount" style="max-width: 900px;">
+		<PageSection title="ユーザー登録" :icon="mdiAccount" style="max-width: 1000px;">
 			<form @submit.prevent="registerV$.$invalid ? showError() : submit()" id="registerForm">
 
 				<v-row>
