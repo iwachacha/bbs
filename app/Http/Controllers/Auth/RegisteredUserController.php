@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
@@ -36,22 +36,12 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(UserRequest $request): RedirectResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:50', 'unique:'.User::class],
-            'email' => ['required', 'regex:/[a-z][0-9][ehl][1-4][1-9a][0-9]{3}@bunkyo\.ac\.jp/', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+        $input = $request->validated();
+        $input['password'] = Hash::make($request->password);
 
-        $user = User::create([
-            'name' => $request->name,
-            'grade' => $request->grade,
-            'faculty_id' => $request->faculty_id,
-            'department_id' => $request->department_id,
-            'course_id' => $request->course_id,
-            'password' => Hash::make($request->password),
-        ]);
+        $user = User::create($input);
 
         event(new Registered($user));
 

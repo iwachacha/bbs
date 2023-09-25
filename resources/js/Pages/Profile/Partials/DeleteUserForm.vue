@@ -17,11 +17,15 @@
 
   const form = useForm({
     password: null,
+    delete_confirm: null
   })
 
   const deleteUserRules = {
     password: {
       required: helpers.withMessage(requiredM("パスワード"), required),
+    },
+    delete_confirm: {
+      required: helpers.withMessage(requiredM("削除確認"), required),
     }
   }
   const deleteUserV$ = useVuelidate(deleteUserRules, form)
@@ -29,8 +33,7 @@
   const deleteUser = () => {
     form.delete(route('profile.destroy'), {
       preserveScroll: true,
-      onError: () => [passwordInput.value.focus(), toast.error('パスワードに誤りがあります。')],
-      onFinish: () => form.reset(),
+      onError: () => [toast.error('パスワードに誤りがあります。')],
     })
   }
 
@@ -51,11 +54,23 @@
           variant="outlined"
           counter="16"
           :append-inner-icon="visible ? mdiEye : mdiEyeOff"
-          :error-messages="form.errors.password ? form.errors.password : deleteUserV$.password.$errors.map(e => e.$message)"
+          :error-messages="(form.errors.password) ? form.errors.password : deleteUserV$.password.$errors.map(e => e.$message)"
           @input="deleteUserV$.password.$touch"
           @blur="deleteUserV$.password.$touch"
           @click:append-inner="visible = !visible"
         >現在のパスワード</MustInput>
+      </v-col>
+
+      <v-col cols="12" class="pb-0">
+        <MustInput
+          v-model="form.delete_confirm"
+          variant="outlined"
+          placeholder="アカウント削除"
+          hint="「アカウント削除」と入力してください"
+          :error-messages="(form.errors.delete_confirm) ? form.errors.delete_confirm : deleteUserV$.delete_confirm.$errors.map(e => e.$message)"
+          @input="deleteUserV$.delete_confirm.$touch"
+          @blur="deleteUserV$.delete_confirm.$touch"
+        >削除確認</MustInput>
       </v-col>
     </v-row>
   </form>

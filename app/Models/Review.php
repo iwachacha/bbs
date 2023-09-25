@@ -27,6 +27,11 @@ class Review extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class)->withTimestamps();
+    }
+
     public function getAverageRate($request)
     {
         return round(($request->fulfillment_rate + $request->ease_rate + $request->satisfaction_rate) / 3, 2);

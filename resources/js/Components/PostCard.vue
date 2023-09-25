@@ -1,28 +1,32 @@
 <script setup>
   import { ref, computed } from 'vue'
+  import { mdiAccountCircle } from '@mdi/js'
   import DotMenuBtn from '@/Components/DotMenuBtn.vue'
 
-  defineProps(['barTitle', 'cardTitle', 'readMore'])
+  defineProps(['barTitle', 'icon', 'cardTitle', 'readMore'])
 
   const open = ref(false)
   const readMoreBtn = computed(() => {
     return open.value ? '閉じる' : '続きを読む'
   })
+
 </script>
 
 <template>
   <v-card rounded="sm">
 
     <v-toolbar density="compact" color="teal-lighten-2">
+      <v-icon v-if="icon" :icon="mdiAccountCircle" color="secondary" size="large" class="ms-2 me-n2" />
       <v-toolbar-title class="text-subtitle-2">{{ barTitle }}</v-toolbar-title>
       <DotMenuBtn>
           <slot name="menuItem" />
       </DotMenuBtn>
     </v-toolbar>
 
-    <v-card-title class="mt-2 pb-1 text-body-2 text-center" style="white-space: normal; line-height: normal;">
+    <v-card-title class="mt-2 pb-1 text-body-2 text-center">
       {{ cardTitle }}
     </v-card-title>
+
     <v-card-subtitle class="ms-3 text-caption text-right">
       <slot name="subtitle" />
     </v-card-subtitle>

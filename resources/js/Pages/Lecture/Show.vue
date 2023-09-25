@@ -47,6 +47,15 @@
     }
     return counts
   })
+
+  const PostBarTitle = computed(() => (userName, userFacultyId) => {
+    switch (userFacultyId) {
+      case 1: return userName + 'さん（教育学部）の評価'
+      case 2: return userName + 'さん（人間科学部）の評価'
+      case 3: return userName + 'さん（文学部）の評価'
+      default: return userName + 'さんの評価'
+    }
+  })
 </script>
 
 <script>
@@ -73,13 +82,13 @@
       <v-tab :value="reviews">レビュー</v-tab>
     </v-tabs>
 
-    <div class="text-right mt-5">
-      <LinkBtn :href="route('review.create', props.lecture.id)">
+    <div class="text-right my-3">
+      <LinkBtn variant="text" :href="route('review.create', props.lecture.id)">
         この講義を評価する
       </LinkBtn>
     </div>
 
-    <v-window v-model="tab" class="mt-5">
+    <v-window v-model="tab">
 
       <v-window-item value="lectureInformation">
         <v-table density="compact">
@@ -164,7 +173,8 @@
           <template v-for="review in props.lecture.reviews">
             <v-col cols="12" sm="10" md="6">
               <PostCard
-                :bar-title="review.user.name + 'さんの評価 / ' + review.year + '受講'"
+                :bar-title="PostBarTitle(review.user.name, review.user.faculty_id)"
+                :icon="true"
                 :card-title="review.title"
                 :read-more="true"
                 class="mb-4"
@@ -195,7 +205,7 @@
                 </template>
 
                 <template v-slot:subtitle>
-                  {{ review.created_at + ' 投稿' }}
+                  {{ review.year + '受講 / ' + review.created_at + ' 投稿' }}
                 </template>
 
                 <template v-slot:text>

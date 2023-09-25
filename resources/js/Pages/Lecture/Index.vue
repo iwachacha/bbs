@@ -1,21 +1,29 @@
 <script setup>
   import { computed, watch, ref } from 'vue'
-  import { mdiMessageText, mdiTrashCan, mdiAlertCircle, mdiListBox } from '@mdi/js'
-  import { Link, router, useForm } from '@inertiajs/vue3'
+  import { mdiMessageText, mdiMagnify, mdiAlertCircle, mdiListBox } from '@mdi/js'
+  import { Link, router, useForm, usePage } from '@inertiajs/vue3'
   import { getCategoryName, getFacultyName } from '@/Components/Lectures/GetNameFromId.vue'
   import LinkBtn from '@/Components/LinkBtn.vue'
   import PageSection from '@/Components/PageSection.vue'
   import PostCard from '@/Components/PostCard.vue'
   import BookmarkBtn from '@/Components/Lectures/BookmarkBtn.vue'
   import LectureSearchForm from '@/Components/Lectures/LectureSearchForm.vue'
-  import NavItem from '@/Components/NavItem.vue'
+  import LectureFilterForm from '@/Components/Lectures/LectureFilterForm.vue'
+  import LectureSortForm from '@/Components/Lectures/LectureSortForm.vue'
 
   const props = defineProps({
     lectures: Object,
+    resultCount: Number,
     names: Object,
     BookmarkedLectureId: Array,
     lectureCategories: Object,
     faculties: Object,
+  })
+
+  const pageInfo = computed(() => {
+    return (usePage().url === '/lectures')
+      ? { icon: mdiListBox, title: '講義一覧' }
+      : { icon: mdiMagnify, title: '講義検索（' + props.resultCount + '件取得）' }
   })
 
   //ログイン中のユーザーが各投稿をブックマーク登録済みかどうか
@@ -32,7 +40,7 @@
 </script>
 
 <template>
-  <PageSection :icon="mdiListBox" title="講義一覧">
+  <PageSection :icon="pageInfo.icon" :title="pageInfo.title">
 
     <v-row justify="center">
       <v-col cols="11" sm="9" md="7" class="pa-0">
@@ -42,10 +50,9 @@
       </v-col>
     </v-row>
 
-    <div class="text-right mt-5">
-      <LinkBtn :href="route('lecture.index')" variant="text" class="text-right">
-        検索条件リセット
-      </LinkBtn>
+    <div class="d-flex justify-end mt-7 mb-1 me-sm-5">
+      <div class="me-2"><LectureFilterForm /></div>
+      <LectureSortForm />
     </div>
 
     <v-row justify="space-around">
@@ -53,7 +60,7 @@
         <v-col cols="12" sm="10" md="6" lg="4" class="my-2">
 
           <PostCard
-            :bar-title="lecture.lecture_name"
+            :bar-title="lecture.lecture_name + ' / ' + lecture.professor_name"
             :card-title="lecture.professor_name"
             :read-more="false"
           >

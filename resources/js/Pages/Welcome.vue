@@ -1,8 +1,13 @@
 <script setup>
 	import { Head, Link } from '@inertiajs/vue3'
+	import { mdiAccountOutline } from '@mdi/js'
 	import ContactForm from '@/Components/Contacts/ContactForm.vue'
 
-	defineProps({ canLogin: Boolean, canRegister: Boolean,})
+	defineProps({
+		userCount: Number,
+		canLogin: Boolean,
+		canRegister: Boolean,
+	})
 
 	const colors = ['indigo', 'warning', 'pink darken-2', 'red lighten-1', 'deep-purple accent-4']
 	const slides = ['First', 'Second', 'Third', 'Fourth', 'Fifth']
@@ -12,13 +17,19 @@
 	<Head title="文教大学・越谷キャンパス情報掲示板" />
 	<v-app>
 
-  <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-    {{ status }}
-  </div>
+		<div v-if="status" class="mb-4 font-medium text-sm text-green-600">
+			{{ status }}
+		</div>
 
 		<v-card
 			class="px-5 px-sm-10 py-7"
 		>
+			<div class="text-right mb-5">
+				<v-chip color="primary" variant="outlined">
+					<v-icon start :icon="mdiAccountOutline" />
+					現在のユーザー数 : {{ userCount }}人
+				</v-chip>
+			</div>
 
 			<v-card-title class="text-medium-emphasis text-h5 text-md-h4 my-3 px-0 text-center">
 				文教大学・越谷キャンパス<br class="d-sm-none">情報掲示板

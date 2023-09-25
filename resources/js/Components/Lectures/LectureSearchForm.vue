@@ -1,18 +1,17 @@
 <script setup>
   import { watch, ref } from 'vue'
   import { router, useForm } from '@inertiajs/vue3'
-  import { useToast } from "vue-toastification"
+  import { mdiMagnify } from '@mdi/js'
   import SearchInput from '@/Components/SearchInput.vue'
+  import LinkBtn from '@/Components/LinkBtn.vue'
 
   const props = defineProps({
     names: Object,
   })
 
-  const toast = useToast()
-
   const form = useForm({
     search_name: null,
-    exact: 0
+    exact: []
   })
 
   watch(form, () => {
@@ -21,7 +20,7 @@
       exact: form.exact
     }, {
       preserveState: true,
-      only: ['lectures'],
+      only: ['lectures', 'resultCount'],
     })
   })
 
@@ -56,6 +55,14 @@
     v-model="form.search_name"
     v-model:search="inputName"
     :items="(inputName) ? names : []"
+    :icon="mdiMagnify"
+    placeholder="検索ワードを入力してください"
     label="講義名・教員名検索"
   />
+
+  <div class="text-right mt-n2">
+      <LinkBtn :href="route('lecture.index')" variant="text">
+        検索条件リセット
+      </LinkBtn>
+    </div>
 </template>

@@ -5,6 +5,7 @@
 
   const props = defineProps({
     lecture: Object,
+    tags: Object,
     errors: Object
   })
 </script>
@@ -21,10 +22,11 @@
     :title="props.lecture.lecture_name + ' / ' + props.lecture.professor_name + 'のレビュー作成'"
     :icon="mdiPenPlus"
   >
-    <div class="mx-sm-7">
+    <div class="mx-3 mx-sm-7">
       <ReviewForm
         :lecture="lecture"
         :errors="errors"
+        :tags="props.tags"
         style="background-color: #F5F5F5;"
       />
     </div>

@@ -166,7 +166,8 @@ return [
         'lecture_content' => '講義内容',
         'name' => 'ユーザー名',
         'email' => '大学メールアドレス',
-        'password' => 'パスワード'
+        'password' => 'パスワード',
+        'delete_confirm' => '削除確認',
     ],
 
 ];
