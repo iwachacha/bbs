@@ -167,7 +167,15 @@
         <v-col cols="auto">
           <v-spacer />
           <v-list-subheader>
-            講義充実度<span  style="color: red">*</span>　☆ {{ reviewForm.fulfillment_rate }}
+            講義充実度
+            <v-chip
+              class="px-1"
+              color="#FF5252"
+              size="x-small"
+            >
+              必須
+            </v-chip>
+            　☆ {{ reviewForm.fulfillment_rate }}
           </v-list-subheader>
           <v-label>低</v-label>
           <InputStarRate v-model="reviewForm.fulfillment_rate" />
@@ -186,7 +194,15 @@
         <v-col cols="auto">
           <v-spacer />
           <v-list-subheader>
-            楽単度<span  style="color: red">*</span>　☆ {{ reviewForm.ease_rate }}
+            楽単度
+            <v-chip
+              class="px-1"
+              color="#FF5252"
+              size="x-small"
+            >
+              必須
+            </v-chip>
+            　☆ {{ reviewForm.ease_rate }}
           </v-list-subheader>
           <v-label>低</v-label>
           <InputStarRate v-model="reviewForm.ease_rate" />
@@ -205,7 +221,15 @@
         <v-col cols="auto">
           <v-spacer />
           <v-list-subheader>
-            履修満足度<span  style="color: red">*</span>　☆ {{ reviewForm.satisfaction_rate }}
+            履修満足度
+            <v-chip
+              class="px-1"
+              color="#FF5252"
+              size="x-small"
+            >
+              必須
+            </v-chip>
+            　☆ {{ reviewForm.satisfaction_rate }}
           </v-list-subheader>
           <v-label>低</v-label>
           <InputStarRate v-model="reviewForm.satisfaction_rate" />
@@ -259,6 +283,17 @@
             @input="reviewV$.bad_point.$touch"
           />
         </v-col>
+
+        <v-col cols="12">
+					<v-card
+						color="surface-variant"
+						variant="tonal"
+					>
+						<v-card-text class="text-medium-emphasis text-caption">
+							名誉棄損にあたる表現はお控えください。
+						</v-card-text>
+					</v-card>
+				</v-col>
 
       </v-row>
 

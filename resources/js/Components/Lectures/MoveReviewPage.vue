@@ -1,8 +1,8 @@
 <script setup>
   import { ref, watch } from 'vue'
   import { router } from '@inertiajs/vue3'
+  import { mdiMagnify } from '@mdi/js'
   import { getCategoryName, getFacultyName, getDepartmentName, getCourseName } from '@/Components/Lectures/GetNameFromId.vue'
-  import SearchInput from '@/Components/SearchInput.vue'
   import ConfirmCard from '@/Components/ConfirmCard.vue'
   import PrimaryBtn from '@/Components/PrimaryBtn.vue'
   import SecondaryBtn from '@/Components/SecondaryBtn.vue'
@@ -52,13 +52,18 @@
 
     <v-row justify="center">
       <v-col cols="12" sm="8">
-        <SearchInput
-          v-model="selectLectureId"
+        <v-autocomplete
           :items="lectures"
+          v-model="selectLectureId"
           item-value="id"
           item-title="lecture_name"
           label="講義検索"
           hint="例：対象→情報A　○情・A　×じょ・zyo"
+          density="compact"
+          :append-inner-icon="mdiMagnify"
+          clearable
+          persistent-hint
+          variant="solo"
         />
       </v-col>
     </v-row>

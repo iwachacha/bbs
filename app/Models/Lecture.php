@@ -31,19 +31,32 @@ class Lecture extends Model
         return $this->belongsToMany(User::class, 'lecture_bookmarks', 'lecture_id', 'user_id')->withTimestamps();
     }
 
-    protected function professorName(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => strpos($value, "先生") || strpos($value, "さん") || strpos($value, "教授")
-                ? $value
-                : $value.'先生'
-        );
-    }
-
     protected function createdAt(): Attribute
     {
         return Attribute::make(
             get: fn ($value) => Carbon::parse($value)->format('Y年m月d日'),
         );
+    }
+
+    //講義名・教員名検索 exactの値によって部分一致検索と完全一致検索を切り替える
+    public function scopeSearchByName($query, $words = null, $exact = null)
+    {
+        if(!empty($words)){
+            foreach($words as $word) {
+
+                if((boolean) $exact){
+                    $query->where(function($query) use($word){
+                        $query->where('lecture_name', $word)
+                            ->orWhere('professor_name', $word);
+                    });
+                }
+                else {
+                    $query->where(function($query) use($word){
+                        $query->where('lecture_name', 'LIKE', '%'.$word.'%')
+                            ->orWhere('professor_name', 'LIKE', '%'.$word.'%');
+                    });
+                }
+            }
+        }
     }
 }

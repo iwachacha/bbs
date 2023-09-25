@@ -179,7 +179,6 @@
                   >
                     <v-list-item-title class="align-center">編集</v-list-item-title>
                   </v-list-item>
-                  <v-divider class="border-opacity-100" />
 
                   <v-list-item
                     v-if="review.user_id === $page.props.auth.user.id"
@@ -189,7 +188,6 @@
                   >
                     <v-list-item-title>削除</v-list-item-title>
                   </v-list-item>
-                  <v-divider class="border-opacity-100" />
 
                   <v-list-item link :prepend-icon="mdiAlertCircle">
                     <v-list-item-title>不適切な投稿として報告(未完成)</v-list-item-title>

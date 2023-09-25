@@ -1,20 +1,24 @@
 <script setup>
-  import { computed } from 'vue'
-  import { mdiMessageText, mdiTrashCan, mdiSquareEditOutline, mdiAlertCircle, mdiListBox } from '@mdi/js'
-  import { Link, router } from '@inertiajs/vue3'
+  import { computed, watch, ref } from 'vue'
+  import { mdiMessageText, mdiTrashCan, mdiAlertCircle, mdiListBox } from '@mdi/js'
+  import { Link, router, useForm } from '@inertiajs/vue3'
   import { getCategoryName, getFacultyName } from '@/Components/Lectures/GetNameFromId.vue'
   import LinkBtn from '@/Components/LinkBtn.vue'
   import PageSection from '@/Components/PageSection.vue'
   import PostCard from '@/Components/PostCard.vue'
   import BookmarkBtn from '@/Components/Lectures/BookmarkBtn.vue'
+  import LectureSearchForm from '@/Components/Lectures/LectureSearchForm.vue'
+  import NavItem from '@/Components/NavItem.vue'
 
   const props = defineProps({
     lectures: Object,
+    names: Object,
     BookmarkedLectureId: Array,
     lectureCategories: Object,
     faculties: Object,
   })
 
+  //ログイン中のユーザーが各投稿をブックマーク登録済みかどうか
   const isBookmarked = computed(() => (lecture_id) => {
     return props.BookmarkedLectureId.find(e => e.lecture_id == lecture_id)
   })
@@ -29,6 +33,21 @@
 
 <template>
   <PageSection :icon="mdiListBox" title="講義一覧">
+
+    <v-row justify="center">
+      <v-col cols="11" sm="9" md="7" class="pa-0">
+        <LectureSearchForm
+          :names="names"
+        />
+      </v-col>
+    </v-row>
+
+    <div class="text-right mt-5">
+      <LinkBtn :href="route('lecture.index')" variant="text" class="text-right">
+        検索条件リセット
+      </LinkBtn>
+    </div>
+
     <v-row justify="space-around">
       <template v-for="lecture in props.lectures">
         <v-col cols="12" sm="10" md="6" lg="4" class="my-2">
@@ -40,18 +59,11 @@
           >
 
             <template v-slot:menuItem>
-              <v-list-item link :prepend-icon="mdiSquareEditOutline" style="color: #26A69A;">
-                <v-list-item-title class="align-center">編集リクエスト</v-list-item-title>
-              </v-list-item>
-              <v-divider class="border-opacity-100" />
-
-              <v-list-item link :prepend-icon="mdiTrashCan" style="color: red;">
-                <v-list-item-title>削除リクエスト</v-list-item-title>
-              </v-list-item>
-              <v-divider class="border-opacity-100" />
-
-              <v-list-item link :prepend-icon="mdiAlertCircle">
-                <v-list-item-title>不適切な投稿として報告(未完成)</v-list-item-title>
+              <v-list-item link>
+                <v-list-item-title>
+                  <v-icon :icon="mdiAlertCircle" class="text-medium-emphasis" />
+                  不適切な投稿として報告
+                </v-list-item-title>
               </v-list-item>
             </template>
 
