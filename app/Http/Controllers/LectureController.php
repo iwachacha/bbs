@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\LectureBookmark;
+use App\Models\LectureDeleteRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -19,9 +20,10 @@ use Illuminate\Support\Facades\DB;
 
 class LectureController extends Controller
 {
-    public function index(Lecture $lecture)
+    public function index(Request $request)
     {
-        $lectures = $lecture->withCount('reviews', 'lecture_bookmarks')
+        $lectures = Lecture::searchByName($request->search_name, $request->exact)
+            ->withCount('reviews', 'lecture_bookmarks')
             ->withAvg('reviews as average_rate', 'average_rate')
             ->get();
 
@@ -30,12 +32,12 @@ class LectureController extends Controller
 
         return Inertia::render('Lecture/Index')->with([
             'lectures' => $lectures,
+            'names' => Lecture::select('lecture_name', 'professor_name')->get(),
             'BookmarkedLectureId' => $bookmarked_lecture_id,
             'lectureCategories' => LectureCategory::get(),
             'faculties' => Faculty::get(),
         ]);
     }
-    
     public function show($lecture_id)
     {
         $lecture = Lecture::with('reviews.user')
@@ -87,6 +89,7 @@ class LectureController extends Controller
     public function store(LectureRequest $request, Lecture $lecture)
     {
         $input = $request->validated();
+        $input['user_id'] = Auth::id();
         $lecture->fill($input)->save();
 
         return redirect()->back()->with('createdLectureId', $lecture->id);

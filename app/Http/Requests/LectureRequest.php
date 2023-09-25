@@ -9,8 +9,8 @@ class LectureRequest extends FormRequest
     public function rules()
     {
         return [
-            'lecture_name' => 'required|string|max:50',
-            'professor_name' => 'required|string|max:50',
+            'lecture_name' => 'required|string|max:30',
+            'professor_name' => 'required|string|max:30',
             'lecture_category_id' => 'required',
             'season' => 'required|string',
             'faculty_id' => 'nullable',

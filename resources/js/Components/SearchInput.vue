@@ -1,15 +1,25 @@
 <script setup>
   import { mdiMagnify } from '@mdi/js'
-  defineProps(['searchData'])
+
+  defineProps(['items'])
 </script>
 
 <template>
-  <v-autocomplete
-    :items="searchData"
-    density="compact"
-    :append-inner-icon="mdiMagnify"
+  <v-combobox
+    :items="items"
+    :prepend-inner-icon="mdiMagnify"
     clearable
+    multiple
+    chips
+    closable-chips
     persistent-hint
+    hide-selected
+    hide-details
+    placeholder="検索ワードを入力してください"
     variant="solo"
+    density="compact"
+    rounded="xl"
+    menu-icon=""
+    auto-select-first="exact"
   />
 </template>

@@ -1,7 +1,7 @@
 <script setup>
 	import { ref } from 'vue'
   import { mdiAccount, mdiLogin, mdiEyeOff, mdiEye, mdiLockOutline, mdiChevronRight } from '@mdi/js'
-	import { Link, useForm } from '@inertiajs/vue3'
+	import { Head, Link, useForm } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
   import PageSection from '@/Components/PageSection.vue'
   import MustInput from '@/Components/MustInput.vue'
@@ -34,6 +34,8 @@
 </script>
 
 <template>
+
+  <Head title="ログイン" />
   <v-app style="background-color: #F5F5F5;">
 
     <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
@@ -51,6 +53,8 @@
                 variant="outlined"
                 counter="50"
                 :prepend-inner-icon="mdiAccount"
+                name="username"
+                autocomplete="username"
               >ユーザー名</MustInput>
             </v-col>
 

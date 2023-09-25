@@ -2,7 +2,7 @@
   import { ref, computed } from 'vue'
   import { mdiPenPlus } from '@mdi/js'
   import PageSection from '@/Components/PageSection.vue'
-  import searchLectureForm from '@/Components/Lectures/SearchLectureForm.vue'
+  import MoveReviewPage from '@/Components/Lectures/MoveReviewPage.vue'
   import LectureForm from '@/Components/Lectures/LectureForm.vue'
   import ReviewForm from '@/Components/Reviews/ReviewForm.vue'
   import PrimaryBtn from '@/Components/PrimaryBtn.vue'
@@ -21,17 +21,17 @@
   const currentSection = computed(() => {
     switch (step.value) {
       case 1: return {
-        title: '講義検索',
+        title: 'レビュー作成 / 講義検索',
         subtitle: '作成済みの講義を検索できます。\nレビュー対象の講義が見つかった場合は検索結果をクリックし、ページの遷移先でレビューを作成してください。'
       }
 
       case 2: return {
-        title: '講義作成',
-        subtitle: 'レビューの対象となる講義を作成してください。\n*マーク付きの項目は回答必須です。' }
+        title: 'レビュー作成 / 講義作成',
+        subtitle: 'レビューの対象となる講義を作成してください。' }
 
       case 3: return {
-        title: 'レビュー作成',
-        subtitle: '講義のレビューを作成してください。\n*マーク付きの項目は回答必須です。' }
+        title: 'レビュー作成 / 評価作成',
+        subtitle: '講義のレビューを作成してください。' }
     }
   })
 </script>
@@ -49,12 +49,12 @@
       v-model="step"
       alt-labels
       hide-actions
-      :items="['講義検索', '講義作成', 'レビュー作成']"
+      :items="['講義検索', '講義作成', '評価作成']"
       style="background-color: #FAFAFA;"
     >
 
       <template v-slot:item.1>
-        <searchLectureForm
+        <MoveReviewPage
           :lectures="props.lectures"
           :lecture-categories="props.lectureCategories"
           :faculties="props.faculties"

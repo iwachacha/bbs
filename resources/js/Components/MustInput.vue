@@ -12,7 +12,14 @@
     class="mb-3"
   >
     <template v-slot:label>
-      <slot /><span style="color: red">*</span>
+      <slot />
+      <v-chip
+        class="px-1"
+        color="#FF5252"
+        size="x-small"
+      >
+        必須
+      </v-chip>
     </template>
   </v-text-field>
 </template>

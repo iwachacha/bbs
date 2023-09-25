@@ -45,11 +45,11 @@
   const lectureRules = {
     lecture_name: {
       required: helpers.withMessage(requiredM("担当教員名"), required),
-      maxLengthValue: helpers.withMessage(maxLengthM("担当教員名", 50), maxLength(50))
+      maxLengthValue: helpers.withMessage(maxLengthM("担当教員名", 30), maxLength(30))
     },
     professor_name: {
       required: helpers.withMessage(requiredM("講義名"), required),
-      maxLengthValue: helpers.withMessage(maxLengthM("講義名", 50), maxLength(50))
+      maxLengthValue: helpers.withMessage(maxLengthM("講義名", 30), maxLength(30))
     },
     lecture_category_id: {
       required: helpers.withMessage(requiredM("講義区分"), required),
@@ -130,8 +130,8 @@
     createLecture.value = [
       {key: '講義名', value: lectureForm.lecture_name},
       {key: '担当教員名', value: lectureForm.professor_name},
-      {key: '開講時期', value:  lectureForm.season},
       {key: '講義区分', value: selectCategoryName},
+      {key: '開講時期', value:  lectureForm.season},
       {key: '開講学部', value: selectFacultyName ? selectFacultyName : 'なし'},
       {key: '開講学科', value: selectDepartmentName ? selectDepartmentName : 'なし'},
       {key: '開講コース', value: selectCourseName ? selectCourseName : 'なし'}
@@ -149,8 +149,8 @@
         <v-col cols="12" sm="6">
           <MustInput
             v-model="lectureForm.lecture_name"
-            counter="50"
-            placeholder="正しく入力してください"
+            counter="30"
+            placeholder="詳細な講義名を入力してください"
             hint="例：○情報A　×情報"
             :error-messages="props.errors.lecture_name ? props.errors.lecture_name : lectureV$.lecture_name.$errors.map(e => e.$message)"
             @input="lectureV$.lecture_name.$touch"
@@ -163,10 +163,10 @@
         <v-col cols="12" sm="6">
           <MustInput
             v-model="lectureForm.professor_name"
-            counter="50"
+            counter="30"
             placeholder="フルネームを入力してください"
             suffix="先生"
-            hint="例：○田中太郎　×田中"
+            hint="例：◯文教太郎　×太郎"
             :error-messages="props.errors.professor_name ? props.errors.professor_name : lectureV$.professor_name.$errors.map(e => e.$message)"
             @input="lectureV$.professor_name.$touch"
             @blur="lectureV$.professor_name.$touch"
@@ -175,18 +175,6 @@
           </MustInput>
         </v-col>
 
-        <v-col cols="12" sm="6">
-          <MustSelect
-            v-model="lectureForm.season"
-            hint="最も近いものを選択してください"
-            :items="['春学期', '秋学期', '通年', 'その他']"
-            :error-messages="props.errors.season ? props.errors.season : lectureV$.season.$errors.map(e => e.$message)"
-            @blur="lectureV$.season.$touch"
-          >
-            開講時期
-          </MustSelect>
-        </v-col>
-        
         <v-col cols="12" sm="6">
           <MustSelect
             v-model="lectureForm.lecture_category_id"
@@ -198,6 +186,18 @@
             @blur="lectureV$.lecture_category_id.$touch"
           >
             講義区分
+          </MustSelect>
+        </v-col>
+
+        <v-col cols="12" sm="6">
+          <MustSelect
+            v-model="lectureForm.season"
+            hint="最も近いものを選択してください"
+            :items="['春学期', '秋学期', '通年', 'その他']"
+            :error-messages="props.errors.season ? props.errors.season : lectureV$.season.$errors.map(e => e.$message)"
+            @blur="lectureV$.season.$touch"
+          >
+            開講時期
           </MustSelect>
         </v-col>
 
@@ -243,6 +243,17 @@
             <span>開講学科を選択した場合のみ選択できます！</span>
           </TooltipSelect>
         </v-col>
+
+        <v-col cols="12">
+					<v-card
+						color="surface-variant"
+						variant="tonal"
+					>
+						<v-card-text class="text-medium-emphasis text-caption">
+							できる限り正確な情報で講義を作成してください。
+						</v-card-text>
+					</v-card>
+				</v-col>
 
       </v-row>
 

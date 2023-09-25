@@ -1,7 +1,7 @@
 <script setup>
 	import { ref, watch, computed } from 'vue'
   import { mdiAccount, mdiEmailOutline, mdiEyeOff, mdiEye, mdiLockOutline, mdiChevronRight } from '@mdi/js'
-	import { Link, useForm } from '@inertiajs/vue3'
+	import { Head, Link, useForm } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
   import { useVuelidate } from '@vuelidate/core'
   import { required, email, sameAs, maxLength, minLength, helpers } from '@vuelidate/validators'
@@ -81,7 +81,6 @@
 
 	const submit = () => {
 		form.post(route('register'), {
-			onFinish: () => form.reset('password', 'password_confirmation'),
 			onSuccess: () => [
         toast.success('ユーザー登録が完了しました。\nご登録ありがとうございます！'),
       ],
@@ -115,6 +114,8 @@
 </script>
 
 <template>
+  <Head title="ユーザー登録" />
+
 	<v-app style="background-color: #F5F5F5;">
 		<PageSection title="ユーザー登録" :icon="mdiAccount" style="max-width: 1000px;">
 			<form @submit.prevent="registerV$.$invalid ? showError() : submit()" id="registerForm">
@@ -130,6 +131,8 @@
 							:error-messages="props.errors.name ? props.errors.name : registerV$.name.$errors.map(e => e.$message)"
 							@input="registerV$.name.$touch"
 							@blur="registerV$.name.$touch"
+							name="username"
+              autocomplete="username"
 						>ユーザー名</MustInput>
 					</v-col>
 
@@ -219,6 +222,8 @@
 							:error-messages="props.errors.email ? props.errors.email : registerV$.email.$errors.map(e => e.$message)"
 							@input="registerV$.email.$touch"
 							@blur="registerV$.email.$touch"
+							name="email"
+							autocomplete="email"
 						>大学メールアドレス</MustInput>
 					</v-col>
 

@@ -14,13 +14,13 @@
   <v-card rounded="sm">
 
     <v-toolbar density="compact" color="teal-lighten-2">
-      <v-toolbar-title class="text-subtitle-1">{{ barTitle }}</v-toolbar-title>
+      <v-toolbar-title class="text-subtitle-2">{{ barTitle }}</v-toolbar-title>
       <DotMenuBtn>
           <slot name="menuItem" />
       </DotMenuBtn>
     </v-toolbar>
 
-    <v-card-title class="mt-2 pb-1 text-body-1 text-center" style="white-space: normal; line-height: normal;">
+    <v-card-title class="mt-2 pb-1 text-body-2 text-center" style="white-space: normal; line-height: normal;">
       {{ cardTitle }}
     </v-card-title>
     <v-card-subtitle class="ms-3 text-caption text-right">
