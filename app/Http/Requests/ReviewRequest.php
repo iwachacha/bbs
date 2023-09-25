@@ -17,6 +17,16 @@ class ReviewRequest extends FormRequest
             'good_point' => 'nullable|max:500',
             'bad_point' => 'nullable|max:500',
             'lecture_content' => 'nullable|max:500',
+            'tag' => 'present|array',
+            'tag.*' => 'nullable|string|max:10|regex:/^(?!.*\/).*$/u',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'tag.*.max' => 'タグは10文字以下で設定してください。',
+            'tag.*.regex' => 'タグ名に「/」を使用しないでください。'
         ];
     }
 }

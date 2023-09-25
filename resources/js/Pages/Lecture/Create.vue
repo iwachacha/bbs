@@ -13,7 +13,8 @@
     departments: Object,
     courses: Object,
     lectureCategories: Object,
-    errors: Object
+    tags: Object,
+    errors: Object,
   })
 
   const step = ref(1)
@@ -22,7 +23,7 @@
     switch (step.value) {
       case 1: return {
         title: 'レビュー作成 / 講義検索',
-        subtitle: '作成済みの講義を検索できます。\nレビュー対象の講義が見つかった場合は検索結果をクリックし、ページの遷移先でレビューを作成してください。'
+        subtitle: '作成済みの講義を検索できます。\nレビュー対象の講義が見つかった場合は検索結果をクリックし、ページの遷移先で講義評価作成してください。'
       }
 
       case 2: return {
@@ -77,6 +78,7 @@
       <template v-slot:item.3>
         <ReviewForm
           :errors="props.errors"
+          :tags="tags"
         />
       </template>
 

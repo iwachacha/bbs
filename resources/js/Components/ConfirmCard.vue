@@ -17,11 +17,11 @@
         :title="title"
       />
 
-      <v-card-title class="text-medium-emphasis mt-3">
+      <v-card-title v-if="subtitle" class="text-medium-emphasis mt-3" style="white-space: normal; line-height: normal;">
         {{ subtitle }}
       </v-card-title>
 
-      <v-card-subtitle class="text-high-emphasis ms-3 mb-3">
+      <v-card-subtitle v-if="text" class="text-high-emphasis ms-3 mb-3" style="white-space: normal; line-height: normal;">
         {{ text }}
       </v-card-subtitle>
 
@@ -34,6 +34,8 @@
             <v-divider class="border-opacity-100" />
           </template>
         </v-row>
+
+        <slot />
       </v-card-text>
 
       <v-divider class="border-opacity-100" />
@@ -47,13 +49,3 @@
 
   </v-dialog>
 </template>
-
-<style>
-  .v-card-title {
-    white-space: normal;
-  }
-
-  .v-card-subtitle {
-    white-space: normal;
-  }
-</style>

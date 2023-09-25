@@ -9,13 +9,18 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Lecture;
 use App\Models\Review;
+use App\Models\Tag;
+use App\Models\ReviewTag;
 use App\Http\Requests\ReviewRequest;
 
 class ReviewController extends Controller
 {
     public function create(Lecture $lecture)
     {
-        return Inertia::render('Review/Create')->with(['lecture' => $lecture]);
+        return Inertia::render('Review/Create')->with([
+            'lecture' => $lecture,
+            'tags' => Tag::all()
+        ]);
     }
 
     public function store(Lecture $lecture, ReviewRequest $request, Review $review)
@@ -31,8 +36,14 @@ class ReviewController extends Controller
         }else {
           Review::create($input);
         }*/
+        $review->fill($input)->save();
 
-        $review->create($input);
+        foreach($input['tag'] as $tag)
+        {
+            $created_tag = Tag::firstOrCreate(['name' => $tag]); //重複なしでタグ保存
+            $review->tags()->attach($created_tag); //レビューと紐付け
+        }
+
         return to_route('lecture.index');
     }
 }

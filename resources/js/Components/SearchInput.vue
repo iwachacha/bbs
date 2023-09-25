@@ -1,21 +1,18 @@
 <script setup>
-  import { mdiMagnify } from '@mdi/js'
-
-  defineProps(['items'])
+  defineProps(['items', 'icon'])
 </script>
 
 <template>
   <v-combobox
     :items="items"
-    :prepend-inner-icon="mdiMagnify"
+    :prepend-inner-icon="icon"
     clearable
     multiple
     chips
     closable-chips
     persistent-hint
     hide-selected
-    hide-details
-    placeholder="検索ワードを入力してください"
+    hint="検索候補クリック・Enterキー押下・エリア外タッチで確定します"
     variant="solo"
     density="compact"
     rounded="xl"

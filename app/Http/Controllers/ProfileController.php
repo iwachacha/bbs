@@ -53,6 +53,7 @@ class ProfileController extends Controller
     {
         $request->validate([
             'password' => ['required', 'current-password'],
+            'delete_confirm' => ['required', 'regex:/アカウント削除/']
         ]);
 
         $user = $request->user();

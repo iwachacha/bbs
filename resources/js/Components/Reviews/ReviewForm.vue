@@ -1,7 +1,7 @@
 <script setup>
   import { ref, computed, watch } from 'vue'
-  import { useForm, router, usePage } from '@inertiajs/vue3'
-  import { mdiThumbUpOutline, mdiThumbDownOutline } from '@mdi/js'
+  import { useForm, usePage } from '@inertiajs/vue3'
+  import { mdiThumbUpOutline, mdiThumbDownOutline, mdiPound } from '@mdi/js'
   import { useToast } from "vue-toastification"
   import { useVuelidate } from '@vuelidate/core'
   import { required, maxLength, helpers } from '@vuelidate/validators'
@@ -10,34 +10,23 @@
   import MustSelect from '@/Components/MustSelect.vue'
   import TextArea from '@/Components/TextArea.vue'
   import InputStarRate from '@/Components/InputStarRate.vue'
+  import SearchInput from '@/Components/SearchInput.vue'
   import PrimaryBtn from '@/Components/PrimaryBtn.vue'
   import SecondaryBtn from '@/Components/SecondaryBtn.vue'
   import ConfirmCard from '@/Components/ConfirmCard.vue'
 
   const props = defineProps({
     errors: Object,
-    lecture: {
-      type: Object,
-      default: null
-    },
-    reviews: {
-      type: Object,
-      default: null
-    },
+    lecture: Object,
+    reviews: Object,
+    tags: Object
   })
 
-  const page = usePage()
   //レビューページから直接投稿 → props.lectureあり
   //講義＋レビュー作成ページから投稿 → flashで対象の講義ID(lecture_id)譲渡
   const LectureId = computed(
-    () => props.lecture ? props.lecture.id : page.props.flash.createdLectureId
+    () => props.lecture ? props.lecture.id : usePage().props.flash.createdLectureId
   )
-
-  watch(page.props.flash, () => {
-    if(page.props.flash.error){
-      toast.error(page.props.flash.error)
-    }
-  })
 
   let now = new Date()
   let nowYear = now.getFullYear()
@@ -49,14 +38,15 @@
   const toast = useToast()
 
   const reviewForm = useForm({
-    title: props.reviews ? props.reviews.title : null,
-    year: props.reviews ? props.reviews.year : null,
-    fulfillment_rate: props.reviews ? props.reviews.fulfillment_rate : null,
-    ease_rate: props.reviews ? props.reviews.ease_rate : null,
-    satisfaction_rate: props.reviews ? props.reviews.satisfaction_rate : null,
-    lecture_content: props.reviews ? props.reviews.lecture_content : null,
-    good_point: props.reviews ? props.reviews.good_point : null,
-    bad_point: props.reviews ? props.reviews.bad_point : null,
+    title: (props.reviews) ? props.reviews.title : null,
+    year: (props.reviews) ? props.reviews.year : null,
+    fulfillment_rate: (props.reviews) ? props.reviews.fulfillment_rate : null,
+    ease_rate: (props.reviews) ? props.reviews.ease_rate : null,
+    satisfaction_rate: (props.reviews) ? props.reviews.satisfaction_rate : null,
+    lecture_content: (props.reviews) ? props.reviews.lecture_content : null,
+    good_point: (props.reviews) ? props.reviews.good_point : null,
+    bad_point: (props.reviews) ? props.reviews.bad_point : null,
+    tag: []
   })
 
   const reviewRules = {
@@ -84,7 +74,7 @@
     },
     bad_point: {
       maxLengthValue: helpers.withMessage(maxLengthM("悪い点", 500), maxLength(500))
-    }
+    },
   }
   const reviewV$ = useVuelidate(reviewRules, reviewForm)
 
@@ -115,16 +105,20 @@
       {key: '満足度評価', value: '☆ ' + reviewForm.satisfaction_rate},
       {key: '講義内容', value: reviewForm.lecture_content ? reviewForm.lecture_content : 'なし'},
       {key: '良い点', value: reviewForm.good_point ? reviewForm.good_point : 'なし'},
-      {key: '悪い点', value: reviewForm.bad_point ? reviewForm.bad_point : 'なし'}
+      {key: '悪い点', value: reviewForm.bad_point ? reviewForm.bad_point : 'なし'},
+      {key: '＃タグ', value: (reviewForm.tag.length !== 0) ? reviewForm.tag.join('・') : 'なし'}
     ]
     dialog.value = true
   }
 
-  if(reviewForm.wasSuccessful){
-    window.setTimeout(() => {
-      router.get(route('lectures.index'))
-    }, 7000)
-  }
+  watch(
+    () => reviewForm.tag,
+    (tag) => {
+      if(tag.length > 3) {
+        tag.pop()
+      }
+    }
+  )
 </script>
 
 <template>
@@ -132,7 +126,6 @@
     <v-form @submit.prevent="reviewV$.$invalid ? showError() : onSubmit()" id="reviewForm">
 
       <v-row>
-
         <v-col cols="12" sm="6">
           <MustInput
             v-model="reviewForm.title"
@@ -159,11 +152,9 @@
             受講年度
           </MustSelect>
         </v-col>
-
       </v-row>
 
       <v-row justify="space-around">
-
         <v-col cols="auto">
           <v-spacer />
           <v-list-subheader>
@@ -244,11 +235,9 @@
           <v-divider :thickness="1" class="border-opacity-100"></v-divider>
           <v-spacer />
         </v-col>
-
       </v-row>
 
       <v-row>
-
         <v-col cols="12" lg="4">
           <TextArea
             v-model="reviewForm.lecture_content"
@@ -283,19 +272,26 @@
             @input="reviewV$.bad_point.$touch"
           />
         </v-col>
-
-        <v-col cols="12">
-					<v-card
-						color="surface-variant"
-						variant="tonal"
-					>
-						<v-card-text class="text-medium-emphasis text-caption">
-							名誉棄損にあたる表現はお控えください。
-						</v-card-text>
-					</v-card>
-				</v-col>
-
       </v-row>
+
+      <v-row justify="center" class="mb-5">
+        <v-col cols="12" sm="10" md="8">
+          <SearchInput
+            v-model="reviewForm.tag"
+            :items="props.tags"
+            label="＃タグ（10文字以下・3つまで）"
+            :icon="mdiPound"
+            variant="outlined"
+            :error-messages="props.errors['tag.0'] || props.errors['tag.1'] || props.errors['tag.2']"
+          />
+        </v-col>
+      </v-row>
+
+      <v-card color="surface-variant" variant="tonal">
+				<v-card-text class="text-medium-emphasis text-caption">
+					名誉棄損にあたる表現はお控えください。
+				</v-card-text>
+			</v-card>
 
       <PrimaryBtn
         block

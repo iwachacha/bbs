@@ -35,8 +35,8 @@
         {key: '担当教員名', value: selectLectureInfo.value.professor_name},
         {key: '講義区分', value: categoryName},
         {key: '開講学部', value: facultyName ? facultyName : '未設定'},
-        {key: '開講学科', value: departmentName ? departmentName : '未設定'},
-        {key: '開講コース', value: courseName ? courseName : '未設定'},
+        {key: '開講学科・課程', value: departmentName ? departmentName : '未設定'},
+        {key: '開講コース・専修', value: courseName ? courseName : '未設定'},
       ]
       dialog.value = true
     }

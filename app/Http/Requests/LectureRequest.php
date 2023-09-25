@@ -11,11 +11,11 @@ class LectureRequest extends FormRequest
         return [
             'lecture_name' => 'required|string|max:30',
             'professor_name' => 'required|string|max:30',
-            'lecture_category_id' => 'required',
-            'season' => 'required|string',
-            'faculty_id' => 'nullable',
-            'department_id' => 'nullable',
-            'course_id' => 'nullable',
+            'lecture_category_id' => 'required|exists:lecture_categories,id',
+            'season' => ['required', 'string', 'regex:/春学期|秋学期|通年|その他/'],
+            'faculty_id' => 'nullable|exists:faculties,id',
+            'department_id' => 'nullable|exists:departments,id',
+            'course_id' => 'nullable|exists:courses,id',
         ];
     }
 }

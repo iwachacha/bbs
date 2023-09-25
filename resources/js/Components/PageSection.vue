@@ -7,8 +7,11 @@
 <template>
   <v-sheet rounded="0" color="secondary" class="pb-10 mx-auto">
 
-    <v-card-title class="mx-n1 mt-7 mx-sm-3 mx-md-7 text-h6 text-sm-h5 text-medium-emphasis d-flex align-center">
-      <v-icon :icon="icon" class="me-2" size="small" />
+    <v-card-title
+      class="mx-n1 mt-7 mx-sm-3 mx-md-7 text-h6 text-sm-h5 text-medium-emphasis d-flex"
+      style="white-space: normal; line-height: normal;"
+    >
+      <v-icon :icon="icon" class="me-2" size="34" />
       <h3>{{ title }}</h3>
 
       <div v-if="subtitle" class="d-sm-none ms-2">
