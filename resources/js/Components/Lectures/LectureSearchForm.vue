@@ -60,7 +60,7 @@
     label="講義名・教員名検索"
   />
 
-  <div class="text-right mt-n2">
+  <div class="text-right mt-n1">
       <LinkBtn :href="route('lecture.index')" variant="text">
         検索条件リセット
       </LinkBtn>

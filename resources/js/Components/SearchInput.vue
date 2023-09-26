@@ -12,7 +12,7 @@
     closable-chips
     persistent-hint
     hide-selected
-    hint="検索候補クリック・Enterキー押下・エリア外タッチで確定します"
+    hint="検索候補クリック・Enter・完了で確定します"
     variant="solo"
     density="compact"
     rounded="xl"
