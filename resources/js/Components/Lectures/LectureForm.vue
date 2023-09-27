@@ -3,8 +3,7 @@
   import { useForm } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
   import { useVuelidate } from '@vuelidate/core'
-  import { required, maxLength, helpers } from '@vuelidate/validators'
-  import { requiredM, maxLengthM } from '@/validationMessage.js'
+  import { lectureRules } from '@/Components/Lectures/LectureFormValidationRules.vue'
   import { getCategoryName, getFacultyName, getDepartmentName, getCourseName } from '@/Components/Lectures/GetNameFromId.vue'
   import MustInput from '@/Components/MustInput.vue'
   import MustSelect from '@/Components/MustSelect.vue'
@@ -19,10 +18,6 @@
     courses: Object,
     lectureCategories: Object,
     errors: Object,
-    lectures: {
-      type: Object,
-      default: null
-    }
   })
 
   const emit = defineEmits(['isSubmit']);
@@ -30,35 +25,18 @@
     emit('isSubmit')
   }
 
-  const toast = useToast()
-
   const lectureForm = useForm({
-    lecture_name: props.lectures ? props.lectures.lecture_name : null,
-    professor_name: props.lectures ? props.lectures.professor_name : null,
-    lecture_category_id: props.lectures ? props.lectures.lecture_category_id : null,
-    season: props.lectures ? props.lectures.season : null,
-    faculty_id: props.lectures ? props.lectures.faculty_id : null,
-    department_id: props.lectures ? props.lectures.department_id : null,
-    course_id: props.lectures ? props.lectures.course_id : null,
+    lecture_name: null,
+    professor_name:  null,
+    lecture_category_id: null,
+    season: null,
+    faculty_id: null,
+    department_id: null,
+    course_id: null,
   })
-
-  const lectureRules = {
-    lecture_name: {
-      required: helpers.withMessage(requiredM("担当教員名"), required),
-      maxLengthValue: helpers.withMessage(maxLengthM("担当教員名", 30), maxLength(30))
-    },
-    professor_name: {
-      required: helpers.withMessage(requiredM("講義名"), required),
-      maxLengthValue: helpers.withMessage(maxLengthM("講義名", 30), maxLength(30))
-    },
-    lecture_category_id: {
-      required: helpers.withMessage(requiredM("講義区分"), required),
-    },
-    season: {
-      required: helpers.withMessage(requiredM("開講時期"), required),
-    }
-  }
   const lectureV$ = useVuelidate(lectureRules, lectureForm)
+
+  const toast = useToast()
 
   //階層：カテゴリー>学部>学科>コース、学部・学科・コースはリレーションあり
   //カテゴリーの共通教養が選択された場合は学部・学科・コースの選択をリセット
@@ -132,9 +110,9 @@
       {key: '担当教員名', value: lectureForm.professor_name},
       {key: '講義区分', value: selectCategoryName},
       {key: '開講時期', value:  lectureForm.season},
-      {key: '開講学部', value: selectFacultyName ? selectFacultyName : 'なし'},
-      {key: '開講学科', value: selectDepartmentName ? selectDepartmentName : 'なし'},
-      {key: '開講コース', value: selectCourseName ? selectCourseName : 'なし'}
+      {key: '開講学部', value: (selectFacultyName) ? selectFacultyName : 'なし'},
+      {key: '開講学科・課程', value: (selectDepartmentName) ? selectDepartmentName : 'なし'},
+      {key: '開講コース・専修', value: (selectCourseName) ? selectCourseName : 'なし'}
     ]
     dialog.value = true
   }
@@ -152,7 +130,7 @@
             counter="30"
             placeholder="詳細な講義名を入力してください"
             hint="例：○情報A　×情報"
-            :error-messages="props.errors.lecture_name ? props.errors.lecture_name : lectureV$.lecture_name.$errors.map(e => e.$message)"
+            :error-messages="props.errors.lecture_name || lectureV$.lecture_name.$errors.map(e => e.$message)"
             @input="lectureV$.lecture_name.$touch"
             @blur="lectureV$.lecture_name.$touch"
           >
@@ -167,7 +145,7 @@
             placeholder="フルネームを入力してください"
             suffix="先生"
             hint="例：◯文教太郎　×太郎"
-            :error-messages="props.errors.professor_name ? props.errors.professor_name : lectureV$.professor_name.$errors.map(e => e.$message)"
+            :error-messages="props.errors.professor_name || lectureV$.professor_name.$errors.map(e => e.$message)"
             @input="lectureV$.professor_name.$touch"
             @blur="lectureV$.professor_name.$touch"
           >
@@ -182,7 +160,7 @@
             :items="lectureCategories"
             item-title="name"
             item-value="id"
-            :error-messages="props.errors.lecture_category_id ? props.errors.lecture_category_id : lectureV$.lecture_category_id.$errors.map(e => e.$message)"
+            :error-messages="props.errors.lecture_category_id || lectureV$.lecture_category_id.$errors.map(e => e.$message)"
             @blur="lectureV$.lecture_category_id.$touch"
           >
             講義区分
@@ -194,7 +172,7 @@
             v-model="lectureForm.season"
             hint="最も近いものを選択してください"
             :items="['春学期', '秋学期', '通年', 'その他']"
-            :error-messages="props.errors.season ? props.errors.season : lectureV$.season.$errors.map(e => e.$message)"
+            :error-messages="props.errors.season || lectureV$.season.$errors.map(e => e.$message)"
             @blur="lectureV$.season.$touch"
           >
             開講時期
@@ -211,9 +189,9 @@
             item-value="id"
           >
             <span>
-              講義区分を選択した場合のみ選択できます！
+              講義区分を選択した場合のみ選択できます。
               <br>
-              共通教養を選択した場合は選択できません！
+              共通教養を選択した場合は選択できません。
             </span>
           </TooltipSelect>
         </v-col>
@@ -221,26 +199,26 @@
         <v-col cols="12" sm="5" md="4">
           <TooltipSelect
             v-model="lectureForm.department_id"
-            label="開講学科"
+            label="開講学科・課程"
             hint="指定がある場合のみ選択してください"
             :items="sortDepartments"
             item-title="name"
             item-value="id"
           >
-            <span>開講学部を選択した場合のみ選択できます！</span>
+            <span>開講学部を選択した場合のみ選択できます</span>
           </TooltipSelect>
         </v-col>
 
         <v-col cols="12" sm="5" md="4">
           <TooltipSelect
             v-model="lectureForm.course_id"
-            label="開講コース"
+            label="開講コース・専修"
             hint="指定がある場合のみ選択してください"
             :items="sortCourses"
             item-title="name"
             item-value="id"
           >
-            <span>開講学科を選択した場合のみ選択できます！</span>
+            <span>開講学科・課程を選択した場合のみ選択できます</span>
           </TooltipSelect>
         </v-col>
 

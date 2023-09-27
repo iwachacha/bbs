@@ -4,7 +4,7 @@
 
 <template>
   <v-carousel
-    cycle="true"
+    :cycle="true"
     height="auto"
     hide-delimiters
     show-arrows

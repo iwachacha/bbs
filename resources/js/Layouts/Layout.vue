@@ -52,14 +52,8 @@
               :icon="mdiPenPlus"
               component="Lecture/Create"
             />
-            <NavItem
-              :href="route('lecture.create')"
-              title="ランキング"
-              :icon="mdiCrown"
-            />
           </v-list-group>
 
-          <NavItem :href="route('contact.create')" :icon="mdiChat" title="雑談部屋" />
           <NavItem
             :href="route('contact.create')"
             :icon="mdiChatQuestion"
@@ -70,7 +64,11 @@
         </v-list>
 
         <template v-slot:append>
-          <div class="pa-2"><LinkBtn :href="route('logout')" method="post" :block="true">ログアウト</LinkBtn></div>
+          <div class="pa-2">
+            <LinkBtn :href="route('logout')" method="post" :block="true">
+              ログアウト
+            </LinkBtn>
+          </div>
         </template>
 
       </v-navigation-drawer>

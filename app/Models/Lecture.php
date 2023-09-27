@@ -16,6 +16,26 @@ class Lecture extends Model
         'lecture_name', 'professor_name', 'season'
     ];
 
+    public function lecture_category()
+    {
+        return $this->belongsTo(LectureCategory::class);
+    }
+
+    public function faculty()
+    {
+        return $this->belongsTo(Faculty::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+
     public function reviews()
     {
         return $this->hasMany(Review::class);
@@ -38,8 +58,8 @@ class Lecture extends Model
         );
     }
 
-    //講義名・教員名検索 exactの値によって部分一致検索と完全一致検索を切り替える
-    public function scopeSearchByName($query, $words = null, $exact = null)
+    //講義名・教員名検索 - exactの値によって部分一致検索と完全一致検索を切り替える
+    public function scopeSearchByWord($query, $words = null, $exact = null)
     {
         if(!empty($words)){
             foreach($words as $word) {
@@ -57,6 +77,20 @@ class Lecture extends Model
                     });
                 }
             }
+        }
+    }
+
+    public function scopeSearchByLectureName($query, $name = null)
+    {
+        if(!empty($name)){
+            $query->where('lecture_name', $name);
+        }
+    }
+
+    public function scopeSearchByProfessorName($query, $name = null)
+    {
+        if(!empty($name)){
+            $query->where('professor_name', $name);
         }
     }
 }

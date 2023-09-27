@@ -10,7 +10,6 @@ use Inertia\Response;
 use App\Models\Lecture;
 use App\Models\Review;
 use App\Models\Tag;
-use App\Models\ReviewTag;
 use App\Http\Requests\ReviewRequest;
 
 class ReviewController extends Controller
@@ -40,10 +39,50 @@ class ReviewController extends Controller
 
         foreach($input['tag'] as $tag)
         {
-            $created_tag = Tag::firstOrCreate(['name' => $tag]); //重複なしでタグ保存
-            $review->tags()->attach($created_tag); //レビューと紐付け
+            $created_tag = Tag::firstOrCreate(['name' => $tag]); //重複なしでタグを保存
+            $review->tags()->attach($created_tag); //レビューとタグを紐付け
         }
 
         return to_route('lecture.index');
+    }
+
+    public function edit(Lecture $lecture, Review $review)
+    {
+        if(Auth::id() === $review->user_id ){ //url書き換え侵入対策
+            return Inertia::render('Review/Edit')->with([
+                'lecture' => $lecture,
+                'review' => $review->with('tags')->find($review->id),
+                'tags' => Tag::all()
+            ]);
+        }
+        else {
+            return redirect()->back();
+        }
+    }
+
+    public function update(Review $review, ReviewRequest $request)
+    {
+        $input = $request->validated();
+        $input['average_rate'] = $review->getAverageRate($request);
+        $review->fill($input)->save();
+
+        $review->tags()->detach(); //レビューとタグの紐付け解除
+        foreach($input['tag'] as $tag){
+            $created_tag = Tag::firstOrCreate(['name' => $tag]); //重複なしでタグ保存
+            $review->tags()->attach($created_tag); //レビューとタグを紐付け
+        }
+
+        return to_route('lecture.show', ['lecture' => $review->lecture_id]);
+    }
+
+    public function delete(Review $review)
+    {
+        if(Auth::id() === $review->user_id ){ //url書き換え侵入対策
+            $review->delete();
+            return redirect()->back();
+        }
+        else {
+            return redirect()->back();
+        }
     }
 }

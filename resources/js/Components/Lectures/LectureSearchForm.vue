@@ -1,22 +1,20 @@
 <script setup>
-  import { watch, ref } from 'vue'
-  import { router, useForm } from '@inertiajs/vue3'
+  import { watch, ref, reactive } from 'vue'
+  import { router } from '@inertiajs/vue3'
   import { mdiMagnify } from '@mdi/js'
   import SearchInput from '@/Components/SearchInput.vue'
   import LinkBtn from '@/Components/LinkBtn.vue'
 
-  const props = defineProps({
-    names: Object,
-  })
+  const props = defineProps({ names: Object })
 
-  const form = useForm({
-    search_name: null,
+  const form = reactive({
+    search_word: null,
     exact: []
   })
 
   watch(form, () => {
     router.get(route('lecture.index'), {
-      search_name: form.search_name,
+      search_word: form.search_word,
       exact: form.exact
     }, {
       preserveState: true,
@@ -42,7 +40,7 @@
         hide-details
         true-value="1"
         false-value="0"
-        :disabled="!form.search_name"
+        :disabled="!form.search_word"
       >
         <template v-slot:label>
           <span class="text-caption">完全一致検索</span>
@@ -52,7 +50,7 @@
   </v-row>
 
   <SearchInput
-    v-model="form.search_name"
+    v-model="form.search_word"
     v-model:search="inputName"
     :items="(inputName) ? names : []"
     :icon="mdiMagnify"
@@ -60,7 +58,7 @@
     label="講義名・教員名検索"
   />
 
-  <div class="text-right mt-n1">
+  <div class="text-right mt-n1 mt-sm-n3">
       <LinkBtn :href="route('lecture.index')" variant="text">
         検索条件リセット
       </LinkBtn>
