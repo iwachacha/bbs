@@ -14,7 +14,7 @@
     courses: Object,
     lectureCategories: Object,
     tags: Object,
-    errors: Object,
+    errors: Object
   })
 
   const step = ref(1)

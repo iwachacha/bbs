@@ -19,15 +19,18 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     
-    Route::controller(LectureController::class)->group(function () { 
+    Route::controller(LectureController::class)->group(function () {
         Route::get('/lectures', 'index')->name('lecture.index');
         Route::post('/lectures', 'store')->name('lecture.store');
         Route::get('/lectures/create', 'create')->name('lecture.create');
-        Route::get('/lectures/{lecture_id}', 'show')->name('lecture.show');
+        Route::get('/lectures/{lecture}', 'show')->name('lecture.show');
     });
-    Route::controller(ReviewController::class)->group(function () { 
-        Route::get('/lectures/{lecture}/reviews/create', [ReviewController::class, 'create'])->name('review.create');
+    Route::controller(ReviewController::class)->group(function () {
+        Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('review.update');
+        Route::delete('/reviews/{review}', [ReviewController::class, 'delete'])->name('review.delete');
         Route::post('/lectures/{lecture}/reviews', [ReviewController::class, 'store'])->name('review.store');
+        Route::get('/lectures/{lecture}/reviews/create', [ReviewController::class, 'create'])->name('review.create');
+        Route::get('/lectures/{lecture}/reviews/{review}/edit', [ReviewController::class, 'edit'])->name('review.edit');
     });
     
     Route::put('/lectures/{lecture}/bookmark/set', [LectureBookmarkController::class, 'setBookmark'])->name('bookmark.set');

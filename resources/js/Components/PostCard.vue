@@ -1,12 +1,11 @@
 <script setup>
   import { ref, computed } from 'vue'
-  import { mdiAccountCircle } from '@mdi/js'
   import DotMenuBtn from '@/Components/DotMenuBtn.vue'
 
-  defineProps(['barTitle', 'icon', 'cardTitle', 'readMore'])
+  defineProps(['readMore'])
 
   const open = ref(false)
-  const readMoreBtn = computed(() => {
+  const readMoreBtnText = computed(() => {
     return open.value ? '閉じる' : '続きを読む'
   })
 
@@ -16,18 +15,20 @@
   <v-card rounded="sm">
 
     <v-toolbar density="compact" color="teal-lighten-2">
-      <v-icon v-if="icon" :icon="mdiAccountCircle" color="secondary" size="large" class="ms-2 me-n2" />
-      <v-toolbar-title class="text-subtitle-2">{{ barTitle }}</v-toolbar-title>
+      <v-toolbar-title class="text-subtitle-2 text-sm-subtitle-1">
+        <slot name="barTitle" />
+      </v-toolbar-title>
+
       <DotMenuBtn>
           <slot name="menuItem" />
       </DotMenuBtn>
     </v-toolbar>
 
-    <v-card-title class="mt-2 pb-1 text-body-2 text-center">
-      {{ cardTitle }}
+    <v-card-title class="mt-3 pb-1 text-body-1 text-center" style="line-height: normal;">
+      <slot name="cardTitle" />
     </v-card-title>
 
-    <v-card-subtitle class="ms-3 text-caption text-right">
+    <v-card-subtitle class="text-caption text-right">
       <slot name="subtitle" />
     </v-card-subtitle>
 
@@ -42,17 +43,17 @@
           variant="text"
           color="primary"
         >
-          {{ readMoreBtn }}
+          {{ readMoreBtnText }}
         </v-btn>
       </div>
-      <v-card-text v-if="open" class="pt-0">
+      <v-card-text v-if="open">
         <slot name="readMoreContent" />
       </v-card-text>
     </template>
 
     <v-divider class="border-opacity-100" />
 
-    <v-card-actions class="py-0 my-n1">
+    <v-card-actions class="px-2 py-0 my-n1">
       <slot name="action" />
     </v-card-actions>
 

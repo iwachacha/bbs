@@ -32,7 +32,7 @@
       <v-row justify="center">
 
         <v-col cols="1" class="px-0 text-right">
-          <span>☆{{ i+1 }}</span>
+          <span class="text-body-1" style="color: #26A69A;">★</span>{{ i+1 }}
         </v-col>
 
         <v-col cols="9" class="px-3">

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\LectureBookmark;
-use App\Models\LectureDeleteRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,7 +13,6 @@ use App\Models\LectureCategory;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\Course;
-use App\Models\Review;
 use App\Models\Tag;
 use App\Http\Requests\LectureRequest;
 use Illuminate\Support\Facades\DB;
@@ -23,26 +21,29 @@ class LectureController extends Controller
 {
     public function index(Request $request)
     {
-        $lectures = Lecture::searchByName($request->search_name, $request->exact)
+        $lectures = Lecture::query()
+            ->searchByWord($request->search_word, $request->exact)
+            ->searchByLectureName($request->lecture_name)
+            ->searchByProfessorName($request->professor_name)
+            ->with('lecture_category', 'faculty', 'department', 'course')
             ->withCount('reviews', 'lecture_bookmarks')
             ->withAvg('reviews as average_rate', 'average_rate')
+            ->withAvg('reviews as fulfillment_rate_avg', 'fulfillment_rate')
+            ->withAvg('reviews as ease_rate_avg', 'ease_rate')
+            ->withAvg('reviews as satisfaction_rate_avg', 'satisfaction_rate')
             ->get();
-
-        $bookmarked_lecture_id = LectureBookmark::select('lecture_id')
-            ->where('user_id', Auth::id())->get();
 
         return Inertia::render('Lecture/Index')->with([
             'lectures' => $lectures,
             'resultCount' => $lectures->count(),
-            'names' => Lecture::select('lecture_name', 'professor_name')->get(),
-            'BookmarkedLectureId' => $bookmarked_lecture_id,
-            'lectureCategories' => LectureCategory::get(),
-            'faculties' => Faculty::get(),
+            'names' => fn() => Lecture::select('lecture_name', 'professor_name')->get(),
+            'BookmarkedLectureId' => fn() => LectureBookmark::select('lecture_id')->where('user_id', Auth::id())->get(),
         ]);
     }
     public function show($lecture_id)
     {
-        $lecture = Lecture::with('reviews.user')
+        $lecture = Lecture::query()
+            ->with('reviews.user', 'reviews.tags', 'lecture_category', 'faculty', 'department', 'course')
             ->withCount('reviews')
             ->withAvg('reviews as average_rate', 'average_rate')
             ->withAvg('reviews as fulfillment_rate_avg', 'fulfillment_rate')
@@ -50,27 +51,29 @@ class LectureController extends Controller
             ->withAvg('reviews as satisfaction_rate_avg', 'satisfaction_rate')
             ->find($lecture_id);
 
-        $fulfillment_rate = DB::table('reviews')->select('fulfillment_rate')
+        $fulfillment_rate = DB::table('reviews')
+            ->where('lecture_id', $lecture_id)
+            ->select('fulfillment_rate')
             ->selectRaw('COUNT(fulfillment_rate) as count')
             ->groupBy('fulfillment_rate')
             ->get();
 
-        $ease_rate = DB::table('reviews')->select('ease_rate')
+        $ease_rate = DB::table('reviews')
+            ->where('lecture_id', $lecture_id)
+            ->select('ease_rate')
             ->selectRaw('COUNT(ease_rate) as count')
             ->groupBy('ease_rate')
             ->get();
 
-        $satisfaction_rate = DB::table('reviews')->select('satisfaction_rate')
+        $satisfaction_rate = DB::table('reviews')
+            ->where('lecture_id', $lecture_id)
+            ->select('satisfaction_rate')
             ->selectRaw('COUNT(satisfaction_rate) as count')
             ->groupBy('satisfaction_rate')
             ->get();
 
         return Inertia::render('Lecture/Show')->with([
             'lecture' => $lecture,
-            'category' => LectureCategory::select('name')->where('id', $lecture->lecture_category_id)->first(),
-            'faculty' => Faculty::select('name')->where('id', $lecture->faculty_id)->first(),
-            'department' => Department::select('name')->where('id', $lecture->department_id)->first(),
-            'course' => Course::select('name')->where('id', $lecture->course_id)->first(),
             'fulfillmentRate' => $fulfillment_rate,
             'easeRate' => $ease_rate,
             'satisfactionRate' => $satisfaction_rate,
@@ -80,12 +83,12 @@ class LectureController extends Controller
     public function create()
     {
         return Inertia::render('Lecture/Create')->with([
-            'lectures' => Lecture::all(),
-            'faculties' => Faculty::all(),
-            'departments' => Department::all(),
-            'courses' => Course::all(),
-            'lectureCategories' => LectureCategory::all(),
-            'tags' => Tag::all(),
+            'lectures' => fn() => Lecture::all(),
+            'faculties' => fn() => Faculty::all(),
+            'departments' => fn() => Department::all(),
+            'courses' => fn() => Course::all(),
+            'lectureCategories' => fn() => LectureCategory::all(),
+            'tags' => fn() => Tag::all()
         ]);
     }
 

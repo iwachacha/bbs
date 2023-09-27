@@ -156,6 +156,8 @@ return [
     'attributes' => [
         'lecture_name' => '講義名',
         'professor_name' => '担当教員名',
+        'season' => '開講時期',
+        'lecture_category_id' => '講義区分',
         'title' => 'タイトル',
         'year' => '受講年度',
         'fulfillment_rate' => '充実度評価',

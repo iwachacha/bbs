@@ -5,10 +5,10 @@
 </script>
 
 <template>
-  <v-sheet rounded="0" color="secondary" class="pb-10 mx-auto">
+  <v-sheet rounded="0" color="secondary" class="mb-10 mx-auto">
 
     <v-card-title
-      class="mx-n1 mt-7 mx-sm-3 mx-md-7 text-h6 text-sm-h5 text-medium-emphasis d-flex"
+      class="mx-n1 mt-7 mx-md-5 text-h6 text-sm-h5 text-medium-emphasis d-flex"
       style="white-space: normal; line-height: normal;"
     >
       <v-icon :icon="icon" class="me-2" size="34" />
@@ -28,7 +28,7 @@
       {{ subtitle }}
     </v-card-subtitle>
 
-    <div class="mt-5 px-3 px-sm-10 px-md-16 py-0">
+    <div class="mt-5 px-3 px-md-10 py-0">
       <slot />
     </div>
 
