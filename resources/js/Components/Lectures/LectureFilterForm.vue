@@ -1,7 +1,8 @@
 <script setup>
-  import { watch, ref } from 'vue'
-  import { router, useForm } from '@inertiajs/vue3'
+  import { ref, reactive } from 'vue'
+  import { router } from '@inertiajs/vue3'
   import { mdiFilterPlus, mdiFilterMinus, mdiFilterCheck } from '@mdi/js'
+  import { useToast } from "vue-toastification"
   import StarRateSlider from '@/Components/StarRateSlider.vue'
   import PrimaryBtn from '@/Components/PrimaryBtn.vue'
   import SecondaryBtn from '@/Components/SecondaryBtn.vue'
@@ -9,24 +10,33 @@
   import ConfirmCard from '@/Components/ConfirmCard.vue'
 
   const props = defineProps({
+    resultCount: Number,
     lectureCategories: Object,
     faculties: Object,
     departments: Object,
-    courses: Object,
+    query: Object
   })
 
-  const form = useForm({
-    star: null,
+  const form = reactive({
+    season: props.query['season'],
+    category: props.query['category'] && Number(props.query['category']),
+    faculty: props.query['faculty'] && Number(props.query['faculty']),
+    department: props.query['department'] && Number(props.query['department']),
+    fulfillment: props.query['fulfillment'],
+    ease: props.query['ease'],
+    satisfaction: props.query['satisfaction'],
   })
 
-  /*watch(form, () => {
-    router.get(route('lecture.index'), {
-      search_name: form.search_name
-    }, {
+  const onSubmit = () => {
+    router.get(route('lecture.index', [props.query, form]), {}, {
+      onSuccess: () => {
+        useToast().success('絞り込みの結果' + props.resultCount + '件取得しました。')
+      },
       preserveState: true,
-      only: ['lectures']
+      preserveScroll: true,
+      only: ['lectures', 'resultCount', 'query'],
     })
-  })*/
+  }
 
   const dialog = ref(false)
 </script>
@@ -51,31 +61,61 @@
         <v-row>
           <v-col cols="12" md="6" class="py-0">
             <Select
-              :items="['aaa', 'aaa']"
+              v-model="form.season"
+              :items="['春学期', '秋学期', '通年', 'その他']"
+              label="開講時期"
+            />
+          </v-col>
+
+          <v-col cols="12" md="6" class="py-0">
+            <Select
+              v-model="form.category"
+              :items="props.lectureCategories"
+              item-title="name"
+              item-value="id"
               label="講義区分"
             />
           </v-col>
 
           <v-col cols="12" md="6" class="py-0">
             <Select
-              :items="['aaa', 'aaa']"
+              v-model="form.faculty"
+              :items="props.faculties"
+              item-title="name"
+              item-value="id"
               label="開講学部"
             />
           </v-col>
 
+          <v-col cols="12" md="6" class="py-0">
+            <Select
+              v-model="form.department"
+              :items="props.departments"
+              item-title="name"
+              item-value="id"
+              label="開講学科・課程"
+            />
+          </v-col>
+
           <v-col cols="12" class="pt-0">
-            <span class="text-caption">平均充実度 {{ (form.star) && '☆' + form.star[0] + ' ～ ☆' + form.star[1] }}</span>
-            <StarRateSlider v-model="form.star" />
+            <span class="text-caption">
+              平均充実度 {{ (form.fulfillment) && '☆' + form.fulfillment[0] + ' ～ ☆' + form.fulfillment[1] }}
+            </span>
+            <StarRateSlider v-model="form.fulfillment" />
           </v-col>
 
           <v-col cols="12">
-            <span class="text-caption">平均楽単度 {{ (form.star) && '☆' + form.star[0] + ' ～ ☆' + form.star[1] }}</span>
-            <StarRateSlider />
+            <span class="text-caption">
+              平均楽単度 {{ (form.ease) && '☆' + form.ease[0] + ' ～ ☆' + form.ease[1] }}
+            </span>
+            <StarRateSlider v-model="form.ease" />
           </v-col>
 
-          <v-col cols="12">
-            <span class="text-caption">平均満足度 {{ (form.star) && '☆' + form.star[0] + ' ～ ☆' + form.star[1] }}</span>
-            <StarRateSlider />
+          <v-col cols="12" class="mb-2">
+            <span class="text-caption">
+              平均満足度 {{ (form.satisfaction) && '☆' + form.satisfaction[0] + ' ～ ☆' + form.satisfaction[1] }}
+            </span>
+            <StarRateSlider v-model="form.satisfaction" />
           </v-col>
         </v-row>
       </v-form>
@@ -84,7 +124,7 @@
         <SecondaryBtn @click="dialog = false">閉じる</SecondaryBtn>
       </template>
       <template v-slot:okBtn>
-        <PrimaryBtn type="submit" @click="dialog = false" form="lectureFilterForm">
+        <PrimaryBtn @click="[dialog = false, onSubmit()]">
           <v-icon :icon="mdiFilterCheck" />
           <span>絞り込む</span>
         </PrimaryBtn>

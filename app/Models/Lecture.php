@@ -59,21 +59,21 @@ class Lecture extends Model
     }
 
     //講義名・教員名検索 - exactの値によって部分一致検索と完全一致検索を切り替える
-    public function scopeSearchByWord($query, $words = null, $exact = null)
+    public function scopeSearchByWord($query, $names = null, $exact = null)
     {
-        if(!empty($words)){
-            foreach($words as $word) {
+        if(!empty($names)){
+            foreach($names as $name) {
 
                 if((boolean) $exact){
-                    $query->where(function($query) use($word){
-                        $query->where('lecture_name', $word)
-                            ->orWhere('professor_name', $word);
+                    $query->where(function($query) use($name){
+                        $query->where('lecture_name', $name)
+                            ->orWhere('professor_name', $name);
                     });
                 }
                 else {
-                    $query->where(function($query) use($word){
-                        $query->where('lecture_name', 'LIKE', '%'.$word.'%')
-                            ->orWhere('professor_name', 'LIKE', '%'.$word.'%');
+                    $query->where(function($query) use($name){
+                        $query->where('lecture_name', 'LIKE', '%'.$name.'%')
+                            ->orWhere('professor_name', 'LIKE', '%'.$name.'%');
                     });
                 }
             }
@@ -91,6 +91,77 @@ class Lecture extends Model
     {
         if(!empty($name)){
             $query->where('professor_name', $name);
+        }
+    }
+
+    public function scopeSort($query, $sort = null) //並び替え
+    {
+        if($sort === '古い順'){
+            $query->oldest();
+        }
+        elseif($sort === 'レビュー数順'){
+            $query->orderBy('reviews_count', 'desc');
+        }
+        elseif($sort === '保存数順'){
+            $query->orderBy('lecture_bookmarks_count', 'desc');
+        }
+        elseif($sort === '総合評価値順'){
+            $query->orderBy('average_rate', 'desc');
+        }
+        elseif($sort === '充実評価値順'){
+            $query->orderBy('fulfillment_rate_avg', 'desc');
+        }
+        elseif($sort === '楽単評価値順'){
+            $query->orderBy('ease_rate_avg', 'desc');
+        }
+        elseif($sort === '満足評価値順'){
+            $query->orderBy('satisfaction_rate_avg', 'desc');
+        }
+        else {
+            $query->latest();
+        }
+    }
+
+    public function scopeSelectFilter($query, $filter) //絞り込み
+    {
+        if(!empty($filter['season'])){
+            $query->where('season', $filter['season']);
+        }
+
+        if(!empty($filter['category'])){
+            $query->where('lecture_category_id', (int) $filter['category']);
+        }
+
+        if(!empty($filter['faculty'])){
+            $query->where('faculty_id', (int) $filter['faculty']);
+        }
+
+        if(!empty($filter['department'])){
+            $query->where('department_id', (int) $filter['department']);
+        }
+    }
+
+    public function scopeRatingFilter($query, $filter) //絞り込み
+    {
+        if(!empty($filter['fulfillment'])){
+            $query->havingBetween('fulfillment_rate_avg', [
+                (int) $filter['fulfillment'][0],
+                (int) $filter['fulfillment'][1]
+            ]);
+        }
+
+        if(!empty($filter['ease'])){
+            $query->havingBetween('ease_rate_avg', [
+                (int) $filter['ease'][0],
+                (int) $filter['ease'][1]
+            ]);
+        }
+
+        if(!empty($filter['satisfaction'])){
+            $query->havingBetween('satisfaction_rate_avg', [
+                (int) $filter['satisfaction'][0],
+                (int) $filter['satisfaction'][1]
+            ]);
         }
     }
 }

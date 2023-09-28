@@ -33,8 +33,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/lectures/{lecture}/reviews/{review}/edit', [ReviewController::class, 'edit'])->name('review.edit');
     });
     
-    Route::put('/lectures/{lecture}/bookmark/set', [LectureBookmarkController::class, 'setBookmark'])->name('bookmark.set');
-    Route::delete('/lectures/{lecture}/bookmark/remove', [LectureBookmarkController::class, 'removeBookmark'])->name('bookmark.remove');
+    Route::put('/lectures/{lecture}/bookmark', [LectureBookmarkController::class, 'set'])->name('bookmark.set');
+    Route::delete('/lectures/{lecture}/bookmark', [LectureBookmarkController::class, 'remove'])->name('bookmark.remove');
 
 });
 

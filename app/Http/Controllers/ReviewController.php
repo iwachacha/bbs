@@ -29,13 +29,12 @@ class ReviewController extends Controller
         $input['user_id'] = Auth::id();
         $input['average_rate'] = $review->getAverageRate($request);
 
-        /*$duplicate_check = Review::where('lecture_id', $lecture->id)->where('user_id', Auth::id())->exists(); //レビュー重複チェック
+        $duplicate_check = Review::where('lecture_id', $lecture->id)->where('user_id', Auth::id())->exists(); //レビュー重複チェック
         if($duplicate_check){
-          return redirect()->back()->with('error', '1つの講義に対して2件目のレビューはできません。');
+            return to_route('lecture.show', $lecture->id)->with('error', '1つの講義に対して2件目のレビューはできません。');
         }else {
-          Review::create($input);
-        }*/
-        $review->fill($input)->save();
+            $review->fill($input)->save();
+        }
 
         foreach($input['tag'] as $tag)
         {

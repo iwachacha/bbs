@@ -1,7 +1,8 @@
 <script setup>
-  import { computed } from 'vue'
+  import { computed, reactive, watch } from 'vue'
   import { mdiMessageText, mdiMagnify, mdiAlertCircle, mdiListBox, mdiChevronRight } from '@mdi/js'
-  import { Link } from '@inertiajs/vue3'
+  import { router } from '@inertiajs/vue3'
+  import { useToast } from "vue-toastification"
   import LinkBtn from '@/Components/LinkBtn.vue'
   import PageSection from '@/Components/PageSection.vue'
   import PostCard from '@/Components/PostCard.vue'
@@ -10,6 +11,7 @@
   import LectureFilterForm from '@/Components/Lectures/LectureFilterForm.vue'
   import LectureSortForm from '@/Components/Lectures/LectureSortForm.vue'
   import StarRateChip from '@/Components/StarRateChip.vue'
+  import QueryChip from '@/Components/Lectures/QueryChip.vue'
 
   const props = defineProps({
     lectures: Object,
@@ -18,24 +20,15 @@
     BookmarkedLectureId: Array,
     lectureCategories: Object,
     faculties: Object,
+    departments: Object,
+    query: Object
   })
 
   const pageSection = computed(() => {
-    const param = new URLSearchParams(window.location.search)
-
-    if(!param.size) {
-      return { icon: mdiListBox, title: '講義一覧'}
-    }
-    else if(param.has('lecture_name')){
+    if(!Object.keys(props.query).length){
       return {
-        icon: mdiMagnify,
-        title: '講義検索 - ' + param.get('lecture_name') + '（' + props.resultCount + '件）'
-      }
-    }
-    else if(param.has('professor_name')){
-      return {
-        icon: mdiMagnify,
-        title: '講義検索 - ' + param.get('professor_name') + '先生（' + props.resultCount + '件）'
+        icon: mdiListBox,
+        title: '講義一覧'
       }
     }
     else {
@@ -49,6 +42,22 @@
   //ログイン中のユーザーが各投稿をブックマーク登録済みかどうか
   const isBookmarked = computed(() => (lecture_id) => {
     return props.BookmarkedLectureId.find(e => e.lecture_id == lecture_id)
+  })
+
+  const search = reactive({
+    lecture_name: null,
+    professor_name: null
+  })
+
+  watch(search, () => {
+    router.get(route('lecture.index', [props.query, search]), {}, {
+      onSuccess: () => {
+        useToast().success(props.resultCount + '件取得しました。')
+      },
+      preserveState: true,
+      preserveScroll: true,
+      only: ['lectures', 'resultCount', 'query'],
+    })
   })
 </script>
 
@@ -66,29 +75,45 @@
       <v-col cols="11" sm="9" md="7" class="pa-0">
         <LectureSearchForm
           :names="names"
+          :resultCount="resultCount"
+          :query="props.query"
         />
       </v-col>
     </v-row>
 
-    <div class="d-flex justify-end mt-7 mb-1 me-sm-5">
-      <div class="me-2"><LectureFilterForm /></div>
-      <LectureSortForm />
+    <div class="d-flex justify-end mt-7 me-sm-5 mb-2">
+      <div class="me-3">
+        <LectureFilterForm
+          :result-count="props.resultCount"
+          :lecture-categories="props.lectureCategories"
+          :faculties="props.faculties"
+          :departments="props.departments"
+          :query="props.query"
+        />
+      </div>
+
+      <LectureSortForm
+        :query="props.query"
+      />
     </div>
+
+    <QueryChip
+      :query="props.query"
+      :lecture-categories="props.lectureCategories"
+      :faculties="props.faculties"
+      :departments="props.departments"
+    />
 
     <v-row justify="space-around">
       <template v-for="lecture in props.lectures">
-        <v-col cols="12" sm="6" lg="4" class="px-2 px-md-3 my-1 my-sm-2 my-md-3">
+        <v-col cols="12" sm="6" lg="4" class="px-2 px-md-3 my-1 my-sm-2">
 
           <PostCard>
             <template v-slot:barTitle>
-              <Link
-                :href="route('lecture.index')"
-                :data="{ lecture_name: lecture.lecture_name }"
-                :only="['lectures', 'resultCount']"
-              >
+              <div @click="search.lecture_name = lecture.lecture_name" style="cursor: pointer;">
                 {{ lecture.lecture_name }}
                 <v-icon :icon="mdiChevronRight" size="x-small" class="ms-n1" />
-              </Link>
+              </div>
             </template>
 
             <template v-slot:menuItem>
@@ -101,14 +126,10 @@
             </template>
 
             <template v-slot:cardTitle>
-              <Link
-                :href="route('lecture.index')"
-                :data="{ professor_name: lecture.professor_name }"
-                :only="['lectures', 'resultCount']"
-              >
+              <div @click="search.professor_name = lecture.professor_name" style="cursor: pointer;">
                 {{ lecture.professor_name + '先生' }}
                 <v-icon :icon="mdiChevronRight" size="x-small" class="ms-n1 text-disabled" />
-              </Link>
+              </div>
             </template>
 
             <template v-slot:subtitle>
