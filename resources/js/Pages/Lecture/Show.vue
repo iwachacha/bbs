@@ -244,13 +244,13 @@
 
               <div class="d-flex align-center flex-column">
                 <div class="text-h5 mt-5">
-                  {{ Math.floor(props.lecture.reviews_avg_average_rate * 100) / 100 }}
+                  {{ Math.floor(props.lecture.average_rate * 100) / 100 }}
                   <span class="text-subtitle-2 text-medium-emphasis ml-n1">/ 5</span>
                 </div>
                 <span class="text-subtitle-2 mt-2 text-medium-emphasis">（{{ props.lecture.reviews_count }}件中）</span>
 
                 <v-rating
-                  :model-value="props.lecture.reviews_avg_average_rate"
+                  :model-value="props.lecture.average_rate"
                   color="primary"
                   size="x-large"
                   density="compact"
@@ -269,7 +269,7 @@
                 <v-carousel-item>
                   <StarRate
                     title="平均充実度評価"
-                    :average="Math.floor(props.lecture.reviews_avg_fulfillment_rate * 100) / 100"
+                    :average="Math.floor(props.lecture.fulfillment_rate_avg * 100) / 100"
                     :total-count="lecture.reviews_count"
                     :valueCounts="fulfillmentRateCounts"
                   />
@@ -277,7 +277,7 @@
                 <v-carousel-item>
                   <StarRate
                     title="平均楽単度評価"
-                    :average="Math.floor(props.lecture.reviews_avg_ease_rate * 100) / 100"
+                    :average="Math.floor(props.lecture.ease_rate_avg * 100) / 100"
                     :total-count="lecture.reviews_count"
                     :valueCounts="easeRateCounts"
                   />
@@ -285,7 +285,7 @@
                 <v-carousel-item>
                   <StarRate
                     title="平均満足度評価"
-                    :average="Math.floor(props.lecture.reviews_avg_satisfaction_rate * 100) / 100"
+                    :average="Math.floor(props.lecture.satisfaction_rate_avg * 100) / 100"
                     :total-count="lecture.reviews_count"
                     :valueCounts="satisfactionRateCounts"
                   />
