@@ -109,13 +109,13 @@ class Lecture extends Model
             $query->orderBy('average_rate', 'desc');
         }
         elseif($sort === '充実評価値順'){
-            $query->orderBy('reviews_avg_fulfillment_rate', 'desc');
+            $query->orderBy('fulfillment_rate_avg', 'desc');
         }
         elseif($sort === '楽単評価値順'){
-            $query->orderBy('reviews_avg_ease_rate', 'desc');
+            $query->orderBy('ease_rate_avg', 'desc');
         }
         elseif($sort === '満足評価値順'){
-            $query->orderBy('reviews_avg_satisfaction_rate', 'desc');
+            $query->orderBy('satisfaction_rate_avg', 'desc');
         }
         else {
             $query->latest();
@@ -144,21 +144,21 @@ class Lecture extends Model
     public function scopeRatingFilter($query, $filter) //絞り込み
     {
         if(!empty($filter['fulfillment'])){
-            $query->havingBetween('reviews_avg_fulfillment_rate', [
+            $query->havingBetween('fulfillment_rate_avg', [
                 (int) $filter['fulfillment'][0],
                 (int) $filter['fulfillment'][1]
             ]);
         }
 
         if(!empty($filter['ease'])){
-            $query->havingBetween('reviews_avg_ease_rate', [
+            $query->havingBetween('ease_rate_avg', [
                 (int) $filter['ease'][0],
                 (int) $filter['ease'][1]
             ]);
         }
 
         if(!empty($filter['satisfaction'])){
-            $query->havingBetween('reviews_avg_satisfaction_rate', [
+            $query->havingBetween('satisfaction_rate_avg', [
                 (int) $filter['satisfaction'][0],
                 (int) $filter['satisfaction'][1]
             ]);

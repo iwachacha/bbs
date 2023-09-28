@@ -144,14 +144,14 @@
               <div class="text-subtitle-2">
                 総合平均評価
                 <span class="text-body-1" style="color: #26A69A;">★</span>
-                {{ Math.floor(lecture.reviews_avg_average_rate * 1000) / 1000 }}
+                {{ Math.floor(lecture.average_rate * 1000) / 1000 }}
               </div>
 
               <v-row justify="center" class="mt-1">
                 <v-col cols="auto" class="px-2">
                   <StarRateChip
                     label="充実"
-                    :star="Math.floor(lecture.reviews_avg_fulfillment_rate * 10) / 10"
+                    :star="Math.floor(lecture.fulfillment_rate_avg * 10) / 10"
                     :small="true"
                   />
                 </v-col>
@@ -159,7 +159,7 @@
                 <v-col cols="auto" class="px-2">
                   <StarRateChip
                     label="楽単"
-                    :star="Math.floor(lecture.reviews_avg_ease_rate * 10) / 10"
+                    :star="Math.floor(lecture.ease_rate_avg * 10) / 10"
                     :small="true"
                   />
                 </v-col>
@@ -167,7 +167,7 @@
                 <v-col cols="auto" class="px-2">
                   <StarRateChip
                     label="満足"
-                    :star="Math.floor(lecture.reviews_avg_satisfaction_rate * 10) / 10"
+                    :star="Math.floor(lecture.satisfaction_rate_avg * 10) / 10"
                     :small="true"
                   />
                 </v-col>
