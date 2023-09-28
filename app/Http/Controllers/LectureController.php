@@ -28,10 +28,10 @@ class LectureController extends Controller
             ->selectFilter($request->only(['season', 'category', 'faculty', 'department']))
             ->with('lecture_category', 'faculty', 'department', 'course')
             ->withCount('reviews', 'lecture_bookmarks')
-            ->withAvg('reviews as average_rate', 'average_rate')
-            ->withAvg('reviews as fulfillment_rate_avg', 'fulfillment_rate')
-            ->withAvg('reviews as ease_rate_avg', 'ease_rate')
-            ->withAvg('reviews as satisfaction_rate_avg', 'satisfaction_rate')
+            ->withAvg('reviews', 'average_rate')
+            ->withAvg('reviews', 'fulfillment_rate')
+            ->withAvg('reviews', 'ease_rate')
+            ->withAvg('reviews', 'satisfaction_rate')
             ->ratingFilter($request->only(['fulfillment', 'ease', 'satisfaction']))
             ->sort($request->sort)
             ->get();
@@ -52,30 +52,30 @@ class LectureController extends Controller
         $lecture = Lecture::query()
             ->with('reviews.user', 'reviews.tags', 'lecture_category', 'faculty', 'department', 'course')
             ->withCount('reviews')
-            ->withAvg('reviews as average_rate', 'average_rate')
-            ->withAvg('reviews as fulfillment_rate_avg', 'fulfillment_rate')
-            ->withAvg('reviews as ease_rate_avg', 'ease_rate')
-            ->withAvg('reviews as satisfaction_rate_avg', 'satisfaction_rate')
+            ->withAvg('reviews', 'average_rate')
+            ->withAvg('reviews', 'fulfillment_rate')
+            ->withAvg('reviews', 'ease_rate')
+            ->withAvg('reviews', 'satisfaction_rate')
             ->find($lecture_id);
 
         $fulfillment_rate = DB::table('reviews')
             ->where('lecture_id', $lecture_id)
             ->select('fulfillment_rate')
-            ->selectRaw('COUNT(fulfillment_rate) as count')
+            ->selectRaw('COUNT(fulfillment_rate)')
             ->groupBy('fulfillment_rate')
             ->get();
 
         $ease_rate = DB::table('reviews')
             ->where('lecture_id', $lecture_id)
             ->select('ease_rate')
-            ->selectRaw('COUNT(ease_rate) as count')
+            ->selectRaw('COUNT(ease_rate)')
             ->groupBy('ease_rate')
             ->get();
 
         $satisfaction_rate = DB::table('reviews')
             ->where('lecture_id', $lecture_id)
             ->select('satisfaction_rate')
-            ->selectRaw('COUNT(satisfaction_rate) as count')
+            ->selectRaw('COUNT(satisfaction_rate)')
             ->groupBy('satisfaction_rate')
             ->get();
 
