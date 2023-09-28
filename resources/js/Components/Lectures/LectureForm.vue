@@ -155,6 +155,18 @@
 
         <v-col cols="12" sm="6">
           <MustSelect
+            v-model="lectureForm.season"
+            hint="最も近いものを選択してください"
+            :items="['春学期', '秋学期', '通年', 'その他']"
+            :error-messages="props.errors.season || lectureV$.season.$errors.map(e => e.$message)"
+            @blur="lectureV$.season.$touch"
+          >
+            開講時期
+          </MustSelect>
+        </v-col>
+
+        <v-col cols="12" sm="6">
+          <MustSelect
             v-model="lectureForm.lecture_category_id"
             hint="最も近いものを選択してください"
             :items="lectureCategories"
@@ -164,18 +176,6 @@
             @blur="lectureV$.lecture_category_id.$touch"
           >
             講義区分
-          </MustSelect>
-        </v-col>
-
-        <v-col cols="12" sm="6">
-          <MustSelect
-            v-model="lectureForm.season"
-            hint="最も近いものを選択してください"
-            :items="['春学期', '秋学期', '通年', 'その他']"
-            :error-messages="props.errors.season || lectureV$.season.$errors.map(e => e.$message)"
-            @blur="lectureV$.season.$touch"
-          >
-            開講時期
           </MustSelect>
         </v-col>
 

@@ -5,7 +5,7 @@
 </script>
 
 <template>
-  <v-sheet rounded="0" color="secondary" class="mb-10 mx-auto">
+  <v-sheet rounded="0" color="secondary" class="mb-16 mx-auto">
 
     <v-card-title
       class="mx-n1 mt-7 mx-md-5 text-h6 text-sm-h5 text-medium-emphasis d-flex"

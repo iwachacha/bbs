@@ -22,15 +22,18 @@ class LectureController extends Controller
     public function index(Request $request)
     {
         $lectures = Lecture::query()
-            ->searchByWord($request->search_word, $request->exact)
+            ->searchByWord($request->search_name, $request->exact)
             ->searchByLectureName($request->lecture_name)
             ->searchByProfessorName($request->professor_name)
+            ->selectFilter($request->only(['season', 'category', 'faculty', 'department']))
             ->with('lecture_category', 'faculty', 'department', 'course')
             ->withCount('reviews', 'lecture_bookmarks')
             ->withAvg('reviews as average_rate', 'average_rate')
             ->withAvg('reviews as fulfillment_rate_avg', 'fulfillment_rate')
             ->withAvg('reviews as ease_rate_avg', 'ease_rate')
             ->withAvg('reviews as satisfaction_rate_avg', 'satisfaction_rate')
+            ->ratingFilter($request->only(['fulfillment', 'ease', 'satisfaction']))
+            ->sort($request->sort)
             ->get();
 
         return Inertia::render('Lecture/Index')->with([
@@ -38,6 +41,10 @@ class LectureController extends Controller
             'resultCount' => $lectures->count(),
             'names' => fn() => Lecture::select('lecture_name', 'professor_name')->get(),
             'BookmarkedLectureId' => fn() => LectureBookmark::select('lecture_id')->where('user_id', Auth::id())->get(),
+            'lectureCategories' => fn() => LectureCategory::all(),
+            'faculties' => fn() => Faculty::all(),
+            'departments' => fn() => Department::all(),
+            'query'=> $request->query(),
         ]);
     }
     public function show($lecture_id)

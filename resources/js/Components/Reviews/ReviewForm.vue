@@ -58,30 +58,30 @@
     }
   )
 
-  const toast = useToast()
-
   const onSubmit = () => {
-    if(usePage().component === 'Review/Create'){
+    if(usePage().component === 'Review/Create' || usePage().component === 'Lecture/Create'){
       reviewForm.post(route('review.store', LectureId.value), {
         onSuccess: () => [
-          toast.success('レビューの作成が完了しました。\n投稿ありがとうございます！'),
+          usePage().props.flash.error
+            ? useToast().error(usePage().props.flash.error + '\nレビューページから編集ページへ移動することができます。')
+            : useToast().success('レビューの作成が完了しました。\n投稿ありがとうございます！')
         ],
-        onError: () => [toast.error('入力内容に誤りがあります！\n内容の確認をお願いします。')]
+        onError: () => [useToast().error('入力内容に誤りがあります！\n内容の確認をお願いします。')]
       })
     }
     else if(usePage().component === 'Review/Edit'){
       reviewForm.put(route('review.update', [props.review.id]), {
         onSuccess: () => [
-          toast.success('レビューの編集が完了しました。'),
+          useToast().success('レビューの編集が完了しました。')
         ],
-        onError: () => [toast.error('入力内容に誤りがあります！\n内容の確認をお願いします。')]
+        onError: () => [useToast().error('入力内容に誤りがあります！\n内容の確認をお願いします。')]
       })
     }
   }
 
   const showError = () => {
     reviewV$.value.$touch()
-    toast.error('入力内容に誤りがあります！\n内容の確認をお願いします。')
+    useToast().error('入力内容に誤りがあります！\n内容の確認をお願いします。')
   }
 
   const dialog = ref(false)

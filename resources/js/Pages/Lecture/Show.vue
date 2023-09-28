@@ -17,7 +17,7 @@
     lecture: Object,
     fulfillmentRate: Array,
     easeRate: Array,
-    satisfactionRate: Array
+    satisfactionRate: Array,
   })
 
   const tab = ref('reviews')
@@ -73,6 +73,15 @@
       only: ['lecture']
     })
   }
+
+  const tagNames = []
+  props.lecture.reviews.forEach(review => {
+    review.tags.forEach(tag => {
+      tagNames.push(tag.name)
+    })
+  })
+  const uniqueTagNames = Array.from(new Set(tagNames))
+
 </script>
 
 <script>
@@ -84,7 +93,7 @@
 
 <template>
   <PageSection
-    :title="props.lecture.lecture_name + ' / ' + props.lecture.professor_name + ' - レビュー'"
+    :title="props.lecture.lecture_name + ' / ' + props.lecture.professor_name + ' - レビュー・講義情報'"
     :icon="mdiMessageText"
   >
     <v-tabs
@@ -157,7 +166,7 @@
                 </template>
 
                 <template v-slot:text>
-                  <v-row justify="center" align="center" class="mb-1">
+                  <v-row justify="center" align="center">
                     <v-col cols="auto" class="py-2">
                       <StarRateChip
                         label="充実度評価"
@@ -253,7 +262,7 @@
             </div>
           </v-col>
           <v-divider class="border-opacity-100 d-md-none my-3" />
-          
+
           <v-col cols="12" md="7">
             <Carousel>
               <div class="px-14">
@@ -298,6 +307,16 @@
             <tr><th>開講学部</th><td>{{ props.lecture.faculty ? lecture.faculty.name : '未設定' }}</td></tr>
             <tr><th>開講学科・課程</th><td>{{ props.lecture.department ? lecture.department.name : '未設定' }}</td></tr>
             <tr><th>開講コース・専修</th><td>{{ props.lecture.course ? lecture.course.name : '未設定'}}</td></tr>
+            <tr>
+              <th>＃タグ一覧</th>
+              <td>
+                <v-row justify="center" class="pa-2 ma-0">
+                  <template v-for="tag in uniqueTagNames">
+                    <v-col cols="auto" class="py-0 px-2">{{ '＃' + tag }}</v-col>
+                  </template>
+                </v-row>
+              </td>
+            </tr>
             <tr><th>投稿日時</th><td>{{ props.lecture.created_at }}</td></tr>
           </tbody>
         </v-table>

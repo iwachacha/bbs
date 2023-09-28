@@ -1,30 +1,26 @@
 <script setup>
-  import { watch, ref } from 'vue'
-  import { router, useForm } from '@inertiajs/vue3'
-  import { mdiFilterPlus, mdiFilterMinus, mdiSort } from '@mdi/js'
-  import StarRateSlider from '@/Components/StarRateSlider.vue'
-  import PrimaryBtn from '@/Components/PrimaryBtn.vue'
-  import Select from '@/Components/Select.vue'
+  import { watch, ref, reactive } from 'vue'
+  import { router } from '@inertiajs/vue3'
+  import { mdiSort } from '@mdi/js'
+  import { useToast } from "vue-toastification"
 
-  const props = defineProps({
-    lectureCategories: Object,
-    faculties: Object,
-    departments: Object,
-    courses: Object,
+  const props = defineProps({ query: Object })
+
+  const form = reactive({
+    sort: props.query['sort']
   })
+  const items = ['新しい順', '古い順', 'レビュー数順', '保存数順', '総合評価値順', '充実評価値順', '楽単評価値順' ]
 
-  const form = useForm({
-    star: null,
-  })
-
-  /*watch(form, () => {
-    router.get(route('lecture.index'), {
-      search_name: form.search_name
-    }, {
+  watch(form, () => {
+    router.get(route('lecture.index', [props.query, form]), {}, {
+      onSuccess: () => {
+        useToast().success(form.sort + 'で並べ替えました。')
+      },
       preserveState: true,
-      only: ['lectures']
+      preserveScroll: true,
+      only: ['lectures', 'query'],
     })
-  })*/
+  })
 
   const open = ref(false)
 </script>
@@ -36,16 +32,11 @@
 
     <v-menu activator="parent">
       <v-list>
-        <v-list-item>新しい順</v-list-item>
-        <v-divider class="border-opacity-100" />
-
-        <v-list-item>古い順</v-list-item>
-        <v-divider class="border-opacity-100" />
-
-        <v-list-item>レビュー数順</v-list-item>
-        <v-divider class="border-opacity-100" />
-
-        <v-list-item>総合評価値順</v-list-item>
+        <template v-for="item in items">
+          <v-list-item @click="form.sort = item">{{ item }}</v-list-item>
+          <v-divider class="border-opacity-100" />
+        </template>
+        <v-list-item @click="form.sort = '満足評価値順'">満足評価値順</v-list-item>
       </v-list>
     </v-menu>
   </v-btn>

@@ -37,7 +37,7 @@
     </v-card-text>
 
     <template v-if="readMore">
-      <div :class="open ? 'text-right me-1 mt-n4 mb-n4' : 'text-right me-1 mb-2 mt-n4'">
+      <div :class="open ? 'text-right me-1 mt-n2 mb-n4' : 'text-right me-1 mb-2 mt-n2'">
         <v-btn
           @click="open = !open"
           variant="text"

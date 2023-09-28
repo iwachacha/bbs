@@ -9,12 +9,12 @@ use App\Models\Lecture;
 
 class LectureBookmarkController extends Controller
 {
-    public function setBookmark(Lecture $lecture)
+    public function set(Lecture $lecture)
     {
         $lecture->bookmarkUsers()->syncWithoutDetaching(Auth::id()); //重複なしで紐付け=ブックマーク登録
     }
 
-    public function removeBookmark(Lecture $lecture)
+    public function remove(Lecture $lecture)
     {
         $lecture->bookmarkUsers()->detach(Auth::id()); //紐付け解除＝ブックマーク解除
     }
