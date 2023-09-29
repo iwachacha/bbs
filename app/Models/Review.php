@@ -43,4 +43,83 @@ class Review extends Model
             get: fn ($value) => Carbon::parse($value)->format('Y年m月d日'),
         );
     }
+
+    public function scopeSearchByWord($query, $words = null) //キーワード検索
+    {
+        if(!empty($words)){
+            foreach($words as $word) {
+                $query->where(function($query) use($word){
+                    $query->where('title', 'LIKE', '%'.$word.'%')
+                        ->orWhere('lecture_content', 'LIKE', '%'.$word.'%')
+                        ->orWhere('good_point', 'LIKE', '%'.$word.'%')
+                        ->orWhere('bad_point', 'LIKE', '%'.$word.'%');
+                });
+            }
+        }
+    }
+
+    public function scopeSearchByTag($query, $tag = null) //#タグ検索
+    {
+        if(!empty($tag)){
+            $query->WhereHas('tags', function ($query) use ($tag) {
+                $query->where('name', $tag);
+            });
+        }
+    }
+
+    public function scopeSort($query, $sort = null) //並び替え
+    {
+        if($sort === '充実度評価(高い順)'){
+            $query->orderBy('fulfillment_rate', 'desc');
+        }
+        elseif($sort === '充実度評価(低い順)'){
+            $query->orderBy('fulfillment_rate', 'asc');
+        }
+        elseif($sort === '楽単度評価(高い順)'){
+            $query->orderBy('ease_rate', 'desc');
+        }
+        elseif($sort === '楽単度評価(低い順)'){
+            $query->orderBy('ease_rate', 'asc');
+        }
+        elseif($sort === '満足度評価(高い順)'){
+            $query->orderBy('satisfaction_rate', 'desc');
+        }
+        elseif($sort === '満足度評価(低い順)'){
+            $query->orderBy('satisfaction_rate', 'asc');
+        }
+        else {
+            $query->latest();
+        }
+    }
+
+    public function scopeFilter($query, $filter) //絞り込み
+    {
+        if(!empty($filter['fulfillment'])){
+            $query->whereBetween('fulfillment_rate', [
+                (int) $filter['fulfillment'][0],
+                (int) $filter['fulfillment'][1]
+            ]);
+        }
+
+        if(!empty($filter['ease'])){
+            $query->whereBetween('ease_rate', [
+                (int) $filter['ease'][0],
+                (int) $filter['ease'][1]
+            ]);
+        }
+
+        if(!empty($filter['satisfaction'])){
+            $query->whereBetween('satisfaction_rate', [
+                (int) $filter['satisfaction'][0],
+                (int) $filter['satisfaction'][1]
+            ]);
+        }
+
+        if(!empty($filter['year'])){
+            $query->whereBetween('year', [
+                (int) $filter['year'][0],
+                (int) $filter['year'][1]
+            ]);
+        }
+    }
 }

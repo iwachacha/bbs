@@ -14,6 +14,23 @@ use App\Http\Requests\ReviewRequest;
 
 class ReviewController extends Controller
 {
+    public function Index(Request $request)
+    {
+        $reviews = Review::query()
+            ->searchByWord($request->search_word)
+            ->filter($request->only(['fulfillment', 'ease', 'satisfaction', 'year']))
+            ->searchByTag($request->tag)
+            ->with('lecture', 'tags', 'user')
+            ->sort($request->sort)
+            ->get();
+
+        return Inertia::render('Review/Index')->with([
+            'reviews' => $reviews,
+            'resultCount' => $reviews->count(),
+            'query'=> $request->query(),
+        ]);
+    }
+    
     public function create(Lecture $lecture)
     {
         return Inertia::render('Review/Create')->with([
@@ -32,12 +49,11 @@ class ReviewController extends Controller
         $duplicate_check = Review::where('lecture_id', $lecture->id)->where('user_id', Auth::id())->exists(); //レビュー重複チェック
         if($duplicate_check){
             return to_route('lecture.show', $lecture->id)->with('error', '1つの講義に対して2件目のレビューはできません。');
-        }else {
-            $review->fill($input)->save();
         }
 
-        foreach($input['tag'] as $tag)
-        {
+        $review->fill($input)->save();
+
+        foreach($input['tag'] as $tag){
             $created_tag = Tag::firstOrCreate(['name' => $tag]); //重複なしでタグを保存
             $review->tags()->attach($created_tag); //レビューとタグを紐付け
         }

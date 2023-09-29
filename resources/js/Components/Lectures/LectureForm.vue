@@ -36,8 +36,6 @@
   })
   const lectureV$ = useVuelidate(lectureRules, lectureForm)
 
-  const toast = useToast()
-
   //階層：カテゴリー>学部>学科>コース、学部・学科・コースはリレーションあり
   //カテゴリーの共通教養が選択された場合は学部・学科・コースの選択をリセット
   //共通教養以外が選択された場合は学部の選択肢を追加
@@ -83,18 +81,18 @@
   const onSubmit = () => {
     lectureForm.post(route('lecture.store'), {
       onSuccess: () => [
-        toast.success('講義作成が完了しました！\nレビュー作成にお進みください。'),
+        useToast().success('講義作成が完了しました！\nレビュー作成にお進みください。'),
         lectureForm.reset(),
         lectureV$.value.$reset(),
         submitNotice()
       ],
-      onError: () => [toast.error('入力内容に誤りがあります！\n内容の確認をお願いします。')]
+      onError: () => [useToast().error('入力内容に誤りがあります！\n内容の確認をお願いします。')]
     })
   }
 
   const showError = () => {
     lectureV$.value.$touch()
-    toast.error('入力内容に誤りがあります！\n内容の確認をお願いします。')
+    useToast().error('入力内容に誤りがあります！\n内容の確認をお願いします。')
   }
 
   const dialog = ref(false)

@@ -1,9 +1,10 @@
 <script setup>
-  import { computed, reactive, watch } from 'vue'
-  import { mdiMagnify } from '@mdi/js'
+  import { computed } from 'vue'
+  import { mdiMagnify, mdiReload } from '@mdi/js'
   import { router } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
   import { getCategoryName, getFacultyName, getDepartmentName } from '@/Components/Lectures/GetNameFromId.vue'
+  import LinkBtn from '@/Components/LinkBtn.vue'
 
   const props = defineProps({
     query:Object,
@@ -44,10 +45,21 @@
 
 <template>
   <template v-if="Object.keys(props.query).length">
-    <v-label class="mt-5">
-      <v-icon :icon="mdiMagnify" />
-      検索条件
-    </v-label>
+    <div class="mt-5 d-flex">
+      <v-label class="me-5">
+        <v-icon :icon="mdiMagnify" />
+        検索条件
+      </v-label>
+
+      <LinkBtn
+        :href="route('lecture.index')"
+        :only="['lectures', 'query']"
+        variant="text"
+      >
+        <v-icon :icon="mdiReload" />
+        検索条件リセット
+      </LinkBtn>
+    </div>
 
     <div class="d-flex flex-wrap mb-2 ms-4">
       <template v-for="(value, key) in props.query">

@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/lectures/{lecture}', 'show')->name('lecture.show');
     });
     Route::controller(ReviewController::class)->group(function () {
+        Route::get('/reviews', [ReviewController::class, 'index'])->name('review.index');
         Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('review.update');
         Route::delete('/reviews/{review}', [ReviewController::class, 'delete'])->name('review.delete');
         Route::post('/lectures/{lecture}/reviews', [ReviewController::class, 'store'])->name('review.store');

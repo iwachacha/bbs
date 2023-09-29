@@ -11,6 +11,6 @@ export const options = {
   closeButton: "button",
   icon: true,
   rtl: false,
-  maxToasts: 3,
+  maxToasts: 1,
   newestOnTop: true
 };

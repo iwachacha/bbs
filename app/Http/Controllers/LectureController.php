@@ -22,7 +22,7 @@ class LectureController extends Controller
     public function index(Request $request)
     {
         $lectures = Lecture::query()
-            ->searchByWord($request->search_name, $request->exact)
+            ->searchByName($request->search_name, $request->exact)
             ->searchByLectureName($request->lecture_name)
             ->searchByProfessorName($request->professor_name)
             ->selectFilter($request->only(['season', 'category', 'faculty', 'department']))

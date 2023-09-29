@@ -1,8 +1,9 @@
 <script setup>
   import { ref, computed } from 'vue'
+  import { Head } from '@inertiajs/vue3'
   import { mdiPenPlus } from '@mdi/js'
   import PageSection from '@/Components/PageSection.vue'
-  import MoveReviewPage from '@/Components/Lectures/MoveReviewPage.vue'
+  import MoveReviewPageForm from '@/Components/Lectures/MoveReviewPageForm.vue'
   import LectureForm from '@/Components/Lectures/LectureForm.vue'
   import ReviewForm from '@/Components/Reviews/ReviewForm.vue'
   import PrimaryBtn from '@/Components/PrimaryBtn.vue'
@@ -45,6 +46,8 @@
 </script>
 
 <template>
+  <Head title="レビュー作成" />
+
   <PageSection :title="currentSection.title" :subtitle="currentSection.subtitle" :icon="mdiPenPlus">
     <v-stepper
       v-model="step"
@@ -55,7 +58,7 @@
     >
 
       <template v-slot:item.1>
-        <MoveReviewPage
+        <MoveReviewPageForm
           :lectures="props.lectures"
           :lecture-categories="props.lectureCategories"
           :faculties="props.faculties"

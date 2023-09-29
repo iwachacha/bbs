@@ -14,9 +14,9 @@
 </script>
 
 <template>
-	<Head title="文教大学・越谷キャンパス情報掲示板" />
+	<Head title="ようこそ" />
+	
 	<v-app>
-
 		<div v-if="status" class="mb-4 font-medium text-sm text-green-600">
 			{{ status }}
 		</div>
