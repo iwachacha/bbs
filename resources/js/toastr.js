@@ -12,5 +12,14 @@ export const options = {
   icon: true,
   rtl: false,
   maxToasts: 1,
-  newestOnTop: true
+  newestOnTop: true,
+
+  filterBeforeCreate: (toast, toasts) => {
+    if (toasts.filter(
+      t => t.type === toast.type
+    ).length !== 0) {
+      return false;
+    }
+    return toast;
+  }
 };

@@ -11,6 +11,7 @@
   import PrimaryBtn from '@/Components/PrimaryBtn.vue'
   import SecondaryBtn from '@/Components/SecondaryBtn.vue'
   import StarRateChip from '@/Components/StarRateChip.vue'
+  import PaginationBtn from '@/Components/PaginationBtn.vue'
   import SearchReviewForm from '@/Components/Reviews/SearchReviewForm.vue'
   import FilterReviewForm from '@/Components/Reviews/FilterReviewForm.vue'
   import SortReviewForm from '@/Components/Reviews/SortReviewForm.vue'
@@ -18,7 +19,6 @@
 
   const props = defineProps({
     reviews: Object,
-    resultCount: Number,
     query: Object
   })
 
@@ -32,7 +32,7 @@
     else {
       return {
         icon: mdiMagnify,
-        title: 'レビュー検索' + '（' + props.resultCount + '件）'
+        title: 'レビュー検索結果' + '（' + props.reviews.total + '件）'
       }
     }
   })
@@ -46,20 +46,16 @@
     }
   })
 
-  const search = reactive({
-    tag: null
-  })
-
-  watch(search, () => {
-    router.get(route('review.index', [props.query, search]), {}, {
+  //＃タグ検索
+  const tagSearch = (name) => {
+    router.get(route('review.index', { tag: name }), {}, {
       onSuccess: () => {
-        useToast().success(props.resultCount + '件取得しました。')
-      },
-      preserveState: true,
-      only: ['reviews', 'resultCount', 'query'],
+        useToast().success('＃' + name + 'でレビューを検索しました。')
+      }
     })
-  })
+  }
 
+  //レビュー削除
   const deleteDialog = ref(false)
   const deleteId = ref(null)
 
@@ -71,6 +67,15 @@
         deleteId.value = null
       },
       only: ['reviews', 'query']
+    })
+  }
+
+  //ページネーション
+  const movePage = (targetPage) => {
+    router.get(props.reviews.links[targetPage].url,
+    props.query, {
+      preserveState: true,
+      only: ['reviews', 'query'],
     })
   }
 </script>
@@ -89,17 +94,17 @@
     <v-row justify="center">
       <v-col cols="11" sm="9" md="7" class="pa-0">
         <SearchReviewForm
-          :resultCount="resultCount"
           :query="props.query"
+          :result-count="props.reviews.total"
         />
       </v-col>
     </v-row>
 
-    <div class="d-flex justify-end mt-7 me-sm-5 mb-2">
+    <div class="d-flex justify-end mt-7 me-sm-5">
       <div class="me-3">
         <FilterReviewForm
-          :result-count="props.resultCount"
           :query="props.query"
+          :result-count="props.reviews.total"
         />
       </div>
 
@@ -112,9 +117,9 @@
       :query="props.query"
     />
 
-    <v-row justify="center">
-      <template v-for="review in props.reviews">
-        <v-col cols="12" sm="10" md="6">
+    <v-row justify="center" class="mt-1">
+      <template v-for="review in props.reviews.data">
+        <v-col cols="12" sm="10" md="6" class="py-2 py-sm-3">
           <PostCard
             :read-more="true"
             class="mb-4"
@@ -170,23 +175,23 @@
               </div>
 
               <v-row justify="center" align="center" class="mt-1">
-                <v-col cols="auto" class="py-2">
+                <v-col cols="auto" class="py-1 px-2 px-sm-4">
                   <StarRateChip
-                    label="充実度評価"
+                    label="充実度"
                     :star="review.fulfillment_rate"
                   />
                 </v-col>
 
-                <v-col cols="auto" class="py-2">
+                <v-col cols="auto" class="py-1 px-2 px-sm-4">
                   <StarRateChip
-                    label="楽単度評価"
+                    label="楽単度"
                     :star="review.ease_rate"
                   />
                 </v-col>
 
-                <v-col cols="auto" class="py-2">
+                <v-col cols="auto" class="py-1 px-2 px-sm-4">
                   <StarRateChip
-                    label="満足度評価"
+                    label="満足度"
                     :star="review.satisfaction_rate"
                   />
                 </v-col>
@@ -199,7 +204,7 @@
                 <div class="my-2">
                   <span
                     v-for="tag in review.tags"
-                    @click="search.tag = tag.name"
+                    @click="tagSearch(tag.name)"
                     style="cursor: pointer; color: #26A69A;"
                     class="mx-2"
                   >
@@ -238,6 +243,13 @@
         </v-col>
       </template>
     </v-row>
+
+    <PaginationBtn
+      v-model="props.reviews.current_page"
+      :length="props.reviews.last_page"
+      @update:modelValue="movePage(props.reviews.current_page)"
+      v-if="props.reviews.last_page > 1"
+    />
   </PageSection>
 
   <ConfirmCard

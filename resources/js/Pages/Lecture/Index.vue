@@ -7,16 +7,16 @@
   import LinkBtn from '@/Components/LinkBtn.vue'
   import PageSection from '@/Components/PageSection.vue'
   import PostCard from '@/Components/PostCard.vue'
-  import StarRateChip from '@/Components/StarRateChip.vue'
+  import PaginationBtn from '@/Components/PaginationBtn.vue'
   import BookmarkBtn from '@/Components/Lectures/BookmarkBtn.vue'
   import SearchLectureForm from '@/Components/Lectures/SearchLectureForm.vue'
   import FilterLectureForm from '@/Components/Lectures/FilterLectureForm.vue'
   import SortLectureForm from '@/Components/Lectures/SortLectureForm.vue'
+  import StarRateChip from '@/Components/StarRateChip.vue'
   import LectureQueryChip from '@/Components/Lectures/LectureQueryChip.vue'
 
   const props = defineProps({
     lectures: Object,
-    resultCount: Number,
     names: Object,
     BookmarkedLectureId: Array,
     lectureCategories: Object,
@@ -35,7 +35,7 @@
     else {
       return {
         icon: mdiMagnify,
-        title: '講義検索' + '（' + props.resultCount + '件）'
+        title: '講義検索結果' + '（' + props.lectures.total + '件）'
       }
     }
   })
@@ -45,6 +45,7 @@
     return props.BookmarkedLectureId.find(e => e.lecture_id == lecture_id)
   })
 
+  //講義名・教員名クリックで検索
   const search = reactive({
     lecture_name: null,
     professor_name: null
@@ -53,13 +54,22 @@
   watch(search, () => {
     router.get(route('lecture.index', [props.query, search]), {}, {
       onSuccess: () => {
-        useToast().success(props.resultCount + '件取得しました。')
+        useToast().success(props.lectures.total + '件取得しました。')
       },
       preserveState: true,
       preserveScroll: true,
-      only: ['lectures', 'resultCount', 'query'],
+      only: ['lectures', 'query'],
     })
   })
+
+  //ページネーション
+  const movePage = (targetPage) => {
+    router.get(props.lectures.links[targetPage].url,
+    props.query, {
+      preserveState: true,
+      only: ['lectures', 'query'],
+    })
+  }
 </script>
 
 <script>
@@ -78,16 +88,16 @@
       <v-col cols="11" sm="9" md="7" class="pa-0">
         <SearchLectureForm
           :names="names"
-          :resultCount="resultCount"
+          :result-count="props.lectures.total"
           :query="props.query"
         />
       </v-col>
     </v-row>
 
-    <div class="d-flex justify-end mt-7 me-sm-5 mb-2">
+    <div class="d-flex justify-end mt-7 me-sm-5">
       <div class="me-3">
         <FilterLectureForm
-          :result-count="props.resultCount"
+          :result-count="props.lectures.total"
           :lecture-categories="props.lectureCategories"
           :faculties="props.faculties"
           :departments="props.departments"
@@ -108,7 +118,7 @@
     />
 
     <v-row justify="space-around">
-      <template v-for="lecture in props.lectures">
+      <template v-for="lecture in props.lectures.data">
         <v-col cols="12" sm="6" lg="4" class="px-2 px-md-3 my-1 my-sm-2">
 
           <PostCard>
@@ -150,10 +160,10 @@
                 {{ Math.floor(lecture.average_rate * 1000) / 1000 }}
               </div>
 
-              <v-row justify="center" class="mt-1">
+              <v-row justify="center" class="mt-0 mb-0">
                 <v-col cols="auto" class="px-2">
                   <StarRateChip
-                    label="充実"
+                    label="充実度"
                     :star="Math.floor(lecture.fulfillment_rate_avg * 10) / 10"
                     :small="true"
                   />
@@ -161,7 +171,7 @@
 
                 <v-col cols="auto" class="px-2">
                   <StarRateChip
-                    label="楽単"
+                    label="楽単度"
                     :star="Math.floor(lecture.ease_rate_avg * 10) / 10"
                     :small="true"
                   />
@@ -169,7 +179,7 @@
 
                 <v-col cols="auto" class="px-2">
                   <StarRateChip
-                    label="満足"
+                    label="満足度"
                     :star="Math.floor(lecture.satisfaction_rate_avg * 10) / 10"
                     :small="true"
                   />
@@ -192,11 +202,16 @@
                 {{ lecture.reviews_count }}
               </LinkBtn>
             </template>
-
           </PostCard>
-
         </v-col>
       </template>
     </v-row>
+
+    <PaginationBtn
+      v-model="props.lectures.current_page"
+      :length="props.lectures.last_page"
+      @update:modelValue="movePage(props.lectures.current_page)"
+      v-if="props.lectures.last_page > 1"
+    />
   </PageSection>
 </template>

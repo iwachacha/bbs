@@ -34,17 +34,16 @@ class LectureController extends Controller
             ->withAvg('reviews as satisfaction_rate_avg', 'satisfaction_rate')
             ->ratingFilter($request->only(['fulfillment', 'ease', 'satisfaction']))
             ->sort($request->sort)
-            ->get();
+            ->paginate(12);
 
         return Inertia::render('Lecture/Index')->with([
             'lectures' => $lectures,
-            'resultCount' => $lectures->count(),
             'names' => fn() => Lecture::select('lecture_name', 'professor_name')->get(),
             'BookmarkedLectureId' => fn() => LectureBookmark::select('lecture_id')->where('user_id', Auth::id())->get(),
             'lectureCategories' => fn() => LectureCategory::all(),
             'faculties' => fn() => Faculty::all(),
             'departments' => fn() => Department::all(),
-            'query'=> $request->query(),
+            'query'=> $request->except('page')
         ]);
     }
     public function show($lecture_id)

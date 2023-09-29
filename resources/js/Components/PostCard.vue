@@ -24,7 +24,7 @@
       </DotMenuBtn>
     </v-toolbar>
 
-    <v-card-title class="mt-3 pb-1 text-body-1 text-center" style="line-height: normal;">
+    <v-card-title class="mt-3 pb-1 text-body-2 text-sm-body-1 text-center" style="line-height: normal;">
       <slot name="cardTitle" />
     </v-card-title>
 
@@ -32,12 +32,12 @@
       <slot name="subtitle" />
     </v-card-subtitle>
 
-    <v-card-text class="text-center">
+    <v-card-text class="text-center py-2">
       <slot name="text" />
     </v-card-text>
 
     <template v-if="readMore">
-      <div :class="open ? 'text-right me-1 mt-n2 mb-n4' : 'text-right me-1 mb-2 mt-n2'">
+      <div :class="open ? 'text-right me-1 mb-n4' : 'text-right me-1 mb-1'">
         <v-btn
           @click="open = !open"
           variant="text"

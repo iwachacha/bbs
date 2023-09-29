@@ -22,15 +22,13 @@ class ReviewController extends Controller
             ->searchByTag($request->tag)
             ->with('lecture', 'tags', 'user')
             ->sort($request->sort)
-            ->get();
+            ->paginate(8);
 
         return Inertia::render('Review/Index')->with([
             'reviews' => $reviews,
-            'resultCount' => $reviews->count(),
-            'query'=> $request->query(),
+            'query'=> $request->except('page')
         ]);
     }
-    
     public function create(Lecture $lecture)
     {
         return Inertia::render('Review/Create')->with([

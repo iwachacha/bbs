@@ -27,7 +27,7 @@
       },
       preserveState: true,
       preserveScroll: true,
-      only: ['reviews', 'resultCount', 'query'],
+      only: ['reviews', 'query'],
     })
   }
 

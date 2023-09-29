@@ -1,5 +1,5 @@
 <script setup>
-  import { watch, ref, reactive } from 'vue'
+  import { watch, ref } from 'vue'
   import { router } from '@inertiajs/vue3'
   import { mdiSort } from '@mdi/js'
   import { useToast } from "vue-toastification"
@@ -8,15 +8,14 @@
     query: Object
   })
 
-  const form = reactive({
-    sort: props.query['sort']
-  })
+  const sort = ref(props.query['sort'])
+
   const items = ['充実度評価(高い順)', '楽単度評価(高い順)', '満足度評価(高い順)', '充実度評価(低い順)',  '楽単度評価(低い順)', ]
 
-  watch(form, () => {
-    router.get(route('review.index', [props.query, form]), {}, {
+  watch(sort, () => {
+    router.get(route('review.index', [{ sort: sort.value }, props.query]), {}, {
       onSuccess: () => {
-        useToast().success(form.sort + 'で並べ替えました。')
+        useToast().success(sort.value + 'で並べ替えました。')
       },
       preserveState: true,
       preserveScroll: true,
@@ -35,10 +34,10 @@
     <v-menu activator="parent">
       <v-list>
         <template v-for="item in items">
-          <v-list-item @click="form.sort = item">{{ item }}</v-list-item>
+          <v-list-item @click="sort = item">{{ item }}</v-list-item>
           <v-divider class="border-opacity-100" />
         </template>
-        <v-list-item @click="form.sort = '満足度評価(低い順)'">満足度評価(低い順)</v-list-item>
+        <v-list-item @click="sort = '満足度評価(低い順)'">満足度評価(低い順)</v-list-item>
       </v-list>
     </v-menu>
   </v-btn>
