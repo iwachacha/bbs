@@ -1,17 +1,18 @@
 <script setup>
   import { computed, reactive, watch } from 'vue'
+  import { Head } from '@inertiajs/vue3'
   import { mdiMessageText, mdiMagnify, mdiAlertCircle, mdiListBox, mdiChevronRight } from '@mdi/js'
   import { router } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
   import LinkBtn from '@/Components/LinkBtn.vue'
   import PageSection from '@/Components/PageSection.vue'
   import PostCard from '@/Components/PostCard.vue'
-  import BookmarkBtn from '@/Components/Lectures/BookmarkBtn.vue'
-  import LectureSearchForm from '@/Components/Lectures/LectureSearchForm.vue'
-  import LectureFilterForm from '@/Components/Lectures/LectureFilterForm.vue'
-  import LectureSortForm from '@/Components/Lectures/LectureSortForm.vue'
   import StarRateChip from '@/Components/StarRateChip.vue'
-  import QueryChip from '@/Components/Lectures/QueryChip.vue'
+  import BookmarkBtn from '@/Components/Lectures/BookmarkBtn.vue'
+  import SearchLectureForm from '@/Components/Lectures/SearchLectureForm.vue'
+  import FilterLectureForm from '@/Components/Lectures/FilterLectureForm.vue'
+  import SortLectureForm from '@/Components/Lectures/SortLectureForm.vue'
+  import LectureQueryChip from '@/Components/Lectures/LectureQueryChip.vue'
 
   const props = defineProps({
     lectures: Object,
@@ -28,7 +29,7 @@
     if(!Object.keys(props.query).length){
       return {
         icon: mdiListBox,
-        title: '講義一覧'
+        title: '講義検索'
       }
     }
     else {
@@ -69,11 +70,13 @@
 </script>
 
 <template>
+  <Head :title="pageSection.title" />
+
   <PageSection :icon="pageSection.icon" :title="pageSection.title">
 
     <v-row justify="center">
       <v-col cols="11" sm="9" md="7" class="pa-0">
-        <LectureSearchForm
+        <SearchLectureForm
           :names="names"
           :resultCount="resultCount"
           :query="props.query"
@@ -83,7 +86,7 @@
 
     <div class="d-flex justify-end mt-7 me-sm-5 mb-2">
       <div class="me-3">
-        <LectureFilterForm
+        <FilterLectureForm
           :result-count="props.resultCount"
           :lecture-categories="props.lectureCategories"
           :faculties="props.faculties"
@@ -92,12 +95,12 @@
         />
       </div>
 
-      <LectureSortForm
+      <SortLectureForm
         :query="props.query"
       />
     </div>
 
-    <QueryChip
+    <LectureQueryChip
       :query="props.query"
       :lecture-categories="props.lectureCategories"
       :faculties="props.faculties"

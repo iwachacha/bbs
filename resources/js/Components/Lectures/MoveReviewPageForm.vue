@@ -16,23 +16,21 @@
   })
 
   const dialog = ref(false)
-  const selectLectureId = ref()
+  const selectLecture = ref()
   const selectLectureInfo = ref()
 
-  watch(selectLectureId, () => {
-    if(selectLectureId.value != null){
+  watch(selectLecture, () => {
+    if(selectLecture.value != null){
 
-      selectLectureInfo.value = props.lectures.find((lecture) => lecture.id === selectLectureId.value)
-
-      let categoryName = getCategoryName(props.lectureCategories, selectLectureInfo.value.lecture_category_id)
-      let facultyName = getFacultyName(props.faculties, selectLectureInfo.value.faculty_id)
-      let departmentName = getDepartmentName(props.departments, selectLectureInfo.value.department_id)
-      let courseName = getCourseName(props.courses, selectLectureInfo.value.course_id)
+      let categoryName = getCategoryName(props.lectureCategories, selectLecture.value.lecture_category_id)
+      let facultyName = getFacultyName(props.faculties, selectLecture.value.faculty_id)
+      let departmentName = getDepartmentName(props.departments, selectLecture.value.department_id)
+      let courseName = getCourseName(props.courses, selectLecture.value.course_id)
 
       selectLectureInfo.value = [
-        {key: 'ID', value: selectLectureInfo.value.id},
-        {key: '講義名', value: selectLectureInfo.value.lecture_name},
-        {key: '担当教員名', value: selectLectureInfo.value.professor_name},
+        {key: 'ID', value: selectLecture.value.id},
+        {key: '講義名', value: selectLecture.value.lecture_name},
+        {key: '担当教員名', value: selectLecture.value.professor_name},
         {key: '講義区分', value: categoryName},
         {key: '開講学部', value: facultyName ? facultyName : '未設定'},
         {key: '開講学科・課程', value: departmentName ? departmentName : '未設定'},
@@ -43,7 +41,7 @@
   })
 
   const moveReviewPage = () => {
-    router.get(route('review.create', selectLectureId.value))
+    router.get(route('review.create', selectLecture.value.id))
   }
 </script>
 
@@ -54,16 +52,19 @@
       <v-col cols="12" sm="8">
         <v-autocomplete
           :items="lectures"
-          v-model="selectLectureId"
-          item-value="id"
-          item-title="lecture_name"
-          label="講義検索"
+          v-model="selectLecture"
+          :item-title="(item) => item.lecture_name + ' / ' + item.professor_name"
+          label="レビュー対象講義検索"
+          placeholder="講義名を入力してください"
           hint="例：対象→情報A　○情・A　×じょ・zyo"
           density="compact"
           :append-inner-icon="mdiMagnify"
           clearable
           persistent-hint
           variant="solo"
+          menu-icon=""
+          no-data-text="対象講義は未作成です"
+          return-object
         />
       </v-col>
     </v-row>

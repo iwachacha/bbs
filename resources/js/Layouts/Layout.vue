@@ -39,35 +39,38 @@
                 :active="$page.component.startsWith('Lecture') || $page.component.startsWith('Review')"
               />
             </template>
+
+            <NavItem
+              :href="route('lecture.index')"
+              title="講義検索"
+              :icon="mdiListBox"
+              component="Lecture/Index"
+            />
+            <NavItem
+              :href="route('review.index')"
+              title="レビュー検索"
+              :icon="mdiMessageText"
+              component="Review/Index"
+            />
+
             <NavItem
               :href="route('lecture.create')"
               title="レビュー作成"
               :icon="mdiPenPlus"
               component="Lecture/Create"
             />
-            <NavItem
-              :href="route('lecture.index')"
-              title="講義一覧"
-              :icon="mdiListBox"
-              component="Lecture/Index"
-            />
-            <NavItem
-              :href="route('contact.create')"
-              title="新着レビュー(予定)"
-              :icon="mdiMessageText"
-            />
           </v-list-group>
-          
+
           <NavItem
             :href="route('contact.create')"
             :icon="mdiSilverwareForkKnife"
-            title="周辺グルメ(予定)"
+            title="周辺グルメ（開発予定）"
           />
           
           <NavItem
             :href="route('contact.create')"
             :icon="mdiChat"
-            title="雑談部屋(予定)"
+            title="雑談部屋（開発予定）"
           />
 
           <NavItem

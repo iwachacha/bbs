@@ -4,7 +4,6 @@
   import { mdiMagnify } from '@mdi/js'
   import { useToast } from "vue-toastification"
   import SearchInput from '@/Components/SearchInput.vue'
-  import LinkBtn from '@/Components/LinkBtn.vue'
 
   const props = defineProps({
     names: Object,
@@ -28,6 +27,15 @@
     })
   })
 
+  watch(
+    () => form.search_name,
+    (search_name) => {
+      if(search_name.length > 5) {
+        search_name.pop()
+      }
+    }
+  )
+
   //検索用に講義名と教員名を重複なしで配列に摘出
   const lectureNames = props.names.map((name) => name.lecture_name)
   const professorNames = props.names.map((name) => name.professor_name)
@@ -37,8 +45,8 @@
 </script>
 
 <template>
-  <v-row justify="end" class="me-1">
-    <v-col cols="auto" class="pt-0">
+  <v-row justify="end" class="me-4">
+    <v-col cols="auto" class="pa-0 pb-2">
       <v-switch
         v-model="form.exact"
         color="primary"
@@ -61,12 +69,6 @@
     :items="(inputName) ? names : []"
     :icon="mdiMagnify"
     placeholder="検索ワードを入力してください"
-    label="講義名・教員名検索"
+    label="講義名・教員名検索(5つまで)"
   />
-
-  <div class="text-right mt-n1 mt-sm-n3">
-    <LinkBtn :href="route('lecture.index')" variant="text">
-      検索条件リセット
-    </LinkBtn>
-  </div>
 </template>

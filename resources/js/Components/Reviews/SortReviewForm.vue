@@ -4,21 +4,23 @@
   import { mdiSort } from '@mdi/js'
   import { useToast } from "vue-toastification"
 
-  const props = defineProps({ query: Object })
+  const props = defineProps({
+    query: Object
+  })
 
   const form = reactive({
     sort: props.query['sort']
   })
-  const items = ['新しい順', '古い順', 'レビュー数順', '保存数順', '総合評価値順', '充実評価値順', '楽単評価値順' ]
+  const items = ['充実度評価(高い順)', '楽単度評価(高い順)', '満足度評価(高い順)', '充実度評価(低い順)',  '楽単度評価(低い順)', ]
 
   watch(form, () => {
-    router.get(route('lecture.index', [props.query, form]), {}, {
+    router.get(route('review.index', [props.query, form]), {}, {
       onSuccess: () => {
         useToast().success(form.sort + 'で並べ替えました。')
       },
       preserveState: true,
       preserveScroll: true,
-      only: ['lectures', 'query'],
+      only: ['reviews', 'query'],
     })
   })
 
@@ -36,7 +38,7 @@
           <v-list-item @click="form.sort = item">{{ item }}</v-list-item>
           <v-divider class="border-opacity-100" />
         </template>
-        <v-list-item @click="form.sort = '満足評価値順'">満足評価値順</v-list-item>
+        <v-list-item @click="form.sort = '満足度評価(低い順)'">満足度評価(低い順)</v-list-item>
       </v-list>
     </v-menu>
   </v-btn>

@@ -1,6 +1,6 @@
 <script setup>
   import { ref, computed } from 'vue'
-  import { Link, router } from '@inertiajs/vue3'
+  import { Link, router, Head } from '@inertiajs/vue3'
   import { mdiMessageText, mdiSquareEditOutline, mdiTrashCan, mdiAlertCircle, mdiAccountCircle } from '@mdi/js'
   import { useToast } from "vue-toastification"
   import PageSection from '@/Components/PageSection.vue'
@@ -61,13 +61,12 @@
 
   const deleteDialog = ref(false)
   const deleteId = ref(null)
-  const toast = useToast()
 
   const deleteReview = () => {
     router.delete(route('review.delete', deleteId.value), {
       preserveScroll: true,
       onSuccess: () => {
-        toast.success('レビューの削除が完了しました。')
+        useToast().success('レビューの削除が完了しました。')
         deleteId.value = null
       },
       only: ['lecture']
@@ -92,6 +91,8 @@
 </script>
 
 <template>
+  <Head :title="props.lecture.lecture_name + ' / ' + props.lecture.professor_name + ' - レビュー・講義情報'" />
+
   <PageSection
     :title="props.lecture.lecture_name + ' / ' + props.lecture.professor_name + ' - レビュー・講義情報'"
     :icon="mdiMessageText"
@@ -223,8 +224,11 @@
                 </template>
 
                 <template v-slot:action>
+                  <span class="ms-2 text-caption">
+                    1人の学生に共感されています
+                  </span>
                   <v-spacer />
-                  <LinkBtn :href="route('lecture.index')">それな！</LinkBtn>
+                  <LinkBtn>それな！</LinkBtn>
                 </template>
 
               </PostCard>

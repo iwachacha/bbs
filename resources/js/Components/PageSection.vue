@@ -12,7 +12,7 @@
       style="white-space: normal; line-height: normal;"
     >
       <v-icon :icon="icon" class="me-2" size="34" />
-      <h3>{{ title }}</h3>
+      <h2>{{ title }}</h2>
 
       <div v-if="subtitle" class="d-sm-none ms-2">
         <v-tooltip location="bottom" >

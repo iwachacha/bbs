@@ -59,7 +59,7 @@ class Lecture extends Model
     }
 
     //講義名・教員名検索 - exactの値によって部分一致検索と完全一致検索を切り替える
-    public function scopeSearchByWord($query, $names = null, $exact = null)
+    public function scopeSearchByName($query, $names = null, $exact = null)
     {
         if(!empty($names)){
             foreach($names as $name) {
@@ -96,26 +96,17 @@ class Lecture extends Model
 
     public function scopeSort($query, $sort = null) //並び替え
     {
-        if($sort === '古い順'){
-            $query->oldest();
-        }
-        elseif($sort === 'レビュー数順'){
+        if($sort === 'レビュー数(多い順)'){
             $query->orderBy('reviews_count', 'desc');
         }
-        elseif($sort === '保存数順'){
+        elseif($sort === '保存数(多い順)'){
             $query->orderBy('lecture_bookmarks_count', 'desc');
         }
-        elseif($sort === '総合評価値順'){
+        elseif($sort === '平均総合評価(高い順)'){
             $query->orderBy('average_rate', 'desc');
         }
-        elseif($sort === '充実評価値順'){
-            $query->orderBy('fulfillment_rate_avg', 'desc');
-        }
-        elseif($sort === '楽単評価値順'){
-            $query->orderBy('ease_rate_avg', 'desc');
-        }
-        elseif($sort === '満足評価値順'){
-            $query->orderBy('satisfaction_rate_avg', 'desc');
+        elseif($sort === '平均総合評価(低い順)'){
+            $query->orderBy('average_rate', 'asc');
         }
         else {
             $query->latest();

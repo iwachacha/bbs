@@ -16,7 +16,7 @@
 
     <v-toolbar density="compact" color="teal-lighten-2">
       <v-toolbar-title class="text-subtitle-2 text-sm-subtitle-1">
-        <slot name="barTitle" />
+        <h3><slot name="barTitle" /></h3>
       </v-toolbar-title>
 
       <DotMenuBtn>
@@ -32,7 +32,7 @@
       <slot name="subtitle" />
     </v-card-subtitle>
 
-    <v-card-text class="text-center mt-1">
+    <v-card-text class="text-center">
       <slot name="text" />
     </v-card-text>
 
