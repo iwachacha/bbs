@@ -45,7 +45,7 @@
 
 <template>
   <template v-if="Object.keys(props.query).length">
-    <div class="mt-5 d-flex">
+    <div class="mt-3 d-flex">
       <v-label class="me-5">
         <v-icon :icon="mdiMagnify" />
         検索条件

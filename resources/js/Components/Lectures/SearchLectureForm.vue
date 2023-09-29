@@ -17,24 +17,20 @@
   })
 
   watch(form, () => {
-    router.get(route('lecture.index', [props.query, form]), {}, {
-      onSuccess: () => {
-        useToast().success(props.resultCount + '件取得しました。')
-      },
-      preserveState: true,
-      preserveScroll: true,
-      only: ['lectures', 'resultCount', 'query'],
-    })
-  })
-
-  watch(
-    () => form.search_name,
-    (search_name) => {
-      if(search_name.length > 5) {
-        search_name.pop()
-      }
+    if(form.search_word.length <= 4){
+      router.get(route('lecture.index', [props.query, form]), {}, {
+        onSuccess: () => {
+          useToast().success(props.resultCount + '件取得しました。')
+        },
+        preserveState: true,
+        preserveScroll: true,
+        only: ['lectures', 'resultCount', 'query'],
+      })
     }
-  )
+    else if(form.search_word.length > 5){
+      form.search_word.pop()
+    }
+  })
 
   //検索用に講義名と教員名を重複なしで配列に摘出
   const lectureNames = props.names.map((name) => name.lecture_name)
@@ -69,6 +65,6 @@
     :items="(inputName) ? names : []"
     :icon="mdiMagnify"
     placeholder="検索ワードを入力してください"
-    label="講義名・教員名検索(5つまで)"
+    label="講義名・教員名検索(4つまで)"
   />
 </template>

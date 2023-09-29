@@ -81,6 +81,14 @@
   })
   const uniqueTagNames = Array.from(new Set(tagNames))
 
+  //レビューのタグ検索
+  const tagSearch = (name) => {
+    router.get(route('review.index', { tag: name }), {}, {
+      onSuccess: () => {
+        useToast().success('＃' + name + 'でレビューを検索しました。')
+      }
+    })
+  }
 </script>
 
 <script>
@@ -167,7 +175,7 @@
                 </template>
 
                 <template v-slot:text>
-                  <v-row justify="center" align="center">
+                  <v-row justify="center" align="center" class="mt-0">
                     <v-col cols="auto" class="py-2">
                       <StarRateChip
                         label="充実度評価"
@@ -198,6 +206,7 @@
                           <span v-for="tag in review.tags"
                             style="color: #26A69A;"
                             class="mx-2"
+                            @click="tagSearch(tag.name)"
                           >
                             {{ '#' + tag.name }}
                           </span>
@@ -316,7 +325,9 @@
               <td>
                 <v-row justify="center" class="pa-2 ma-0">
                   <template v-for="tag in uniqueTagNames">
-                    <v-col cols="auto" class="py-0 px-2">{{ '＃' + tag }}</v-col>
+                    <v-col cols="auto" class="py-0 px-2">
+                      <span @click="tagSearch(tag)" style="color: #26A69A;">{{ '＃' + tag }}</span>
+                    </v-col>
                   </template>
                 </v-row>
               </td>
