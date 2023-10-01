@@ -1,6 +1,6 @@
 <script setup>
   import { ref } from 'vue'
-  import { mdiAccountCircle, mdiSchool, mdiChatQuestion, mdiPenPlus, mdiHumanMaleBoard, mdiChat, mdiSilverwareForkKnife, mdiMessageText } from '@mdi/js'
+  import { mdiSchool, mdiChatQuestion, mdiPenPlus, mdiHumanMaleBoard, mdiChat, mdiSilverwareForkKnife, mdiMessageText } from '@mdi/js'
   import { usePage, Link } from '@inertiajs/vue3'
   import NavAvatar from '@/Components/NavAvatar.vue'
   import NavItem from '@/Components/NavItem.vue'
@@ -40,50 +40,42 @@
             </template>
 
             <NavItem
-              :href="route('lecture.index')"
+              :href="route('admin.lecture.index')"
               title="講義検索"
               :icon="mdiHumanMaleBoard"
               component="Lecture/Index"
             />
             <NavItem
-              :href="route('review.index')"
+              :href="route('admin.review.index')"
               title="レビュー検索"
               :icon="mdiMessageText"
               component="Review/Index"
             />
-
-            <NavItem
-              :href="route('lecture.create')"
-              title="レビュー作成"
-              :icon="mdiPenPlus"
-              component="Lecture/Create"
-            />
           </v-list-group>
 
           <NavItem
-            :href="route('contact.create')"
+            :href="route('admin.lecture.index')"
             :icon="mdiSilverwareForkKnife"
             title="周辺グルメ（開発予定）"
           />
           
           <NavItem
-            :href="route('contact.create')"
+            :href="route('admin.lecture.index')"
             :icon="mdiChat"
             title="雑談部屋（開発予定）"
           />
 
           <NavItem
-            :href="route('contact.create')"
+            :href="route('admin.lecture.index')"
             :icon="mdiChatQuestion"
             title="お問い合わせ"
-            component="Contact/Create"
           />
 
         </v-list>
 
         <template v-slot:append>
           <div class="pa-2">
-            <Link :href="route('logout')" method="post" as="button" style="width: 100%;">
+            <Link :href="route('admin.logout')" method="post" as="button" style="width: 100%;">
               <v-btn color="primary" block>
                 ログアウト
               </v-btn>
@@ -94,37 +86,8 @@
       </v-navigation-drawer>
 
       <v-app-bar color="primary">
-
         <v-app-bar-nav-icon @click="drawer = !drawer" size="x-large" />
         <h1><v-app-bar-title class="text-h5">文教掲示板</v-app-bar-title></h1>
-
-        <template v-slot:append>
-
-          <Link :href="route('lecture.create')" class="me-3 me-sm-4">
-            <v-icon :icon="mdiPenPlus" />投稿
-          </Link>
-
-          <v-menu>
-            <template v-slot:activator="{ props }">
-              <v-icon
-                v-bind="props"
-                :icon="mdiAccountCircle"
-                size="38"
-                class="me-2"
-              />
-            </template>
-
-            <v-list>
-              <Link :href="route('profile.edit')">
-                <v-list-item link title="アカウント情報" />
-              </Link>
-              <v-divider class="border-opacity-100" />
-
-              <v-list-item link title="プロフィール" ></v-list-item>
-            </v-list>
-          </v-menu>
-        </template>
-
       </v-app-bar>
 
       <v-main class="mx-auto" style="width: 100%; overflow: hidden;">

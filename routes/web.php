@@ -6,19 +6,11 @@ use App\Http\Controllers\LectureController;
 use App\Http\Controllers\LectureBookmarkController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ReviewController;
-use Illuminate\Foundation\Application;
-use Inertia\Inertia;
 
 Route::get('/', [WelcomeController::class, 'welcome']);
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
-Route::middleware('auth')->group(function () {
-    
     Route::controller(LectureController::class)->group(function () {
         Route::get('/lectures', 'index')->name('lecture.index');
         Route::post('/lectures', 'store')->name('lecture.store');
@@ -33,13 +25,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/lectures/{lecture}/reviews/create', [ReviewController::class, 'create'])->name('review.create');
         Route::get('/lectures/{lecture}/reviews/{review}/edit', [ReviewController::class, 'edit'])->name('review.edit');
     });
-    
+
     Route::put('/lectures/{lecture}/bookmark', [LectureBookmarkController::class, 'set'])->name('bookmark.set');
     Route::delete('/lectures/{lecture}/bookmark', [LectureBookmarkController::class, 'remove'])->name('bookmark.remove');
 
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 Route::get('/contacts/create', [ContactController::class, 'create'])->name('contact.create');
 Route::post('/contacts', [ContactController::class, 'store'])->name('contact.store');
 
 require __DIR__.'/auth.php';
+

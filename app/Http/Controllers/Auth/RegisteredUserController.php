@@ -10,7 +10,6 @@ use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Faculty;
