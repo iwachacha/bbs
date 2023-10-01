@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, ref, watch, reactive } from 'vue'
+  import { computed, ref } from 'vue'
   import { Head, Link } from '@inertiajs/vue3'
   import { mdiMessageText, mdiMagnify, mdiAlertCircle, mdiAccountCircle, mdiChevronRight, mdiSquareEditOutline, mdiTrashCan } from '@mdi/js'
   import { router } from '@inertiajs/vue3'
@@ -117,7 +117,7 @@
       :query="props.query"
     />
 
-    <v-row justify="center" class="mt-1">
+    <v-row justify="center" class="mt-0">
       <template v-for="review in props.reviews.data">
         <v-col cols="12" sm="10" md="6" class="py-2 py-sm-3">
           <PostCard

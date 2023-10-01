@@ -201,17 +201,17 @@
 
                 <template v-slot:readMoreContent>
                     <template v-if="review.tags.length">
-                        <v-label class="text-subtitle-2">＃タグ</v-label>
-                        <div class="my-2">
-                          <span v-for="tag in review.tags"
-                            style="color: #26A69A;"
-                            class="mx-2"
-                            @click="tagSearch(tag.name)"
-                          >
-                            {{ '#' + tag.name }}
-                          </span>
-                        </div>
-                        <v-divider class="border-opacity-100 mb-5" />
+                      <v-label class="text-subtitle-2">＃タグ</v-label>
+                      <div class="my-2">
+                        <span v-for="tag in review.tags"
+                          style="color: #26A69A;"
+                          class="mx-2"
+                          @click="tagSearch(tag.name)"
+                        >
+                          {{ '#' + tag.name }}
+                        </span>
+                      </div>
+                      <v-divider class="border-opacity-100 mb-5" />
                     </template>
 
                   <v-label class="text-subtitle-2">講義内容</v-label>
@@ -237,7 +237,7 @@
                     1人の学生に共感されています
                   </span>
                   <v-spacer />
-                  <LinkBtn>それな！</LinkBtn>
+                  <LinkBtn :href="route('lecture.index')" :only="['lecture']">それな！</LinkBtn>
                 </template>
 
               </PostCard>

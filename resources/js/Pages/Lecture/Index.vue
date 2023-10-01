@@ -1,7 +1,7 @@
 <script setup>
   import { computed, reactive, watch } from 'vue'
   import { Head } from '@inertiajs/vue3'
-  import { mdiMessageText, mdiMagnify, mdiAlertCircle, mdiListBox, mdiChevronRight } from '@mdi/js'
+  import { mdiMessageText, mdiMagnify, mdiAlertCircle, mdiHumanMaleBoard, mdiChevronRight } from '@mdi/js'
   import { router } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
   import LinkBtn from '@/Components/LinkBtn.vue'
@@ -28,7 +28,7 @@
   const pageSection = computed(() => {
     if(!Object.keys(props.query).length){
       return {
-        icon: mdiListBox,
+        icon: mdiHumanMaleBoard,
         title: '講義検索'
       }
     }
@@ -117,9 +117,9 @@
       :departments="props.departments"
     />
 
-    <v-row justify="space-around">
+    <v-row justify="space-around" class="mt-0">
       <template v-for="lecture in props.lectures.data">
-        <v-col cols="12" sm="6" lg="4" class="px-2 px-md-3 my-1 my-sm-2">
+        <v-col cols="12" sm="6" lg="4" class="px-2 px-md-3 py-2 py-sm-3">
 
           <PostCard>
             <template v-slot:barTitle>
@@ -197,7 +197,7 @@
                 :lecture-id="lecture.id"
                 :count="lecture.lecture_bookmarks_count"
               />
-              <LinkBtn :href="route('lecture.show', lecture.id)" :block="true">
+              <LinkBtn :href="route('lecture.show', lecture.id)" :block="true" class="ms-1">
                 <v-icon :icon="mdiMessageText" size="large"/>
                 {{ lecture.reviews_count }}
               </LinkBtn>
