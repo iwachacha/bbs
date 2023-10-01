@@ -1,10 +1,9 @@
 <script setup>
   import { ref } from 'vue'
-  import { mdiSchool , mdiChatQuestion, mdiPenPlus, mdiListBox, mdiCrown, mdiChat, mdiSilverwareForkKnife, mdiMessageText } from '@mdi/js'
+  import { mdiAccountCircle, mdiSchool, mdiChatQuestion, mdiPenPlus, mdiHumanMaleBoard, mdiChat, mdiSilverwareForkKnife, mdiMessageText } from '@mdi/js'
   import { usePage, Link } from '@inertiajs/vue3'
   import NavAvatar from '@/Components/NavAvatar.vue'
   import NavItem from '@/Components/NavItem.vue'
-  import LinkBtn from '@/Components/LinkBtn.vue'
   import { getFacultyName } from '@/Components/Lectures/GetNameFromId.vue'
 
   const pageProps = usePage().props
@@ -43,7 +42,7 @@
             <NavItem
               :href="route('lecture.index')"
               title="講義検索"
-              :icon="mdiListBox"
+              :icon="mdiHumanMaleBoard"
               component="Lecture/Index"
             />
             <NavItem
@@ -84,9 +83,11 @@
 
         <template v-slot:append>
           <div class="pa-2">
-            <LinkBtn :href="route('logout')" method="post" :block="true">
-              ログアウト
-            </LinkBtn>
+            <v-btn color="primary" block>
+              <Link :href="route('logout')" method="post" as="button">
+                ログアウト
+              </Link>
+            </v-btn>
           </div>
         </template>
 
@@ -99,22 +100,29 @@
 
         <template v-slot:append>
 
-          <Link :href="route('lecture.create')" class="me-4" color="secondary">
+          <Link :href="route('lecture.create')" class="me-3 me-sm-4">
             <v-icon :icon="mdiPenPlus" />投稿
           </Link>
 
-          <v-avatar color="grey-lighten-2" class="me-2">
-            <v-menu activator="parent">
-              <v-list>
-                <NavItem
-                  :href="route('profile.edit')"
-                  title="アカウント情報"
-                />
-                <v-divider class="border-opacity-100" />
-                <v-list-item link title="プロフィール" ></v-list-item>
-              </v-list>
-            </v-menu>
-          </v-avatar>
+          <v-menu activator="parent">
+            <template v-slot:activator="{ props }">
+              <v-icon
+                v-bind="props"
+                :icon="mdiAccountCircle"
+                size="38"
+                class="me-2"
+              />
+            </template>
+
+            <v-list>
+              <Link :href="route('profile.edit')">
+                <v-list-item link title="アカウント情報" />
+              </Link>
+              <v-divider class="border-opacity-100" />
+
+              <v-list-item link title="プロフィール" ></v-list-item>
+            </v-list>
+          </v-menu>
         </template>
 
       </v-app-bar>

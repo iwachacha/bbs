@@ -8,10 +8,10 @@
   <v-sheet rounded="0" color="secondary" class="mb-16 mx-auto">
 
     <v-card-title
-      class="mx-n1 mt-7 mx-md-5 text-h6 text-sm-h5 text-medium-emphasis d-flex"
+      class="mx-n1 mt-7 mx-md-5 text-h6 text-sm-h5 text-medium-emphasis d-flex align-center"
       style="white-space: normal; line-height: normal;"
     >
-      <v-icon :icon="icon" class="me-2" size="34" />
+      <v-icon :icon="icon" class="me-2" size="32" />
       <h2>{{ title }}</h2>
 
       <div v-if="subtitle" class="d-sm-none ms-2">

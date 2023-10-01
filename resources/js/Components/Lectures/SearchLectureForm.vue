@@ -17,7 +17,7 @@
   })
 
   watch(form, () => {
-    if(form.search_word.length <= 4){
+    if(form.search_name.length <= 4){
       router.get(route('lecture.index', [props.query, form]), {}, {
         onSuccess: () => {
           useToast().success(props.resultCount + '件取得しました。')
@@ -27,7 +27,7 @@
         only: ['lectures', 'resultCount', 'query'],
       })
     }
-    else if(form.search_word.length > 5){
+    else if(form.search_name.length > 5){
       form.search_word.pop()
     }
   })

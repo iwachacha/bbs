@@ -1,4 +1,6 @@
 <script setup>
+  import { mdiAccountCircle } from '@mdi/js'
+
   defineProps({ name: String, grade: String, faculty: String})
 </script>
 
@@ -8,7 +10,7 @@
     class="ps-3 d-flex align-center"
     height="64px"
   >
-    <v-avatar color="grey-darken-1" />
+    <v-icon :icon="mdiAccountCircle" color="grey-darken-1" size="38" />
     <div class="ms-4">
       <div>{{ name }}</div>
       <div class="text-caption text-medium-emphasis">{{ faculty && faculty + ' / ' }}{{ grade && grade}}</div>

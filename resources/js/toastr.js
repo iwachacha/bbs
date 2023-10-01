@@ -1,6 +1,6 @@
 export const options = {
   position: "top-right",
-  timeout: 3000,
+  timeout: 2000,
   closeOnClick: true,
   pauseOnFocusLoss: true,
   pauseOnHover: true,
@@ -13,13 +13,4 @@ export const options = {
   rtl: false,
   maxToasts: 1,
   newestOnTop: true,
-
-  filterBeforeCreate: (toast, toasts) => {
-    if (toasts.filter(
-      t => t.type === toast.type
-    ).length !== 0) {
-      return false;
-    }
-    return toast;
-  }
 };
