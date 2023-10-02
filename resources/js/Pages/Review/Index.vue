@@ -16,25 +16,12 @@
   import FilterReviewForm from '@/Components/Reviews/FilterReviewForm.vue'
   import SortReviewForm from '@/Components/Reviews/SortReviewForm.vue'
   import ReviewQueryChip from '@/Components/Reviews/ReviewQueryChip.vue'
+  import GoodBtn from '@/Components/Reviews/ReviewGoodBtn.vue'
 
   const props = defineProps({
     reviews: Object,
-    query: Object
-  })
-
-  const pageSection = computed(() => {
-    if(!Object.keys(props.query).length){
-      return {
-        icon: mdiMessageText,
-        title: 'レビュー検索'
-      }
-    }
-    else {
-      return {
-        icon: mdiMagnify,
-        title: 'レビュー検索結果' + '（' + props.reviews.total + '件）'
-      }
-    }
+    query: Object,
+    totalCount: Number
   })
 
   const PostBarTitle = computed(() => (userName, userFacultyId) => {
@@ -55,27 +42,76 @@
     })
   }
 
-  //レビュー削除
-  const deleteDialog = ref(false)
-  const deleteId = ref(null)
-
-  const deleteReview = () => {
-    router.delete(route('review.delete', deleteId.value), {
-      preserveScroll: true,
-      onSuccess: () => {
-        useToast().success('レビューの削除が完了しました。')
-        deleteId.value = null
-      },
-      only: ['reviews', 'query']
-    })
-  }
-
   //ページネーション
   const movePage = (targetPage) => {
     router.get(props.reviews.links[targetPage].url,
     props.query, {
       preserveState: true,
       only: ['reviews', 'query'],
+    })
+  }
+
+  //レビュー削除
+  const deleteDialog = ref(false)
+  const deleteReviewId = ref(null)
+  const deleteReviewContent = ref(null)
+
+  const deleteConfirm = (reviewId) => {
+    let targetReview = props.reviews.data.find((review) => review.id === reviewId)
+    deleteReviewContent.value = [
+      {key: 'タイトル', value: targetReview.title},
+      {key: '受講年度', value: targetReview.year},
+      {key: '充実度評価', value: '☆ ' + targetReview.fulfillment_rate},
+      {key: '楽単度評価', value: '☆ ' + targetReview.ease_rate},
+      {key: '満足度評価', value: '☆ ' + targetReview.satisfaction_rate},
+      {key: '講義内容', value: (targetReview.lecture_content) ? targetReview.lecture_content : 'なし'},
+      {key: '良い点', value: (targetReview.good_point) ? targetReview.good_point : 'なし'},
+      {key: '悪い点', value: (targetReview.bad_point) ? targetReview.bad_point : 'なし'},
+    ]
+    deleteDialog.value = true
+  }
+
+  const deleteReview = () => {
+    router.delete(route('review.delete', deleteReviewId.value), {
+      preserveScroll: true,
+      onSuccess: () => {
+        useToast().success('レビューの削除が完了しました。')
+        deleteReviewId.value = null
+        deleteReviewContent.value = null
+      },
+    })
+  }
+
+  //レビュー報告
+  const reportDialog = ref(false)
+  const reportReviewId = ref(null)
+  const reportReviewContent = ref(null)
+
+  const reportConfirm = (reviewId) => {
+    let targetReview = props.reviews.data.find((review) => review.id === reviewId)
+    reportReviewContent.value = [
+      {key: 'タイトル', value: targetReview.title},
+      {key: '受講年度', value: targetReview.year},
+      {key: '充実度評価', value: '☆ ' + targetReview.fulfillment_rate},
+      {key: '楽単度評価', value: '☆ ' + targetReview.ease_rate},
+      {key: '満足度評価', value: '☆ ' + targetReview.satisfaction_rate},
+      {key: '講義内容', value: (targetReview.lecture_content) ? targetReview.lecture_content : 'なし'},
+      {key: '良い点', value: (targetReview.good_point) ? targetReview.good_point : 'なし'},
+      {key: '悪い点', value: (targetReview.bad_point) ? targetReview.bad_point : 'なし'},
+    ]
+    reportDialog.value = true
+  }
+
+  const report = () => {
+    router.post(route('report'), {
+      review_id: reportReviewId.value
+    }, {
+      preserveScroll: true,
+      onSuccess: () => {
+        useToast().success('不適切な投稿として報告されました。')
+        reportReviewId.value = null
+        reportReviewContent.value = null
+      },
     })
   }
 </script>
@@ -88,9 +124,13 @@
 </script>
 
 <template>
-  <Head :title="pageSection.title" />
+  <Head title="レビュー検索" />
 
-  <PageSection :icon="pageSection.icon" :title="pageSection.title">
+  <PageSection
+    :icon="mdiMessageText"
+    title="レビュー検索"
+    subtitle="寄せられたレビューはこちらから探すことができます。"
+  >
     <v-row justify="center">
       <v-col cols="11" sm="9" md="7" class="pa-0">
         <SearchReviewForm
@@ -104,17 +144,25 @@
       <div class="me-3">
         <FilterReviewForm
           :query="props.query"
+          route-name="review.index"
           :result-count="props.reviews.total"
+          :only="['reviews', 'query', 'resultCount']"
         />
       </div>
 
       <SortReviewForm
         :query="props.query"
+        route-name="review.index"
+        :only="['reviews', 'query']"
       />
     </div>
 
     <ReviewQueryChip
       :query="props.query"
+      route-name="review.index"
+      :only="['reviews', 'query', 'resultCount']"
+      :total-count="props.totalCount"
+      :result-count="props.reviews.total"
     />
 
     <v-row justify="center" class="mt-0">
@@ -136,30 +184,31 @@
                 <v-list-item
                   v-if="review.user_id === $page.props.auth.user.id"
                   link
+                  title="編集"
                   :prepend-icon="mdiSquareEditOutline"
                   style="color: #26A69A;"
-                >
-                  <v-list-item-title class="align-center">編集</v-list-item-title>
-                </v-list-item>
+                />
               </Link>
 
               <v-list-item
                 v-if="review.user_id === $page.props.auth.user.id"
                 link
+                title="削除"
                 :prepend-icon="mdiTrashCan"
                 style="color: red;"
-                @click="[deleteDialog = true, deleteId = review.id]"
-              >
-                <v-list-item-title>削除</v-list-item-title>
-              </v-list-item>
+                @click="[deleteConfirm(review.id), deleteReviewId = review.id]"
+              />
 
-              <v-list-item link :prepend-icon="mdiAlertCircle">
-                <v-list-item-title>不適切な投稿として報告</v-list-item-title>
-              </v-list-item>
+              <v-list-item
+                link
+                title="不適切な投稿として報告"
+                :prepend-icon="mdiAlertCircle"
+                @click="[reportConfirm(review.id), reportReviewId = review.id]"
+              />
             </template>
 
             <template v-slot:cardTitle>
-              <Link :href="route('lecture.show', [review.lecture_id, review.id])">
+              <Link :href="route('lecture.show', review.lecture_id)">
                 {{ review.lecture.lecture_name + ' / ' + review.lecture.professor_name + '先生' }}
                 <v-icon :icon="mdiChevronRight" size="x-small" class="ms-n1 text-disabled" />
               </Link>
@@ -234,22 +283,29 @@
 
             <template v-slot:action>
               <div class="ms-2 text-caption">
-                1人の学生に共感されています
+                {{ review.review_good ? review.review_good.count : 0 }}回の共感を受けています！
               </div>
               <v-spacer />
-              <LinkBtn :href="route('review.index')">それな！</LinkBtn>
+
+              <template v-if="review.user_id !== $page.props.auth.user.id">
+                <GoodBtn :review-id="review.id" />
+              </template>
             </template>
           </PostCard>
         </v-col>
       </template>
     </v-row>
 
-    <PaginationBtn
-      v-model="props.reviews.current_page"
-      :length="props.reviews.last_page"
-      @update:modelValue="movePage(props.reviews.current_page)"
-      v-if="props.reviews.last_page > 1"
-    />
+    <template v-if="props.reviews.last_page > 1">
+      <PaginationBtn
+        v-model="props.reviews.current_page"
+        :length="props.reviews.last_page"
+        @update:modelValue="movePage(props.reviews.current_page)"
+      />
+      <div class="text-center text-caption mt-1" style="color: #26A69A;">
+        {{ props.reviews.total }}件中 {{ props.reviews.from }}~{{ props.reviews.to }}件目表示中
+      </div>
+    </template>
   </PageSection>
 
   <ConfirmCard
@@ -257,12 +313,28 @@
     title="レビュー削除"
     subtitle="本当に削除してもよろしいですか？"
     text="削除した情報の復元には時間がかかります。"
+    :items="deleteReviewContent"
   >
     <template v-slot:cancelBtn>
       <SecondaryBtn @click="deleteDialog = false">いいえ</SecondaryBtn>
     </template>
     <template v-slot:okBtn>
       <PrimaryBtn color="#D50000" @click="[deleteDialog = false, deleteReview()]">はい</PrimaryBtn>
+    </template>
+  </ConfirmCard>
+
+  <ConfirmCard
+    :dialog="reportDialog"
+    title="不適切な投稿として報告"
+    subtitle="報告するレビューに間違いはありませんか？"
+    text="頻繁に報告されるレビューは管理者の判断により削除します。"
+    :items="reportReviewContent"
+  >
+    <template v-slot:cancelBtn>
+      <SecondaryBtn @click="reportDialog = false">いいえ</SecondaryBtn>
+    </template>
+    <template v-slot:okBtn>
+      <PrimaryBtn @click="[reportDialog = false, report()]">はい</PrimaryBtn>
     </template>
   </ConfirmCard>
 </template>

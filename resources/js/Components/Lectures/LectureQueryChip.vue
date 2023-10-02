@@ -6,12 +6,7 @@
   import { getCategoryName, getFacultyName, getDepartmentName } from '@/Components/Lectures/GetNameFromId.vue'
   import LinkBtn from '@/Components/LinkBtn.vue'
 
-  const props = defineProps({
-    query:Object,
-    lectureCategories: Object,
-    faculties: Object,
-    departments: Object,
-  })
+  const props = defineProps(['query', 'lectureCategories', 'faculties', 'departments', 'totalCount', 'resultCount'])
 
   const chipText = computed(() => (key, value) => {
     switch(key) {
@@ -45,20 +40,14 @@
 
 <template>
   <template v-if="Object.keys(props.query).length">
-    <div class="mt-3 d-flex">
+    <div class="mt-3 d-flex align-center">
       <v-label class="me-5">
         <v-icon :icon="mdiMagnify" />
         検索条件
+        <span class="ms-3 text-caption">
+          {{ props.totalCount }}件中{{ props.resultCount }}件取得
+        </span>
       </v-label>
-
-      <LinkBtn
-        :href="route('lecture.index')"
-        :only="['lectures', 'query']"
-        variant="text"
-      >
-        <v-icon :icon="mdiReload" />
-        検索条件リセット
-      </LinkBtn>
     </div>
 
     <div class="d-flex flex-wrap mb-2 ms-4">
@@ -76,6 +65,14 @@
           </v-chip>
         </div>
       </template>
+      <LinkBtn
+        :href="route('lecture.index')"
+        :only="['lectures', 'query']"
+        variant="text"
+      >
+        <v-icon :icon="mdiReload" />
+        検索条件リセット
+      </LinkBtn>
     </div>
     <v-divider class="border-opacity-100" />
   </template>

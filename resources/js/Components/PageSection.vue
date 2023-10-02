@@ -1,6 +1,4 @@
 <script setup>
-  import { mdiHelpCircleOutline } from '@mdi/js'
-
   defineProps(['icon', 'title', 'subtitle'])
 </script>
 
@@ -8,23 +6,14 @@
   <v-sheet rounded="0" color="secondary" class="mb-16 mx-auto">
 
     <v-card-title
-      class="mx-n1 mt-7 mx-md-5 text-h6 text-sm-h5 text-medium-emphasis d-flex align-center"
+      class="mx-n1 mt-7 mx-md-5 text-h6 text-sm-h5 text-medium-emphasis d-flex align-center justify-center "
       style="white-space: normal; line-height: normal;"
     >
       <v-icon :icon="icon" class="me-2" size="32" />
       <h2>{{ title }}</h2>
-
-      <div v-if="subtitle" class="d-sm-none ms-2">
-        <v-tooltip location="bottom" >
-          <template v-slot:activator="{ props }">
-            <v-icon v-bind="props" :icon="mdiHelpCircleOutline" size="small" />
-          </template>
-          <div>{{ subtitle }}</div>
-        </v-tooltip>
-      </div>
     </v-card-title>
 
-    <v-card-subtitle v-if="subtitle" class="d-none d-sm-block mb-8 mx-7 mx-sm-11 mx-md-15 text-caption" style="white-space: pre-wrap; border-bottom: 1px solid #00695C;">
+    <v-card-subtitle v-if="subtitle" class="pb-2 mx-1 mx-sm-5 mx-md-11 text-center text-caption" style="white-space: pre-wrap;">
       {{ subtitle }}
     </v-card-subtitle>
 

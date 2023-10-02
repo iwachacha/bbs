@@ -39,6 +39,7 @@ class RegisteredUserController extends Controller
     {
         $input = $request->validated();
         $input['password'] = Hash::make($request->password);
+        $input['email'] = null;
 
         $user = User::create($input);
 

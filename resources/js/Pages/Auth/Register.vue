@@ -81,16 +81,16 @@
 
 	const submit = () => {
 		form.post(route('register'), {
-			onSuccess: () => [
-        toast.success('ユーザー登録が完了しました。\nご登録ありがとうございます！'),
-      ],
-      onError: () => [toast.error('入力内容に誤りがあります！\n内容の確認をお願いします。')]
+			onSuccess: () => {
+				useToast().success('ユーザー登録が完了しました。\nご登録ありがとうございます！')
+			},
+      onError: () => [useToast().error('入力内容に誤りがあります！\n内容の確認をお願いします。')]
 		})
 	}
 
 	const showError = () => {
     registerV$.value.$touch()
-    toast.error('入力内容に誤りがあります！\n内容の確認をお願いします。')
+    useToast().error('入力内容に誤りがあります！\n内容の確認をお願いします。')
   }
 
 	const dialog = ref(false)

@@ -6,6 +6,8 @@ use App\Http\Controllers\LectureController;
 use App\Http\Controllers\LectureBookmarkController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ReviewGoodController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', [WelcomeController::class, 'welcome']);
 
@@ -17,6 +19,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/lectures/create', 'create')->name('lecture.create');
         Route::get('/lectures/{lecture}', 'show')->name('lecture.show');
     });
+
     Route::controller(ReviewController::class)->group(function () {
         Route::get('/reviews', [ReviewController::class, 'index'])->name('review.index');
         Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('review.update');
@@ -28,6 +31,10 @@ Route::middleware('auth')->group(function () {
 
     Route::put('/lectures/{lecture}/bookmark', [LectureBookmarkController::class, 'set'])->name('bookmark.set');
     Route::delete('/lectures/{lecture}/bookmark', [LectureBookmarkController::class, 'remove'])->name('bookmark.remove');
+
+    Route::post('/reviews/{review}/good', [ReviewGoodController::class, 'good'])->name('review.good');
+
+    Route::post('/report', [ReportController::class, 'report'])->name('report');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

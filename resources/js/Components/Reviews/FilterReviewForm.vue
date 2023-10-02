@@ -8,10 +8,7 @@
   import SecondaryBtn from '@/Components/SecondaryBtn.vue'
   import ConfirmCard from '@/Components/ConfirmCard.vue'
 
-  const props = defineProps({
-    resultCount: Number,
-    query: Object
-  })
+  const props = defineProps(['resultCount', 'query', 'routeName', 'routeParam', 'only'])
 
   const form = reactive({
     fulfillment: props.query['fulfillment'],
@@ -21,14 +18,26 @@
   })
 
   const onSubmit = () => {
-    router.get(route('review.index', [props.query, form]), {}, {
-      onSuccess: () => {
-        useToast().success('絞り込みの結果' + props.resultCount + '件取得しました。')
-      },
-      preserveState: true,
-      preserveScroll: true,
-      only: ['reviews', 'query'],
-    })
+    if(props.routeParam){
+      router.get(route(props.routeName, [props.routeParam, props.query, form]), {}, {
+        onSuccess: () => {
+          useToast().success('絞り込みの結果' + props.resultCount + '件取得しました。')
+        },
+        preserveState: true,
+        preserveScroll: true,
+        only: props.only,
+      })
+    }
+    else {
+      router.get(route(props.routeName, [props.query, form]), {}, {
+        onSuccess: () => {
+          useToast().success('絞り込みの結果' + props.resultCount + '件取得しました。')
+        },
+        preserveState: true,
+        preserveScroll: true,
+        only: props.only,
+      })
+    }
   }
 
   const dialog = ref(false)

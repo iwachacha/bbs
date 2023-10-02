@@ -106,8 +106,8 @@
     createLecture.value = [
       {key: '講義名', value: lectureForm.lecture_name},
       {key: '担当教員名', value: lectureForm.professor_name},
-      {key: '講義区分', value: selectCategoryName},
       {key: '開講時期', value:  lectureForm.season},
+      {key: '講義区分', value: selectCategoryName},
       {key: '開講学部', value: (selectFacultyName) ? selectFacultyName : 'なし'},
       {key: '開講学科・課程', value: (selectDepartmentName) ? selectDepartmentName : 'なし'},
       {key: '開講コース・専修', value: (selectCourseName) ? selectCourseName : 'なし'}

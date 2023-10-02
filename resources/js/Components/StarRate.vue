@@ -45,7 +45,7 @@
         </v-col>
 
         <v-col cols="1" class="px-0 text-left">
-          <span>{{ valueCount }}</span>
+          <span>{{ valueCount }}件</span>
         </v-col>
 
       </v-row>
