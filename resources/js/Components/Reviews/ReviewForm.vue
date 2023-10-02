@@ -254,7 +254,7 @@
           <SearchInput
             v-model="reviewForm.tag"
             :items="tagNames"
-            label="＃タグ（10文字以下・3つまで）"
+            label="＃タグ(10文字以下・3つまで)"
             :icon="mdiPound"
             variant="outlined"
             :error-messages="props.errors['tag.0'] || props.errors['tag.1'] || props.errors['tag.2']"

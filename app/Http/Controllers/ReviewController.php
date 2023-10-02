@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Inertia\Response;
 use App\Models\Lecture;
 use App\Models\Review;
 use App\Models\Tag;
@@ -20,13 +19,14 @@ class ReviewController extends Controller
             ->searchByWord($request->search_word)
             ->filter($request->only(['fulfillment', 'ease', 'satisfaction', 'year']))
             ->searchByTag($request->tag)
-            ->with('lecture', 'tags', 'user')
+            ->with('lecture', 'tags', 'user', 'review_good')
             ->sort($request->sort)
             ->paginate(8);
 
         return Inertia::render('Review/Index')->with([
             'reviews' => $reviews,
-            'query'=> $request->except('page')
+            'query'=> $request->except('page'),
+            'totalCount' => Review::count()
         ]);
     }
     public function create(Lecture $lecture)
@@ -56,12 +56,12 @@ class ReviewController extends Controller
             $review->tags()->attach($created_tag); //レビューとタグを紐付け
         }
 
-        return to_route('lecture.index');
+        return to_route('lecture.show', $review->lecture_id);
     }
 
     public function edit(Lecture $lecture, Review $review)
     {
-        if(Auth::id() === $review->user_id ){ //url書き換え侵入対策
+        if(Auth::id() === $review->user_id ){ //書き換え対策
             return Inertia::render('Review/Edit')->with([
                 'lecture' => $lecture,
                 'review' => $review->with('tags')->find($review->id),
@@ -90,7 +90,7 @@ class ReviewController extends Controller
 
     public function delete(Review $review)
     {
-        if(Auth::id() === $review->user_id ){ //url書き換え侵入対策
+        if(Auth::id() === $review->user_id ){ //書き換え対策
             $review->delete();
             return redirect()->back();
         }

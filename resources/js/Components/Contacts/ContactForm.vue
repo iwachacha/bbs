@@ -18,7 +18,7 @@
 	const submit = () => {
 		form.post(route('contact.store'), {
 			onSuccess: () => [
-        toast.success('お問い合わせ・ご意見ありがとうございます！\nお問い合わせは後日Twitterにて対応します。')
+        toast.success('お問い合わせ・ご意見ありがとうございます！')
       ]
 		})
 	}
@@ -27,7 +27,7 @@
 <template>
 	<v-card rounded="lg" flat max-width="700px" class="my-5 mx-auto pa-5 pa-sm-8" color="grey-lighten-4">
 
-		<v-card-title class="text-medium-emphasis text-h5 mb-5 px-0">
+		<v-card-title class="text-medium-emphasis text-h5 mb-7 px-0 text-center">
 			<v-icon :icon="mdiChatQuestion" />
 			お問い合わせ
 		</v-card-title>

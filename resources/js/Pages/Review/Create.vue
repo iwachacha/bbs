@@ -22,7 +22,8 @@
   <Head :title="props.lecture.lecture_name + ' / ' + props.lecture.professor_name + ' - レビュー作成'" />
 
   <PageSection
-    :title="props.lecture.lecture_name + ' / ' + props.lecture.professor_name + ' - レビュー作成'"
+    title="レビュー作成"
+    :subtitle="props.lecture.lecture_name + ' / ' + props.lecture.professor_name + 'のレビューを作成してください。'"
     :icon="mdiPenPlus"
   >
     <div class="mx-3 mx-sm-7">

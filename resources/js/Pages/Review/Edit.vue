@@ -23,7 +23,8 @@
   <Head :title="props.lecture.lecture_name + ' / ' + props.lecture.professor_name + ' - レビュー編集'" />
 
   <PageSection
-    :title="props.lecture.lecture_name + ' / ' + props.lecture.professor_name + ' - レビュー編集'"
+    title="レビュー編集"
+    :subtitle="props.lecture.lecture_name + ' / ' + props.lecture.professor_name + 'のレビューを編集することができます。'"
     :icon="mdiSquareEditOutline"
   >
     <div class="mx-3 mx-sm-7">

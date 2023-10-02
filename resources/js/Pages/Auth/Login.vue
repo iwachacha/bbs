@@ -14,34 +14,28 @@
 	})
 
 	const form = useForm({
-    name: '',
-    password: '',
+    name: null,
+    password: null,
     remember: false,
   })
 
-	const toast = useToast()
 	const visiblePassword = ref(false)
 
 	const submit = () => {
 		form.post(route('login'), {
 			onFinish: () => form.reset('password'),
 			onSuccess: () => [
-        toast.success('ログインが完了しました。\nお帰りなさい ' + form.name + 'さん！'),
+      useToast().success('ログインが完了しました。\nお帰りなさい ' + form.name + 'さん！'),
       ],
-      onError: () => [toast.error('ユーザー情報が存在しません')]
+      onError: () => [useToast().error('ユーザー情報が存在しません')]
 		})
 	}
 </script>
 
 <template>
-
   <Head title="ログイン" />
+
   <v-app style="background-color: #F5F5F5;">
-
-    <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-      {{ status }}
-    </div>
-
     <PageSection title="ログイン" :icon="mdiLogin" style="max-width: 700px;">
 
         <form @submit.prevent="submit" id="loginForm">

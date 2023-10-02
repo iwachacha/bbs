@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, reactive, watch } from 'vue'
+  import { computed, reactive, watch, ref } from 'vue'
   import { Head } from '@inertiajs/vue3'
   import { mdiMessageText, mdiMagnify, mdiAlertCircle, mdiHumanMaleBoard, mdiChevronRight } from '@mdi/js'
   import { router } from '@inertiajs/vue3'
@@ -7,8 +7,11 @@
   import LinkBtn from '@/Components/LinkBtn.vue'
   import PageSection from '@/Components/PageSection.vue'
   import PostCard from '@/Components/PostCard.vue'
+  import PrimaryBtn from '@/Components/PrimaryBtn.vue'
+  import SecondaryBtn from '@/Components/SecondaryBtn.vue'
   import PaginationBtn from '@/Components/PaginationBtn.vue'
-  import BookmarkBtn from '@/Components/Lectures/BookmarkBtn.vue'
+  import ConfirmCard from '@/Components/ConfirmCard.vue'
+  import BookmarkBtn from '@/Components/Lectures/LectureBookmarkBtn.vue'
   import SearchLectureForm from '@/Components/Lectures/SearchLectureForm.vue'
   import FilterLectureForm from '@/Components/Lectures/FilterLectureForm.vue'
   import SortLectureForm from '@/Components/Lectures/SortLectureForm.vue'
@@ -18,25 +21,17 @@
   const props = defineProps({
     lectures: Object,
     names: Object,
+    BookmarkedLectureId: Array,
     lectureCategories: Object,
     faculties: Object,
     departments: Object,
-    query: Object
+    query: Object,
+    totalCount: Number
   })
 
-  const pageSection = computed(() => {
-    if(!Object.keys(props.query).length){
-      return {
-        icon: mdiHumanMaleBoard,
-        title: '講義検索'
-      }
-    }
-    else {
-      return {
-        icon: mdiMagnify,
-        title: '講義検索結果' + '（' + props.lectures.total + '件）'
-      }
-    }
+  //ログイン中のユーザーが各投稿をブックマーク登録済みかどうか
+  const isBookmarked = computed(() => (lecture_id) => {
+    return props.BookmarkedLectureId.find(e => e.lecture_id == lecture_id)
   })
 
   //講義名・教員名クリックで検索
@@ -46,7 +41,7 @@
   })
 
   watch(search, () => {
-    router.get(route('admin.lecture.index', [props.query, search]), {}, {
+    router.get(route('lecture.index', [props.query, search]), {}, {
       onSuccess: () => {
         useToast().success(props.lectures.total + '件取得しました。')
       },
@@ -64,19 +59,55 @@
       only: ['lectures', 'query'],
     })
   }
+
+  //レビュー報告
+  const reportDialog = ref(false)
+  const reportLectureId = ref(null)
+  const reportLectureContent = ref(null)
+
+  const reportConfirm = (lectureId) => {
+    let targetLecture = props.lectures.data.find((lecture) => lecture.id === lectureId)
+    reportLectureContent.value = [
+      {key: '講義名', value: targetLecture.lecture_name},
+      {key: '担当教員名', value: targetLecture.professor_name},
+      {key: '開講時期', value:  targetLecture.season},
+      {key: '講義区分', value: targetLecture.lecture_category.name},
+      {key: '開講学部', value: (targetLecture.faculty) ? targetLecture.faculty.name : 'なし'},
+      {key: '開講学科・課程', value: (targetLecture.department) ? targetLecture.department.name : 'なし'},
+      {key: '開講コース・専修', value: (targetLecture.course) ? targetLecture.course.name : 'なし'}
+    ]
+    reportDialog.value = true
+  }
+
+  const report = () => {
+    router.post(route('report'), {
+      lecture_id: reportLectureId.value
+    }, {
+      preserveScroll: true,
+      onSuccess: () => {
+        useToast().success('不適切な投稿として報告されました。')
+        reportLectureId.value = null
+        reportLectureContent.value = null
+      },
+    })
+  }
 </script>
 
 <script>
-  import Layout from '@/Layouts/AdminLayout.vue'
+  import Layout from '@/Layouts/Layout.vue'
   export default {
     layout: Layout,
   }
 </script>
 
 <template>
-  <Head :title="pageSection.title" />
+  <Head title="講義検索" />
 
-  <PageSection :icon="pageSection.icon" :title="pageSection.title">
+  <PageSection
+    :icon="mdiHumanMaleBoard"
+    title="講義検索"
+    subtitle="講義からレビューを探すことができます。"
+  >
 
     <v-row justify="center">
       <v-col cols="11" sm="9" md="7" class="pa-0">
@@ -109,6 +140,8 @@
       :lecture-categories="props.lectureCategories"
       :faculties="props.faculties"
       :departments="props.departments"
+      :result-count="props.lectures.total"
+      :total-count="props.totalCount"
     />
 
     <v-row justify="space-around" class="mt-0">
@@ -124,12 +157,12 @@
             </template>
 
             <template v-slot:menuItem>
-              <v-list-item link>
-                <v-list-item-title>
-                  <v-icon :icon="mdiAlertCircle" class="text-medium-emphasis" />
-                  不適切な投稿として報告
-                </v-list-item-title>
-              </v-list-item>
+              <v-list-item
+                link
+                title="不適切な投稿として報告"
+                :prepend-icon="mdiAlertCircle"
+                @click="[reportConfirm(lecture.id), reportLectureId = lecture.id]"
+              />
             </template>
 
             <template v-slot:cardTitle>
@@ -186,8 +219,12 @@
                 この講義を評価する
               </LinkBtn>
               <v-spacer />
+              <BookmarkBtn
+                :is-bookmarked="isBookmarked(lecture.id)"
+                :lecture-id="lecture.id"
+                :count="lecture.lecture_bookmarks_count"
               />
-              <LinkBtn :href="route('admin.lecture.show', lecture.id)" :block="true" class="ms-1">
+              <LinkBtn :href="route('lecture.show', lecture.id)" :block="true" class="ms-1">
                 <v-icon :icon="mdiMessageText" size="large"/>
                 {{ lecture.reviews_count }}
               </LinkBtn>
@@ -197,11 +234,30 @@
       </template>
     </v-row>
 
-    <PaginationBtn
-      v-model="props.lectures.current_page"
-      :length="props.lectures.last_page"
-      @update:modelValue="movePage(props.lectures.current_page)"
-      v-if="props.lectures.last_page > 1"
-    />
+    <ConfirmCard
+      :dialog="reportDialog"
+      title="不適切な投稿として報告"
+      subtitle="報告する講義に間違いはありませんか？"
+      text="頻繁に報告される講義は管理者の判断により削除します。"
+      :items="reportLectureContent"
+    >
+      <template v-slot:cancelBtn>
+        <SecondaryBtn @click="reportDialog = false">いいえ</SecondaryBtn>
+      </template>
+      <template v-slot:okBtn>
+        <PrimaryBtn @click="[reportDialog = false, report()]">はい</PrimaryBtn>
+      </template>
+    </ConfirmCard>
+
+    <template v-if="props.lectures.last_page > 1">
+      <PaginationBtn
+        v-model="props.lectures.current_page"
+        :length="props.lectures.last_page"
+        @update:modelValue="movePage(props.lectures.current_page)"
+      />
+      <div class="text-center text-caption mt-1" style="color: #26A69A;">
+        {{ props.lectures.total }}件中 {{ props.lectures.from }}~{{ props.lectures.to }}件目表示中
+      </div>
+    </template>
   </PageSection>
 </template>
