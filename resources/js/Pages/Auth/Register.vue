@@ -4,7 +4,7 @@
 	import { Head, Link, useForm } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
   import { useVuelidate } from '@vuelidate/core'
-  import { required, email, sameAs, maxLength, minLength, helpers } from '@vuelidate/validators'
+  import { required, sameAs, maxLength, minLength, helpers } from '@vuelidate/validators'
   import { requiredM, maxLengthM, minLengthM } from '@/validationMessage.js'
   import { getFacultyName, getDepartmentName, getCourseName } from '@/Components/Lectures/GetNameFromId.vue'
   import MustInput from '@/Components/MustInput.vue'
@@ -50,13 +50,12 @@
 			sameAs: helpers.withMessage('パスワードが一致していません', sameAs(computed(()=> form.password))),
     },
     email: {
-      required: helpers.withMessage(requiredM("大学メールアドレス"), required),
-			email: helpers.withMessage('正しい形式で入力してください', email),
-    }
+      required: helpers.withMessage(("必須項目です"), required),
+			sameAs: helpers.withMessage('値が正しくありません', sameAs('bunkyo.ac.jp')),
+    },
   }
   const registerV$ = useVuelidate(registerRules, form)
 
-	const toast = useToast()
 	const visiblePassword = ref(false)
 	const visibleConfirmPassword = ref(false)
 
@@ -215,16 +214,14 @@
 					<v-col cols="12">
 						<MustInput
 							v-model="form.email"
-							type="email"
 							variant="outlined"
-							hint="ユーザー情報には含まれません"
+							hint="@以降はなに？"
+							placeholder="@以降を入力してください"
 							:prepend-inner-icon="mdiEmailOutline"
 							:error-messages="props.errors.email ? props.errors.email : registerV$.email.$errors.map(e => e.$message)"
 							@input="registerV$.email.$touch"
 							@blur="registerV$.email.$touch"
-							name="email"
-							autocomplete="email"
-						>大学メールアドレス</MustInput>
+						>大学メールアドレス(@以降)</MustInput>
 					</v-col>
 
 					<v-col cols="12">
@@ -234,7 +231,7 @@
 							variant="tonal"
 						>
 							<v-card-text class="text-medium-emphasis text-caption">
-								メールアドレスは保存されません。<br>文教大学・越谷キャンパスの学生か判断するためにのみ使用されます。
+								ユーザー名とパスワードはログインに使用します。
 							</v-card-text>
 						</v-card>
 					</v-col>

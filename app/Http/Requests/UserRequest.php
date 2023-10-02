@@ -12,7 +12,8 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:50', 'unique:'.User::class],
-            'email' => ['required', 'regex:/[a-z][0-9][ehl][1-4][1-9a][0-9]{3}@bunkyo\.ac\.jp/', 'unique:'.User::class],
+            //'email' => ['required', 'regex:/[a-z][0-9][ehl][1-4][1-9a][0-9]{3}@bunkyo\.ac\.jp/', 'unique:'.User::class],
+            'email' => ['required', 'regex:/bunkyo\.ac\.jp/'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'grade' => ['nullable', 'regex:/1年|2年|3年|4年|その他/'],
             'faculty_id' => ['nullable', 'exists:faculties,id'],
@@ -24,7 +25,7 @@ class UserRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.regex' => '大学配布のメールアドレスを入力してください。',
+            'email.regex' => '値が正しくありません',
         ];
     }
 }
