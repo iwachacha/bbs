@@ -94,7 +94,7 @@
 </script>
 
 <script>
-  import Layout from '@/Layouts/Layout.vue'
+  import Layout from '@/Layouts/AdminLayout.vue'
   export default {
     layout: Layout,
   }
