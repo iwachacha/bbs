@@ -215,13 +215,13 @@
 						<MustInput
 							v-model="form.email"
 							variant="outlined"
-							hint="@以降はなに？"
-							placeholder="@以降を入力してください"
+							hint="~@gmail.com → gmail.com"
+							placeholder="@の後ろを入力してください"
 							:prepend-inner-icon="mdiEmailOutline"
 							:error-messages="props.errors.email ? props.errors.email : registerV$.email.$errors.map(e => e.$message)"
 							@input="registerV$.email.$touch"
 							@blur="registerV$.email.$touch"
-						>大学メールアドレス(@以降)</MustInput>
+						>大学メールアドレス(ドメイン)</MustInput>
 					</v-col>
 
 					<v-col cols="12">
