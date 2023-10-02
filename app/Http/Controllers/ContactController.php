@@ -12,10 +12,22 @@ use Illuminate\Support\Facades\DB;
 
 class ContactController extends Controller
 {
-    public function index()
+    public function create()
     {
-        return Inertia::render('Contact/Index')->with([
-            'contacts' => Contact::all(),
+        return Inertia::render('Contact/Create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'body' => ['required', 'string', 'max:500'],
         ]);
+
+        $input = $request->all();
+        if(Auth::check()){
+            $input['user_id'] = Auth::id();
+        }
+        
+        Contact::create($input);
     }
 }

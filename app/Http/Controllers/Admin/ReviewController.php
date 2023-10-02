@@ -23,23 +23,16 @@ class ReviewController extends Controller
             ->sort($request->sort)
             ->paginate(8);
 
-        return Inertia::render('Review/Index')->with([
+        return Inertia::render('Admin/Review/Index')->with([
             'reviews' => $reviews,
             'query'=> $request->except('page'),
             'totalCount' => Review::count()
         ]);
     }
-    public function create(Lecture $lecture)
-    {
-        return Inertia::render('Review/Create')->with([
-            'lecture' => $lecture,
-            'tags' => Tag::all()
-        ]);
-    }
 
     public function edit(Lecture $lecture, Review $review)
     {
-        return Inertia::render('Review/Edit')->with([
+        return Inertia::render('Admin/Review/Edit')->with([
             'lecture' => $lecture,
             'review' => $review->with('tags')->find($review->id),
             'tags' => Tag::all()
@@ -58,7 +51,7 @@ class ReviewController extends Controller
             $review->tags()->attach($created_tag); //レビューとタグを紐付け
         }
 
-        return to_route('lecture.show', ['lecture' => $review->lecture_id]);
+        return to_route('admin.lecture.show', ['lecture' => $review->lecture_id]);
     }
 
     public function delete(Review $review)

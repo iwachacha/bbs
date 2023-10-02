@@ -72,7 +72,7 @@
   }
 
   const deleteReview = () => {
-    router.delete(route('review.delete', deleteReviewId.value), {
+    router.delete(route('admin.review.delete', deleteReviewId.value), {
       preserveScroll: true,
       onSuccess: () => {
         useToast().success('レビューの削除が完了しました。')
@@ -180,7 +180,7 @@
             </template>
 
             <template v-slot:menuItem>
-              <Link :href="route('review.edit', [review.lecture_id, review.id])">
+              <Link :href="route('admin.review.edit', [review.lecture_id, review.id])">
                 <v-list-item
                   link
                   title="編集"
@@ -206,7 +206,7 @@
             </template>
 
             <template v-slot:cardTitle>
-              <Link :href="route('lecture.show', review.lecture_id)">
+              <Link :href="route('admin.lecture.show', review.lecture_id)">
                 {{ review.lecture.lecture_name + ' / ' + review.lecture.professor_name + '先生' }}
                 <v-icon :icon="mdiChevronRight" size="x-small" class="ms-n1 text-disabled" />
               </Link>

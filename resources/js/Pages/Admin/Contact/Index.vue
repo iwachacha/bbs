@@ -1,7 +1,14 @@
 <script setup>
-    const props = defineProps({
-        contacts: Object,
-    })
+  const props = defineProps({
+    contacts: Object,
+  })
+</script>
+
+<script>
+  import Layout from '@/Layouts/AdminLayout.vue'
+  export default {
+    layout: Layout,
+  }
 </script>
 
 <template>

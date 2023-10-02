@@ -341,7 +341,6 @@
 
       <v-window-item value="rateAverage" style="border: 1px solid #BDBDBD; background-color: #EEEEEE;">
         <v-row align="center" class="pt-10 pb-5">
-
           <v-col cols="12" md="5">
             <div color="secondary">
               <div class="text-center mt-auto text-h5">
@@ -371,7 +370,7 @@
 
           <v-col cols="12" md="7">
             <Carousel>
-              <div class="px-14">
+              <div class="px-2">
                 <v-carousel-item>
                   <StarRate
                     title="平均充実度評価"

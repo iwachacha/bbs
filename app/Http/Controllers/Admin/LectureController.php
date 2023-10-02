@@ -37,7 +37,7 @@ class LectureController extends Controller
             ->sort($request->sort)
             ->paginate(12);
 
-        return Inertia::render('Lecture/Index')->with([
+        return Inertia::render('Admin/Lecture/Index')->with([
             'lectures' => $lectures,
             'names' => fn() => Lecture::select('lecture_name', 'professor_name')->get(),
             'BookmarkedLectureId' => fn() => LectureBookmark::select('lecture_id')->where('user_id', Auth::id())->get(),
@@ -87,7 +87,7 @@ class LectureController extends Controller
             ->groupBy('satisfaction_rate')
             ->get();
 
-        return Inertia::render('Lecture/Show')->with([
+        return Inertia::render('Admin/Lecture/Show')->with([
             'lecture' => fn() => $lecture,
             'reviews' => $reviews,
             'fulfillmentRate' => fn() => $fulfillment_rate,

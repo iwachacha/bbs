@@ -87,7 +87,7 @@
   }
 
   const deleteReview = () => {
-    router.delete(route('review.delete', deleteReviewId.value), {
+    router.delete(route('admin.review.delete', deleteReviewId.value), {
       preserveScroll: true,
       onSuccess: () => {
         useToast().success('レビューの削除が完了しました。')
