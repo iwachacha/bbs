@@ -20,8 +20,7 @@ Route::middleware('auth:admin')->group(function ()
     });
 });
 
-Route::get('/contacts/create', [ContactController::class, 'create'])->name('contact.create');
-Route::post('/contacts', [ContactController::class, 'store'])->name('contact.store');
+Route::get('/contacts/index', [ContactController::class, 'index'])->name('contact.index');
 
 Route::middleware('guest')->group(function ()
 {
