@@ -66,7 +66,7 @@
           />
 
           <NavItem
-            :href="route('admin.lecture.index')"
+            :href="route('admin.contact.index')"
             :icon="mdiChatQuestion"
             title="お問い合わせ"
           />

@@ -324,7 +324,7 @@
 
                 <template v-slot:action>
                   <div class="ms-2 text-caption">
-                    {{ review.review_good ? review.review_good.count : 0 }}回の共感を受けています！
+                    {{ review.review_good ? review.review_good.count : 0 }}回の共感が寄せられています！
                   </div>
                   <v-spacer />
 
