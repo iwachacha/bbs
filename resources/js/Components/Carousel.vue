@@ -7,7 +7,7 @@
     :cycle="true"
     height="auto"
     hide-delimiters
-    show-arrows
+    show-arrows="hover"
     hide-delimiter-background
     interval="8000"
   >

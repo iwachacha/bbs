@@ -224,7 +224,7 @@
                 :lecture-id="lecture.id"
                 :count="lecture.lecture_bookmarks_count"
               />
-              <LinkBtn :href="route('lecture.show', lecture.id)" :block="true" class="ms-1">
+              <LinkBtn :href="route('admin.lecture.show', lecture.id)" :block="true" class="ms-1">
                 <v-icon :icon="mdiMessageText" size="large"/>
                 {{ lecture.reviews_count }}
               </LinkBtn>
