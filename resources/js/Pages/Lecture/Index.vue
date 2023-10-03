@@ -1,7 +1,7 @@
 <script setup>
   import { computed, reactive, watch, ref } from 'vue'
   import { Head } from '@inertiajs/vue3'
-  import { mdiMessageText, mdiMagnify, mdiAlertCircle, mdiHumanMaleBoard, mdiChevronRight } from '@mdi/js'
+  import { mdiMessageText, mdiSquareEditOutline, mdiTrashCan, mdiAlertCircle, mdiHumanMaleBoard, mdiChevronRight } from '@mdi/js'
   import { router } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
   import LinkBtn from '@/Components/LinkBtn.vue'
@@ -57,6 +57,38 @@
     props.query, {
       preserveState: true,
       only: ['lectures', 'query'],
+    })
+  }
+
+  //講義削除
+  const deleteDialog = ref(false)
+  const deleteLectureId = ref(null)
+  const deleteLectureContent = ref(null)
+
+  const deleteConfirm = (LectureId) => {
+    let targetLecture = props.lectures.data.find((lecture) => lecture.id == LectureId)
+    deleteLectureContent.value = [
+      {key: '講義名', value: targetLecture.lecture_name},
+      {key: '担当教員名', value: targetLecture.professor_name},
+      {key: '開講時期', value:  targetLecture.season},
+      {key: '講義区分', value: targetLecture.lecture_category.name },
+      {key: '開講学部', value: (targetLecture.faculty) ? targetLecture.faculty.name : '未設定'},
+      {key: '開講学科・課程', value: (targetLecture.department) ? targetLecture.department.name : '未設定'},
+      {key: '開講コース・専修', value: (targetLecture.course) ? targetLecture.course.name : '未設定'}
+    ]
+    deleteDialog.value = true
+  }
+
+  const deleteLecture = () => {
+    router.delete(route('lecture.delete', deleteLectureId.value), {
+      preserveScroll: true,
+      onSuccess: (page) => {[
+        page.props.flash.error
+          ? useToast().error(page.props.flash.error)
+          : useToast().success('講義の削除が完了しました。'),
+        deleteLectureId.value = null,
+        deleteLectureContent.value = null
+      ]},
     })
   }
 
@@ -158,6 +190,29 @@
 
             <template v-slot:menuItem>
               <v-list-item
+                v-if="lecture.user.id === $page.props.auth.user.id"
+                link
+                title="編集"
+                :prepend-icon="mdiSquareEditOutline"
+                style="color: #26A69A;"
+                @click="router.get(route('lecture.edit', lecture.id), {} , {
+                  preserveScroll: true,
+                  onSuccess: (page) => {
+                    page.props.flash.error && useToast().error(page.props.flash.error)
+                  }
+                })"
+              />
+
+              <v-list-item
+                v-if="lecture.user.id === $page.props.auth.user.id"
+                link
+                title="削除"
+                :prepend-icon="mdiTrashCan"
+                style="color: red;"
+                @click="[deleteConfirm(lecture.id), deleteLectureId = lecture.id]"
+              />
+
+              <v-list-item
                 link
                 title="不適切な投稿として報告"
                 :prepend-icon="mdiAlertCircle"
@@ -234,6 +289,33 @@
       </template>
     </v-row>
 
+    <template v-if="props.lectures.last_page > 1">
+      <PaginationBtn
+        v-model="props.lectures.current_page"
+        :length="props.lectures.last_page"
+        @update:modelValue="movePage(props.lectures.current_page)"
+      />
+      <div class="text-center text-caption mt-1" style="color: #26A69A;">
+        {{ props.lectures.total }}件中 {{ props.lectures.from }}~{{ props.lectures.to }}件目表示中
+      </div>
+    </template>
+  </PageSection>
+
+    <ConfirmCard
+      :dialog="deleteDialog"
+      title="講義削除"
+      subtitle="本当に削除してもよろしいですか？"
+      text="削除した情報の復元には時間がかかります。"
+      :items="deleteLectureContent"
+    >
+      <template v-slot:cancelBtn>
+        <SecondaryBtn @click="deleteDialog = false">いいえ</SecondaryBtn>
+      </template>
+      <template v-slot:okBtn>
+        <PrimaryBtn color="#D50000" @click="[deleteDialog = false, deleteLecture()]">はい</PrimaryBtn>
+      </template>
+    </ConfirmCard>
+
     <ConfirmCard
       :dialog="reportDialog"
       title="不適切な投稿として報告"
@@ -248,16 +330,4 @@
         <PrimaryBtn @click="[reportDialog = false, report()]">はい</PrimaryBtn>
       </template>
     </ConfirmCard>
-
-    <template v-if="props.lectures.last_page > 1">
-      <PaginationBtn
-        v-model="props.lectures.current_page"
-        :length="props.lectures.last_page"
-        @update:modelValue="movePage(props.lectures.current_page)"
-      />
-      <div class="text-center text-caption mt-1" style="color: #26A69A;">
-        {{ props.lectures.total }}件中 {{ props.lectures.from }}~{{ props.lectures.to }}件目表示中
-      </div>
-    </template>
-  </PageSection>
 </template>

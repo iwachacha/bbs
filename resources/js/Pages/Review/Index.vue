@@ -1,10 +1,9 @@
 <script setup>
   import { computed, ref } from 'vue'
   import { Head, Link } from '@inertiajs/vue3'
-  import { mdiMessageText, mdiMagnify, mdiAlertCircle, mdiAccountCircle, mdiChevronRight, mdiSquareEditOutline, mdiTrashCan } from '@mdi/js'
+  import { mdiMessageText, mdiAlertCircle, mdiAccountCircle, mdiChevronRight, mdiSquareEditOutline, mdiTrashCan } from '@mdi/js'
   import { router } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
-  import LinkBtn from '@/Components/LinkBtn.vue'
   import PageSection from '@/Components/PageSection.vue'
   import PostCard from '@/Components/PostCard.vue'
   import ConfirmCard from '@/Components/ConfirmCard.vue'
@@ -17,6 +16,7 @@
   import SortReviewForm from '@/Components/Reviews/SortReviewForm.vue'
   import ReviewQueryChip from '@/Components/Reviews/ReviewQueryChip.vue'
   import GoodBtn from '@/Components/Reviews/ReviewGoodBtn.vue'
+  import { getReviewContent } from '@/Components/Reviews/GetReviewContent.vue'
 
   const props = defineProps({
     reviews: Object,
@@ -57,28 +57,20 @@
   const deleteReviewContent = ref(null)
 
   const deleteConfirm = (reviewId) => {
-    let targetReview = props.reviews.data.find((review) => review.id === reviewId)
-    deleteReviewContent.value = [
-      {key: 'タイトル', value: targetReview.title},
-      {key: '受講年度', value: targetReview.year},
-      {key: '充実度評価', value: '☆ ' + targetReview.fulfillment_rate},
-      {key: '楽単度評価', value: '☆ ' + targetReview.ease_rate},
-      {key: '満足度評価', value: '☆ ' + targetReview.satisfaction_rate},
-      {key: '講義内容', value: (targetReview.lecture_content) ? targetReview.lecture_content : 'なし'},
-      {key: '良い点', value: (targetReview.good_point) ? targetReview.good_point : 'なし'},
-      {key: '悪い点', value: (targetReview.bad_point) ? targetReview.bad_point : 'なし'},
-    ]
+    deleteReviewContent.value = getReviewContent(props.reviews.data, reviewId)
     deleteDialog.value = true
   }
 
   const deleteReview = () => {
     router.delete(route('review.delete', deleteReviewId.value), {
       preserveScroll: true,
-      onSuccess: () => {
-        useToast().success('レビューの削除が完了しました。')
-        deleteReviewId.value = null
+      onSuccess: (page) => {[
+        page.props.flash.error
+          ? useToast().error(page.props.flash.error)
+          : useToast().success('レビューの削除が完了しました。'),
+        deleteReviewId.value = null,
         deleteReviewContent.value = null
-      },
+      ]},
     })
   }
 
@@ -88,17 +80,7 @@
   const reportReviewContent = ref(null)
 
   const reportConfirm = (reviewId) => {
-    let targetReview = props.reviews.data.find((review) => review.id === reviewId)
-    reportReviewContent.value = [
-      {key: 'タイトル', value: targetReview.title},
-      {key: '受講年度', value: targetReview.year},
-      {key: '充実度評価', value: '☆ ' + targetReview.fulfillment_rate},
-      {key: '楽単度評価', value: '☆ ' + targetReview.ease_rate},
-      {key: '満足度評価', value: '☆ ' + targetReview.satisfaction_rate},
-      {key: '講義内容', value: (targetReview.lecture_content) ? targetReview.lecture_content : 'なし'},
-      {key: '良い点', value: (targetReview.good_point) ? targetReview.good_point : 'なし'},
-      {key: '悪い点', value: (targetReview.bad_point) ? targetReview.bad_point : 'なし'},
-    ]
+    reportReviewContent.value = getReviewContent(props.reviews.data, reviewId)
     reportDialog.value = true
   }
 
@@ -180,15 +162,18 @@
             </template>
 
             <template v-slot:menuItem>
-              <Link :href="route('review.edit', [review.lecture_id, review.id])">
-                <v-list-item
-                  v-if="review.user_id === $page.props.auth.user.id"
-                  link
-                  title="編集"
-                  :prepend-icon="mdiSquareEditOutline"
-                  style="color: #26A69A;"
-                />
-              </Link>
+              <v-list-item
+                v-if="review.user_id === $page.props.auth.user.id"
+                link
+                title="編集"
+                :prepend-icon="mdiSquareEditOutline"
+                style="color: #26A69A;"
+                @click="router.get(route('review.edit', [review.lecture_id, review.id]), {} , {
+                  onSuccess: (page) => {
+                    page.props.flash.error && useToast().error(page.props.flash.error)
+                  }
+                })"
+              />
 
               <v-list-item
                 v-if="review.user_id === $page.props.auth.user.id"
@@ -283,7 +268,7 @@
 
             <template v-slot:action>
               <div class="ms-2 text-caption">
-                {{ review.review_good ? review.review_good.count : 0 }}回の共感が寄せられています！
+                {{ review.review_good ? review.review_good.count : 0 }}回の共感を受けています！
               </div>
               <v-spacer />
 

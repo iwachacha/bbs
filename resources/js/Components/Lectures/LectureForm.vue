@@ -1,6 +1,6 @@
 <script setup>
   import { ref, watch } from 'vue'
-  import { useForm } from '@inertiajs/vue3'
+  import { useForm, usePage } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
   import { useVuelidate } from '@vuelidate/core'
   import { lectureRules } from '@/Components/Lectures/LectureFormValidationRules.vue'
@@ -13,6 +13,7 @@
   import ConfirmCard from '@/Components/ConfirmCard.vue'
 
   const props = defineProps({
+    lecture: Object,
     faculties: Object,
     departments: Object,
     courses: Object,
@@ -26,68 +27,77 @@
   }
 
   const lectureForm = useForm({
-    lecture_name: null,
-    professor_name:  null,
-    lecture_category_id: null,
-    season: null,
-    faculty_id: null,
-    department_id: null,
-    course_id: null,
+    lecture_name: (props.lecture) ? props.lecture.lecture_name : null,
+    professor_name: (props.lecture) ? props.lecture.professor_name : null,
+    lecture_category_id: (props.lecture) ? props.lecture.lecture_category_id : null,
+    season: (props.lecture) ? props.lecture.season : null,
+    faculty_id: (props.lecture) ? props.lecture.faculty_id : null,
+    department_id: (props.lecture) ? props.lecture.department_id : null,
+    course_id: (props.lecture) ? props.lecture.course_id : null,
   })
   const lectureV$ = useVuelidate(lectureRules, lectureForm)
 
   //階層：カテゴリー>学部>学科>コース、学部・学科・コースはリレーションあり
   //カテゴリーの共通教養が選択された場合は学部・学科・コースの選択をリセット
   //共通教養以外が選択された場合は学部の選択肢を追加
+  const sortFaculties = (props.lecture)
+    ? ref((props.lecture.lecture_category_id !== 1) ? props.faculties : [])
+    : ref([])
 
-  const sortFaculties = ref()
-  const sortDepartments = ref()
-  const sortCourses = ref()
+  const sortDepartments = (props.lecture)
+    ? ref(props.departments.filter((department) => department.faculty_id === props.lecture.faculty_id))
+    : ref([])
 
-  watch(
-    () => lectureForm.lecture_category_id,
-    (lecture_category_id) => {
-      if(lecture_category_id == 1){
+  const sortCourses = (props.lecture)
+    ? ref(props.courses.filter((course) => course.department_id === props.lecture.department_id))
+    : ref([])
 
-        lectureForm.faculty_id = null
-        lectureForm.department_id = null
-        lectureForm.course_id = null
-        sortFaculties.value = []
-
-      } else {
-        sortFaculties.value = props.faculties
-      }
-    }
-  )
-
-  //親の項目選択によって子の項目を変更+既に子が選択されていた場合は選択リセット
-  watch(
-    () => lectureForm.faculty_id,
-    (faculty_id) => {
-      sortDepartments.value = props.departments.filter((department) => department.faculty_id === faculty_id)
+  watch(() => lectureForm.lecture_category_id, (lecture_category_id) => {
+    if(lecture_category_id == 1){
+      lectureForm.faculty_id = null
       lectureForm.department_id = null
       lectureForm.course_id = null
+      sortFaculties.value = []
     }
-  )
+    else {
+      sortFaculties.value = props.faculties
+    }
+  })
 
-  watch(
-    () => lectureForm.department_id,
-    (department_id) => {
-      sortCourses.value = props.courses.filter((course) => course.department_id === department_id)
-      lectureForm.course_id = null
-    }
-  )
+  //親の項目選択によって子の項目を変更+既に子が選択されていた場合は選択リセット
+  watch(() => lectureForm.faculty_id, (faculty_id) => {
+    sortDepartments.value = props.departments.filter((department) => department.faculty_id === faculty_id)
+    lectureForm.department_id = null
+    lectureForm.course_id = null
+  })
+
+  watch(() => lectureForm.department_id, (department_id) => {
+    sortCourses.value = props.courses.filter((course) => course.department_id === department_id)
+    lectureForm.course_id = null
+  })
 
   const onSubmit = () => {
-    lectureForm.post(route('lecture.store'), {
-      onSuccess: () => [
-        useToast().success('講義作成が完了しました！\nレビュー作成にお進みください。'),
-        lectureForm.reset(),
-        lectureV$.value.$reset(),
-        submitNotice()
-      ],
-      onError: () => [useToast().error('入力内容に誤りがあります！\n内容の確認をお願いします。')]
-    })
+    if(usePage().component === 'Lecture/Create'){
+      lectureForm.post(route('lecture.store'), {
+        onSuccess: () => [
+          useToast().success('講義作成が完了しました！\nレビュー作成にお進みください。'),
+          lectureForm.reset(),
+          lectureV$.value.$reset(),
+          submitNotice()
+        ],
+        onError: () => [useToast().error('入力内容に誤りがあります！\n内容の確認をお願いします。')]
+      })
+    }
+    else if(usePage().component === 'Lecture/Edit'){
+      lectureForm.put(route('lecture.update', props.lecture.id), {
+        onSuccess: () => [
+          useToast().success('講義の編集が完了しました。'),
+          lectureForm.reset(),
+          lectureV$.value.$reset(),
+        ],
+        onError: () => [useToast().error('入力内容に誤りがあります！\n内容の確認をお願いします。')]
+      })
+    }
   }
 
   const showError = () => {
@@ -108,9 +118,9 @@
       {key: '担当教員名', value: lectureForm.professor_name},
       {key: '開講時期', value:  lectureForm.season},
       {key: '講義区分', value: selectCategoryName},
-      {key: '開講学部', value: (selectFacultyName) ? selectFacultyName : 'なし'},
-      {key: '開講学科・課程', value: (selectDepartmentName) ? selectDepartmentName : 'なし'},
-      {key: '開講コース・専修', value: (selectCourseName) ? selectCourseName : 'なし'}
+      {key: '開講学部', value: (selectFacultyName) ? selectFacultyName : '未設定'},
+      {key: '開講学科・課程', value: (selectDepartmentName) ? selectDepartmentName : '未設定'},
+      {key: '開講コース・専修', value: (selectCourseName) ? selectCourseName : '未設定'}
     ]
     dialog.value = true
   }

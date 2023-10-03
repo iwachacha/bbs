@@ -1,6 +1,6 @@
 <script setup>
   import { ref, computed } from 'vue'
-  import { Link, router, Head } from '@inertiajs/vue3'
+  import { router, Head } from '@inertiajs/vue3'
   import { mdiMessageText, mdiSquareEditOutline, mdiTrashCan, mdiAlertCircle, mdiAccountCircle } from '@mdi/js'
   import { useToast } from "vue-toastification"
   import PageSection from '@/Components/PageSection.vue'
@@ -16,46 +16,20 @@
   import SortReviewForm from '@/Components/Reviews/SortReviewForm.vue'
   import ReviewQueryChip from '@/Components/Reviews/ReviewQueryChip.vue'
   import GoodBtn from '@/Components/Reviews/ReviewGoodBtn.vue'
+  import { getReviewContent } from '@/Components/Reviews/GetReviewContent.vue'
+  import { fulfillmentRatingCount, easeRatingCount, satisfactionRatingCount } from '@/Components/Reviews/GetRatingCount.vue'
 
   const props = defineProps({
     lecture: Object,
-    fulfillmentRate: Array,
-    easeRate: Array,
-    satisfactionRate: Array,
+    fulfillmentRatings: Array,
+    easeRatings: Array,
+    satisfactionRatings: Array,
     reviews: Object,
     resultCount: Number,
     query: Object
   })
 
   const tab = ref('reviews')
-
-  //☆1~5それぞれの合計数を返す counts = [☆1の数, ☆2の数..., ☆5の数]
-  const fulfillmentRateCounts = computed(() => {
-    let counts = []
-    for(let i = 1; i <= 5; i++){
-      let target = props.fulfillmentRate.find((value) => value.fulfillment_rate == i)
-      target ? counts.push(target.count) : counts.push(0)
-    }
-    return counts
-  })
-
-  const easeRateCounts = computed(() => {
-    let counts = []
-    for(let i = 1; i <= 5; i++){
-      let target = props.easeRate.find((value) => value.ease_rate == i)
-      target ? counts.push(target.count) : counts.push(0)
-    }
-    return counts
-  })
-
-  const satisfactionRateCounts = computed(() => {
-    let counts = []
-    for(let i = 1; i <= 5; i++){
-      let target = props.satisfactionRate.find((value) => value.satisfaction_rate == i)
-      target ? counts.push(target.count) : counts.push(0)
-    }
-    return counts
-  })
 
   const PostBarTitle = computed(() => (userName, userFacultyId) => {
     switch (userFacultyId) {
@@ -72,25 +46,17 @@
   const deleteReviewContent = ref(null)
 
   const deleteConfirm = (reviewId) => {
-    let targetReview = props.reviews.find((review) => review.id === reviewId)
-    deleteReviewContent.value = [
-      {key: 'タイトル', value: targetReview.title},
-      {key: '受講年度', value: targetReview.year},
-      {key: '充実度評価', value: '☆ ' + targetReview.fulfillment_rate},
-      {key: '楽単度評価', value: '☆ ' + targetReview.ease_rate},
-      {key: '満足度評価', value: '☆ ' + targetReview.satisfaction_rate},
-      {key: '講義内容', value: (targetReview.lecture_content) ? targetReview.lecture_content : 'なし'},
-      {key: '良い点', value: (targetReview.good_point) ? targetReview.good_point : 'なし'},
-      {key: '悪い点', value: (targetReview.bad_point) ? targetReview.bad_point : 'なし'},
-    ]
+    deleteReviewContent.value = getReviewContent(props.reviews, reviewId)
     deleteDialog.value = true
   }
 
   const deleteReview = () => {
     router.delete(route('review.delete', deleteReviewId.value), {
       preserveScroll: true,
-      onSuccess: () => {
-        useToast().success('レビューの削除が完了しました。')
+      onSuccess: (page) => {
+        page.props.flash.error
+          ? useToast().error(page.props.flash.error)
+          : useToast().success('レビューの削除が完了しました。')
         deleteReviewId.value = null
         deleteReviewContent.value = null
       },
@@ -103,17 +69,7 @@
   const reportReviewContent = ref(null)
 
   const reportConfirm = (reviewId) => {
-    let targetReview = props.reviews.find((review) => review.id === reviewId)
-    reportReviewContent.value = [
-      {key: 'タイトル', value: targetReview.title},
-      {key: '受講年度', value: targetReview.year},
-      {key: '充実度評価', value: '☆ ' + targetReview.fulfillment_rate},
-      {key: '楽単度評価', value: '☆ ' + targetReview.ease_rate},
-      {key: '満足度評価', value: '☆ ' + targetReview.satisfaction_rate},
-      {key: '講義内容', value: (targetReview.lecture_content) ? targetReview.lecture_content : 'なし'},
-      {key: '良い点', value: (targetReview.good_point) ? targetReview.good_point : 'なし'},
-      {key: '悪い点', value: (targetReview.bad_point) ? targetReview.bad_point : 'なし'},
-    ]
+    reportReviewContent.value = getReviewContent(props.reviews, reviewId)
     reportDialog.value = true
   }
 
@@ -130,6 +86,7 @@
     })
   }
 
+  //重複なしタグ一覧
   const tagNames = []
   props.reviews.forEach(review => {
     review.tags.forEach(tag => {
@@ -202,16 +159,17 @@
               :only="['reviews', 'query']"
             />
           </div>
-
-          <ReviewQueryChip
-            :query="props.query"
-            route-name="lecture.show"
-            :route-param="lecture.id"
-            :only="['reviews', 'resultCount', 'query']"
-            :total-count="props.lecture.reviews_count"
-            :result-count="props.resultCount"
-          />
         </template>
+
+        <ReviewQueryChip
+          :query="props.query"
+          route-name="lecture.show"
+          :route-param="lecture.id"
+          :only="['reviews', 'resultCount', 'query']"
+          :total-count="props.lecture.reviews_count"
+          :result-count="props.resultCount"
+        />
+        
 
         <v-row justify="center" class="mt-0">
           <template v-for="review in props.reviews">
@@ -228,15 +186,18 @@
                 </template>
 
                 <template v-slot:menuItem>
-                  <Link :href="route('review.edit', [review.lecture_id, review.id])">
-                    <v-list-item
-                      v-if="review.user_id === $page.props.auth.user.id"
-                      link
-                      title="編集"
-                      :prepend-icon="mdiSquareEditOutline"
-                      style="color: #26A69A;"
-                    />
-                  </Link>
+                  <v-list-item
+                    v-if="review.user_id === $page.props.auth.user.id"
+                    link
+                    title="編集"
+                    :prepend-icon="mdiSquareEditOutline"
+                    style="color: #26A69A;"
+                    @click="router.get(route('review.edit', [review.lecture_id, review.id]), {} , {
+                      onSuccess: (page) => {
+                        page.props.flash.error && useToast().error(page.props.flash.error)
+                      }
+                    })"
+                  />
 
                   <v-list-item
                     v-if="review.user_id === $page.props.auth.user.id"
@@ -376,7 +337,7 @@
                     title="平均充実度評価"
                     :average="Math.floor(props.lecture.fulfillment_rate_avg * 100) / 100"
                     :total-count="lecture.reviews_count"
-                    :valueCounts="fulfillmentRateCounts"
+                    :valueCounts="fulfillmentRatingCount(props.fulfillmentRatings)"
                   />
                 </v-carousel-item>
                 <v-carousel-item>
@@ -384,7 +345,7 @@
                     title="平均楽単度評価"
                     :average="Math.floor(props.lecture.ease_rate_avg * 100) / 100"
                     :total-count="lecture.reviews_count"
-                    :valueCounts="easeRateCounts"
+                    :valueCounts="easeRatingCount(props.easeRatings)"
                   />
                 </v-carousel-item>
                 <v-carousel-item>
@@ -392,7 +353,7 @@
                     title="平均満足度評価"
                     :average="Math.floor(props.lecture.satisfaction_rate_avg * 100) / 100"
                     :total-count="lecture.reviews_count"
-                    :valueCounts="satisfactionRateCounts"
+                    :valueCounts="satisfactionRatingCount(props.satisfactionRatings)"
                   />
                 </v-carousel-item>
               </div>
@@ -440,6 +401,7 @@
     title="レビュー削除"
     subtitle="本当に削除してもよろしいですか？"
     text="削除した情報の復元には時間がかかります。"
+    :items="deleteReviewContent"
   >
     <template v-slot:cancelBtn>
       <SecondaryBtn @click="deleteDialog = false">いいえ</SecondaryBtn>

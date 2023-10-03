@@ -17,6 +17,7 @@ use App\Models\Review;
 use App\Models\Tag;
 use App\Http\Requests\LectureRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class LectureController extends Controller
 {
@@ -27,7 +28,7 @@ class LectureController extends Controller
             ->searchByLectureName($request->lecture_name)
             ->searchByProfessorName($request->professor_name)
             ->selectFilter($request->only(['season', 'category', 'faculty', 'department']))
-            ->with('lecture_category', 'faculty', 'department', 'course')
+            ->with('lecture_category', 'faculty', 'department', 'course', 'user')
             ->withCount('reviews', 'lecture_bookmarks')
             ->withAvg('reviews as average_rate', 'average_rate')
             ->withAvg('reviews as fulfillment_rate_avg', 'fulfillment_rate')
@@ -66,21 +67,21 @@ class LectureController extends Controller
             ->get();
 
         //各評価の星1~5それぞれの合計数
-        $fulfillment_rate = DB::table('reviews')
+        $fulfillment_ratings = DB::table('reviews')
             ->where('lecture_id', $lecture_id)
             ->select('fulfillment_rate')
             ->selectRaw('COUNT(fulfillment_rate) as count')
             ->groupBy('fulfillment_rate')
             ->get();
 
-        $ease_rate = DB::table('reviews')
+        $ease_ratings = DB::table('reviews')
             ->where('lecture_id', $lecture_id)
             ->select('ease_rate')
             ->selectRaw('COUNT(ease_rate) as count')
             ->groupBy('ease_rate')
             ->get();
 
-        $satisfaction_rate = DB::table('reviews')
+        $satisfaction_ratings = DB::table('reviews')
             ->where('lecture_id', $lecture_id)
             ->select('satisfaction_rate')
             ->selectRaw('COUNT(satisfaction_rate) as count')
@@ -90,9 +91,9 @@ class LectureController extends Controller
         return Inertia::render('Lecture/Show')->with([
             'lecture' => fn() => $lecture,
             'reviews' => $reviews,
-            'fulfillmentRate' => fn() => $fulfillment_rate,
-            'easeRate' => fn() => $ease_rate,
-            'satisfactionRate' => fn() => $satisfaction_rate,
+            'fulfillmentRatings' => fn() => $fulfillment_ratings,
+            'easeRatings' => fn() => $ease_ratings,
+            'satisfactionRatings' => fn() => $satisfaction_ratings,
             'query'=> $request->query(),
             'resultCount' => $reviews->count(),
         ]);
@@ -117,5 +118,48 @@ class LectureController extends Controller
         $lecture->fill($input)->save();
 
         return redirect()->back()->with('createdLectureId', $lecture->id);
+    }
+
+    public function edit(Lecture $lecture)
+    {
+        //本人確認＋他のユーザーが対象講義にレビューを投稿していないか確認
+        if(!Gate::inspect('update', $lecture)->allowed()) {
+            return redirect()->back()->with('error', Gate::inspect('update', $lecture)->message());
+        }
+
+        if(!Gate::inspect('checkReview', $lecture)->allowed()) {
+            return redirect()->back()->with('error', Gate::inspect('checkReview', $lecture)->message());
+        }
+
+        return Inertia::render('Lecture/Edit')->with([
+            'lecture' => $lecture,
+            'faculties' => Faculty::all(),
+            'departments' => Department::all(),
+            'courses' => Course::all(),
+            'lectureCategories' => LectureCategory::all(),
+        ]);
+    }
+
+    public function update(Lecture $lecture, LectureRequest $request)
+    {
+        $input = $request->validated();
+        $lecture->fill($input)->save();
+
+        return to_route('lecture.show', $lecture->id);
+    }
+
+    public function destroy(Lecture $lecture)
+    {
+        //本人確認＋他のユーザーが対象講義にレビューを投稿していないか確認
+        if(!Gate::inspect('delete', $lecture)->allowed()) {
+            return redirect()->back()->with('error', Gate::inspect('delete', $lecture)->message());
+        }
+
+        if(!Gate::inspect('checkReview', $lecture)->allowed()) {
+            return redirect()->back()->with('error', Gate::inspect('checkReview', $lecture)->message());
+        }
+
+        $lecture->delete();
+        return redirect()->back();
     }
 }

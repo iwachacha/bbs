@@ -16,6 +16,11 @@ class Lecture extends Model
         'lecture_name', 'professor_name', 'season'
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function lecture_category()
     {
         return $this->belongsTo(LectureCategory::class);
