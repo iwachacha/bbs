@@ -10,6 +10,7 @@ use App\Models\Lecture;
 use App\Models\Review;
 use App\Models\Tag;
 use App\Http\Requests\ReviewRequest;
+use Illuminate\Support\Facades\Gate;
 
 class ReviewController extends Controller
 {
@@ -61,20 +62,25 @@ class ReviewController extends Controller
 
     public function edit(Lecture $lecture, Review $review)
     {
-        if(Auth::id() === $review->user_id ){ //書き換え対策
-            return Inertia::render('Review/Edit')->with([
-                'lecture' => $lecture,
-                'review' => $review->with('tags')->find($review->id),
-                'tags' => Tag::all()
-            ]);
+        //本人確認
+        if(!Gate::inspect('update', $review)->allowed()) {
+            return redirect()->back()->with('error', Gate::inspect('update', $review)->message());
         }
-        else {
-            return redirect()->back();
-        }
+
+        return Inertia::render('Review/Edit')->with([
+            'lecture' => $lecture,
+            'review' => $review->with('tags')->find($review->id),
+            'tags' => Tag::all()
+        ]);
     }
 
     public function update(Review $review, ReviewRequest $request)
     {
+        //本人確認
+        if(!Gate::inspect('update', $review)->allowed()) {
+            return redirect()->back()->with('error', Gate::inspect('update', $review)->message());
+        }
+
         $input = $request->validated();
         $input['average_rate'] = $review->getAverageRate($request);
         $review->fill($input)->save();
@@ -90,12 +96,12 @@ class ReviewController extends Controller
 
     public function delete(Review $review)
     {
-        if(Auth::id() === $review->user_id ){ //書き換え対策
-            $review->delete();
-            return redirect()->back();
+        //本人確認
+        if(!Gate::inspect('delete', $review)->allowed()) {
+            return redirect()->back()->with('error', Gate::inspect('delete', $review)->message());
         }
-        else {
-            return redirect()->back();
-        }
+
+        $review->delete();
+        return redirect()->back();
     }
 }
