@@ -19,7 +19,7 @@
         <h3><slot name="barTitle" /></h3>
       </v-toolbar-title>
 
-      <DotMenuBtn>
+      <DotMenuBtn v-if="$page.props.auth.user">
           <slot name="menuItem" />
       </DotMenuBtn>
     </v-toolbar>

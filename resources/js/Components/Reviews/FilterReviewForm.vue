@@ -50,77 +50,77 @@
     variant="text"
     elevation="1"
     class="text-button text-medium-emphasis px-2"
-    :persistent="false"
     @click="dialog = true"
+    :disabled="!$page.props.auth.user"
   >
     <v-icon :icon="(dialog) ? mdiFilterMinus : mdiFilterPlus" />
     <span>絞り込み</span>
   </v-btn>
 
   <ConfirmCard
-      :dialog="dialog"
-      title="絞り込み検索"
-    >
-      <v-form @submit.prevent="onSubmit()" id="reviewFilterForm">
-        <v-row>
-          <v-col cols="12" class="pt-0">
-            <span class="text-caption">
-              充実度評価 {{ (form.fulfillment) && '☆' + form.fulfillment[0] + ' ～ ☆' + form.fulfillment[1] }}
-            </span>
-            <Slider
-              v-model="form.fulfillment"
-              min="1"
-              max="5"
-              step="1"
-            />
-          </v-col>
+    :dialog="dialog"
+    title="絞り込み検索"
+  >
+    <v-form @submit.prevent="onSubmit()" id="reviewFilterForm">
+      <v-row>
+        <v-col cols="12" class="pt-0">
+          <span class="text-caption">
+            充実度評価 {{ (form.fulfillment) && '☆' + form.fulfillment[0] + ' ～ ☆' + form.fulfillment[1] }}
+          </span>
+          <Slider
+            v-model="form.fulfillment"
+            min="1"
+            max="5"
+            step="1"
+          />
+        </v-col>
 
-          <v-col cols="12">
-            <span class="text-caption">
-              楽単度評価 {{ (form.ease) && '☆' + form.ease[0] + ' ～ ☆' + form.ease[1] }}
-            </span>
-            <Slider
-              v-model="form.ease"
-              min="1"
-              max="5"
-              step="1"
-            />
-          </v-col>
+        <v-col cols="12">
+          <span class="text-caption">
+            楽単度評価 {{ (form.ease) && '☆' + form.ease[0] + ' ～ ☆' + form.ease[1] }}
+          </span>
+          <Slider
+            v-model="form.ease"
+            min="1"
+            max="5"
+            step="1"
+          />
+        </v-col>
 
-          <v-col cols="12" class="mb-2">
-            <span class="text-caption">
-              満足度評価 {{ (form.satisfaction) && '☆' + form.satisfaction[0] + ' ～ ☆' + form.satisfaction[1] }}
-            </span>
-            <Slider
-              v-model="form.satisfaction"
-              min="1"
-              max="5"
-              step="1"
-            />
-          </v-col>
+        <v-col cols="12" class="mb-2">
+          <span class="text-caption">
+            満足度評価 {{ (form.satisfaction) && '☆' + form.satisfaction[0] + ' ～ ☆' + form.satisfaction[1] }}
+          </span>
+          <Slider
+            v-model="form.satisfaction"
+            min="1"
+            max="5"
+            step="1"
+          />
+        </v-col>
 
-          <v-col cols="12" class="mb-2">
-            <span class="text-caption">
-              受講年度 {{ (form.year) && + form.year[0] + ' 年 ～ ' + form.year[1] + ' 年' }}
-            </span>
-            <Slider
-              v-model="form.year"
-              :min="nowYear-10"
-              :max="nowYear"
-              step="1"
-            />
-          </v-col>
-        </v-row>
-      </v-form>
+        <v-col cols="12" class="mb-2">
+          <span class="text-caption">
+            受講年度 {{ (form.year) && + form.year[0] + ' 年 ～ ' + form.year[1] + ' 年' }}
+          </span>
+          <Slider
+            v-model="form.year"
+            :min="nowYear-10"
+            :max="nowYear"
+            step="1"
+          />
+        </v-col>
+      </v-row>
+    </v-form>
 
-      <template v-slot:cancelBtn>
-        <SecondaryBtn @click="dialog = false">閉じる</SecondaryBtn>
-      </template>
-      <template v-slot:okBtn>
-        <PrimaryBtn type="submit" @click="dialog = false" form="reviewFilterForm">
-          <v-icon :icon="mdiFilterCheck" />
-          <span>絞り込む</span>
-        </PrimaryBtn>
-      </template>
-    </ConfirmCard>
+    <template v-slot:cancelBtn>
+      <SecondaryBtn @click="dialog = false">閉じる</SecondaryBtn>
+    </template>
+    <template v-slot:okBtn>
+      <PrimaryBtn type="submit" @click="dialog = false" form="reviewFilterForm">
+        <v-icon :icon="mdiFilterCheck" />
+        <span>絞り込む</span>
+      </PrimaryBtn>
+    </template>
+  </ConfirmCard>
 </template>

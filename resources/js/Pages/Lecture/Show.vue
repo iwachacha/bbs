@@ -119,6 +119,7 @@
     title="レビュー・講義情報"
     :subtitle="props.lecture.lecture_name + ' / ' + props.lecture.professor_name + 'のレビュー・講義情報です。'"
     :icon="mdiMessageText"
+    :guest-viewing="false"
   >
     <v-tabs
       v-model="tab"
@@ -289,7 +290,7 @@
                   </div>
                   <v-spacer />
 
-                  <template v-if="review.user_id !== $page.props.auth.user.id">
+                  <template v-if="$page.props.auth.user && review.user_id !== $page.props.auth.user.id">
                     <GoodBtn :review-id="review.id" />
                   </template>
                 </template>

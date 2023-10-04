@@ -1,5 +1,7 @@
 <script setup>
-  defineProps(['icon', 'title', 'subtitle'])
+  import LinkBtn from '@/Components/LinkBtn.vue'
+
+  defineProps(['icon', 'title', 'subtitle', 'mustAuth', 'guestViewing'])
 </script>
 
 <template>
@@ -17,9 +19,42 @@
       {{ subtitle }}
     </v-card-subtitle>
 
-    <div class="mt-5 px-3 px-md-10 py-0">
-      <slot />
-    </div>
+    <template v-if="guestViewing"> <!-- ゲスト閲覧可能ならそのままコンテンツを表示 -->
+      <div class="mt-5 px-3 px-md-10 py-0" >
+        <slot />
+      </div>
+    </template>
 
+    <template v-else> <!-- ゲスト閲覧不可能かつ未ログイン状態ならコンテンツにぼかしを入れ、ログインボタン表示 -->
+      <LinkBtn
+        v-if="!$page.props.auth.user"
+        :href="route('login')"
+        class="login_btn"
+        >
+          <span class="pa-2">ログインして閲覧する</span>
+      </LinkBtn>
+
+      <div class="mt-5 px-3 px-md-10 py-0" :class="{guest : !$page.props.auth.user}">
+        <slot />
+      </div>
+    </template>
   </v-sheet>
 </template>
+
+<style>
+  .guest {
+    -webkit-filter:blur(5px);
+    -moz-filter:blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+    opacity: 0.7;
+  }
+
+  .login_btn {
+    position: fixed;
+    bottom: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+</style>

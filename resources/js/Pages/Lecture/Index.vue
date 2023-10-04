@@ -1,6 +1,6 @@
 <script setup>
   import { computed, reactive, watch, ref } from 'vue'
-  import { Head } from '@inertiajs/vue3'
+  import { Head, usePage } from '@inertiajs/vue3'
   import { mdiMessageText, mdiSquareEditOutline, mdiTrashCan, mdiAlertCircle, mdiHumanMaleBoard, mdiChevronRight } from '@mdi/js'
   import { router } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
@@ -139,6 +139,7 @@
     :icon="mdiHumanMaleBoard"
     title="講義検索"
     subtitle="講義からレビューを探すことができます。"
+    :guest-viewing="false"
   >
 
     <v-row justify="center">
@@ -196,7 +197,7 @@
                 :prepend-icon="mdiSquareEditOutline"
                 style="color: #26A69A;"
                 @click="router.get(route('lecture.edit', lecture.id), {} , {
-                  preserveScroll: true,
+                  preserveScroll,
                   onSuccess: (page) => {
                     page.props.flash.error && useToast().error(page.props.flash.error)
                   }
