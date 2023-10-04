@@ -112,6 +112,7 @@
     :icon="mdiMessageText"
     title="レビュー検索"
     subtitle="寄せられたレビューはこちらから探すことができます。"
+    :guest-viewing="false"
   >
     <v-row justify="center">
       <v-col cols="11" sm="9" md="7" class="pa-0">
@@ -273,7 +274,7 @@
               </div>
               <v-spacer />
 
-              <template v-if="review.user_id !== $page.props.auth.user.id">
+              <template v-if="$page.props.auth.user && review.user_id !== $page.props.auth.user.id">
                 <GoodBtn :review-id="review.id" />
               </template>
             </template>

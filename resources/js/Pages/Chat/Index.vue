@@ -70,6 +70,7 @@
     title="雑談部屋"
     subtitle="学生同士での雑談や相談事にお使いください。"
     :icon="mdiChatProcessingOutline "
+    :guest-viewing="true"
   >
     <v-row justify="center">
       <v-col cols="11" sm="9" md="7" class="pa-0">
@@ -93,7 +94,7 @@
       color="primary"
       :icon="mdiPlus"
       size="large"
-      style="position: fixed; bottom: 5%; right: 5%; opacity: 0.7;"
+      style="position: fixed; bottom: 5%; right: 5%; opacity: 0.8;"
       @click="[threadV$.$reset(), dialog = true]"
     />
 

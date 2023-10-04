@@ -1,5 +1,5 @@
 <script setup>
-  import { watch, ref, reactive } from 'vue'
+  import { watch, reactive } from 'vue'
   import { router } from '@inertiajs/vue3'
   import { mdiSort } from '@mdi/js'
   import { useToast } from "vue-toastification"
@@ -21,12 +21,15 @@
       only: ['lectures', 'query'],
     })
   })
-
-  const open = ref(false)
 </script>
 
 <template>
-  <v-btn variant="text" elevation="1" class="text-button text-medium-emphasis px-2" @click="open = !open">
+  <v-btn
+    variant="text"
+    elevation="1"
+    class="text-button text-medium-emphasis px-2"
+    :disabled="!$page.props.auth.user"
+  >
     <v-icon :icon="mdiSort" />
     <span>並び替え</span>
 

@@ -66,5 +66,6 @@
     :icon="mdiMagnify"
     placeholder="検索ワードを入力してください"
     label="講義名・教員名検索(4つまで)"
+    :disabled="!$page.props.auth.user"
   />
 </template>

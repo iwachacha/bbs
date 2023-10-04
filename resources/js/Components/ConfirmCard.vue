@@ -9,19 +9,25 @@
     maxWidth="700px"
     persistent
   >
-
     <v-card>
-
       <v-toolbar
         color="primary"
         :title="title"
       />
 
-      <v-card-title v-if="subtitle" class="text-medium-emphasis mt-3" style="white-space: normal; line-height: normal;">
+      <v-card-title
+        v-if="subtitle"
+        class="text-center text-medium-emphasis mt-3"
+        style="white-space: normal; line-height: normal;"
+      >
         {{ subtitle }}
       </v-card-title>
 
-      <v-card-subtitle v-if="text" class="text-high-emphasis ms-3 mb-3" style="white-space: normal; line-height: normal;">
+      <v-card-subtitle
+        v-if="text"
+        class="text-center text-high-emphasis text-caption mb-3"
+        style="white-space: normal; line-height: normal;"
+      >
         {{ text }}
       </v-card-subtitle>
 

@@ -28,7 +28,10 @@ class ChatController extends Controller
     public function store(ThreadRequest $request)
     {
         $input = $request->validated();
-        $input['user_id'] = Auth::id();
+        if(Auth::check()){
+            $input['user_id'] = Auth::id();
+        }
+
         Thread::create($input);
     }
 

@@ -1,31 +1,40 @@
 <script setup>
   import { ref } from 'vue'
-  import { mdiAccountCircle, mdiSchool, mdiAccountQuestionOutline, mdiPenPlus, mdiHumanMaleBoard, mdiChatProcessingOutline, mdiSilverwareForkKnife, mdiMessageText } from '@mdi/js'
-  import { usePage, Link } from '@inertiajs/vue3'
+  import { mdiHome, mdiAccountCircle, mdiSchool, mdiAccountQuestionOutline, mdiPenPlus, mdiHumanMaleBoard, mdiChatProcessingOutline, mdiSilverwareForkKnife, mdiMessageText } from '@mdi/js'
+  import { usePage, Link, router } from '@inertiajs/vue3'
+  import { useToast } from "vue-toastification"
+  import { getFacultyName } from '@/Components/Lectures/GetNameFromId.vue'
   import NavAvatar from '@/Components/NavAvatar.vue'
   import NavItem from '@/Components/NavItem.vue'
-  import { getFacultyName } from '@/Components/Lectures/GetNameFromId.vue'
+  import ConfirmCard from '@/Components/ConfirmCard.vue'
+  import PrimaryBtn from '@/Components/PrimaryBtn.vue'
+  import SecondaryBtn from '@/Components/SecondaryBtn.vue'
 
-  const pageProps = usePage().props
-
+  const user = usePage().props.auth.user
   const drawer = ref(false)
   const open = ref([null])
+  const dialog = ref(false)
 </script>
 
 <template>
     <v-app style="background-color: #F5F5F5;">
-
       <v-navigation-drawer v-model="drawer" color="secondary">
-
         <NavAvatar
-          :name="pageProps.auth.user.name"
-          :faculty="getFacultyName(pageProps.share.faculties, pageProps.auth.user.faculty_id)"
-          :grade="pageProps.auth.user.grade"
+          :name="(user) ? user.name : 'ゲストさん'"
+          :faculty="user && getFacultyName($page.props.share.faculties, user.faculty_id)"
+          :grade="user && user.grade"
         />
 
         <v-divider class="border-opacity-100" />
 
         <v-list nav v-model:opened="open">
+          <NavItem
+            :href="'/'"
+            title="ホーム"
+            :icon="mdiHome"
+            component="Home"
+          />
+
           <v-list-group value="lectures">
             <template v-slot:activator="{ props }">
               <v-list-item
@@ -61,9 +70,10 @@
           </v-list-group>
 
           <NavItem
-            :href="route('contact.create')"
+            :href="route('chat.index')"
             :icon="mdiChatProcessingOutline "
-            title="雑談部屋（開発中）"
+            title="雑談部屋"
+            component="Chat/Index"
           />
 
           <NavItem
@@ -78,59 +88,89 @@
             title="お問い合わせ"
             component="Contact/Create"
           />
-
         </v-list>
 
         <template v-slot:append>
-          <div class="pa-2">
-            <Link :href="route('logout')" method="post" as="button" style="width: 100%;">
-              <v-btn color="primary" block>
+          <template v-if="user">
+            <div class="pa-2">
+              <v-btn color="primary" block @click="dialog = true">
                 ログアウト
               </v-btn>
-            </Link>
-          </div>
-        </template>
+            </div>
 
+            <ConfirmCard
+              :dialog="dialog"
+              title="ログアウト"
+              subtitle="ログアウトしますか？"
+            >
+              <template v-slot:cancelBtn>
+                <SecondaryBtn @click="dialog = false">いいえ</SecondaryBtn>
+              </template>
+              <template v-slot:okBtn>
+                <PrimaryBtn
+                  @click="[
+                    router.post(route('logout'), {
+                      onSuccess: () => {
+                        useToast().success('ログアウトが完了しました。')
+                        router.reload()
+                      }
+                    }),
+                    dialog = false
+                  ]"
+                >
+                  ログアウト
+                </PrimaryBtn>
+              </template>
+            </ConfirmCard>
+          </template>
+        </template>
       </v-navigation-drawer>
 
       <v-app-bar color="primary">
-
-        <v-app-bar-nav-icon @click="drawer = !drawer" size="x-large" />
+        <v-app-bar-nav-icon @click="drawer = !drawer" size="x-large" class="ms-0 ms-sm-2 ms-md-4" />
         <h1><v-app-bar-title class="text-h5">文教掲示板</v-app-bar-title></h1>
 
         <template v-slot:append>
+          <template v-if="user">
+            <Link :href="route('lecture.create')" class="me-3 me-sm-4">
+              <v-icon :icon="mdiPenPlus" />投稿
+            </Link>
 
-          <Link :href="route('lecture.create')" class="me-3 me-sm-4">
-            <v-icon :icon="mdiPenPlus" />投稿
-          </Link>
+            <v-menu>
+              <template v-slot:activator="{ props }">
+                <v-icon
+                  v-bind="props"
+                  :icon="mdiAccountCircle"
+                  size="38"
+                  class="me-2"
+                />
+              </template>
 
-          <v-menu>
-            <template v-slot:activator="{ props }">
-              <v-icon
-                v-bind="props"
-                :icon="mdiAccountCircle"
-                size="38"
-                class="me-2"
-              />
-            </template>
+              <v-list>
+                <Link :href="route('profile.edit')">
+                  <v-list-item link title="アカウント情報" />
+                </Link>
+                <v-divider class="border-opacity-100" />
 
-            <v-list>
-              <Link :href="route('profile.edit')">
-                <v-list-item link title="アカウント情報" />
-              </Link>
-              <v-divider class="border-opacity-100" />
+                <v-list-item link title="プロフィール" ></v-list-item>
+              </v-list>
+            </v-menu>
+          </template>
 
-              <v-list-item link title="プロフィール" ></v-list-item>
-            </v-list>
-          </v-menu>
+          <template v-else>
+            <Link :href="route('login')">
+              <v-btn class="pe-1">ログイン</v-btn>
+            </Link>
+
+            <Link :href="route('register')">
+              <v-btn class="ps-1 pe-2">新規登録</v-btn>
+            </Link>
+          </template>
         </template>
-
       </v-app-bar>
 
       <v-main class="mx-auto mb-10" style="width: 100%; overflow: hidden;">
         <slot />
       </v-main>
-
     </v-app>
-
 </template>

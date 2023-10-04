@@ -46,8 +46,8 @@
     variant="text"
     elevation="1"
     class="text-button text-medium-emphasis px-2"
-    :persistent="false"
     @click="dialog = true"
+    :disabled="!$page.props.auth.user"
   >
     <v-icon :icon="(dialog) ? mdiFilterMinus : mdiFilterPlus" />
     <span>絞り込み</span>

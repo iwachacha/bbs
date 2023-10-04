@@ -116,11 +116,14 @@
   <Head title="ユーザー登録" />
 
 	<v-app style="background-color: #F5F5F5;">
-		<PageSection title="ユーザー登録" :icon="mdiAccount" style="max-width: 1000px;">
+		<PageSection
+			title="ユーザー登録"
+			:icon="mdiAccount"
+			:guest-viewing="true"
+			style="max-width: 1000px;"
+		>
 			<form @submit.prevent="registerV$.$invalid ? showError() : submit()" id="registerForm">
-
 				<v-row>
-
 					<v-col cols="12" md="6">
 						<MustInput
 							v-model="form.name"
@@ -235,7 +238,6 @@
 							</v-card-text>
 						</v-card>
 					</v-col>
-
 				</v-row>
 			</form>
 
@@ -246,7 +248,6 @@
 				:disabled="form.processing"
 			>
 				確認する
-
 				<ConfirmCard
 					:dialog="dialog"
 					title="ユーザー登録"
@@ -261,7 +262,6 @@
 						<PrimaryBtn type="submit" @click="dialog = false" form="registerForm">はい</PrimaryBtn>
 					</template>
 				</ConfirmCard>
-
 			</PrimaryBtn>
 
 			<Link :href="route('login')">

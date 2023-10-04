@@ -36,5 +36,6 @@
     placeholder="検索ワードを入力してください"
     label="キーワード検索(4つまで)"
     hide-no-data
+    :disabled="!$page.props.auth.user"
   />
 </template>
