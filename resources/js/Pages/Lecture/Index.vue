@@ -237,7 +237,7 @@
 
             <template v-slot:text>
               <div class="text-subtitle-2">
-                総合平均評価
+                総合評価
                 <span class="text-body-1" style="color: #26A69A;">★</span>
                 {{ Math.floor(lecture.average_rate * 1000) / 1000 }}
               </div>

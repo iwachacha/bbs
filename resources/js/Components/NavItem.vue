@@ -12,7 +12,7 @@
       link
       :title="title"
       :prepend-icon="icon"
-      :active="$page.component === component"
+      :active="$page.component.includes(component)"
     />
   </Link>
 </template>
