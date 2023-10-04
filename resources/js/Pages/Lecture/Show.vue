@@ -169,7 +169,6 @@
           :total-count="props.lecture.reviews_count"
           :result-count="props.resultCount"
         />
-        
 
         <v-row justify="center" class="mt-0">
           <template v-for="review in props.reviews">
@@ -193,6 +192,7 @@
                     :prepend-icon="mdiSquareEditOutline"
                     style="color: #26A69A;"
                     @click="router.get(route('review.edit', [review.lecture_id, review.id]), {} , {
+                      preserveScroll: true,
                       onSuccess: (page) => {
                         page.props.flash.error && useToast().error(page.props.flash.error)
                       }
@@ -305,7 +305,7 @@
           <v-col cols="12" md="5">
             <div color="secondary">
               <div class="text-center mt-auto text-h5">
-                平均総合評価
+                総合評価
               </div>
 
               <div class="d-flex align-center flex-column">

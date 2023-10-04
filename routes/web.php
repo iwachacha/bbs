@@ -8,10 +8,20 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewGoodController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ChatController;
 
-Route::get('/', [WelcomeController::class, 'welcome']);
 
-Route::middleware('auth')->group(function ()
+Route::middleware('throttle:request')->group(function ()
+{
+    //トップページ
+    Route::get('/', [WelcomeController::class, 'welcome']);
+
+    //お問い合わせ
+    Route::get('/contacts/create', [ContactController::class, 'create'])->name('contact.create');
+    Route::post('/contacts', [ContactController::class, 'store'])->name('contact.store');
+});
+
+Route::middleware(['auth', 'throttle:request'])->group(function ()
 {
     //講義関連
     Route::controller(LectureController::class)->group(function () {
@@ -23,6 +33,9 @@ Route::middleware('auth')->group(function ()
         Route::delete('/lectures/{lecture}', 'destroy')->name('lecture.delete');
         Route::get('/lectures/{lecture}/edit', 'edit')->name('lecture.edit');
     });
+    //講義ブックマーク
+    Route::put('/lectures/{lecture}/bookmark', [LectureBookmarkController::class, 'set'])->name('bookmark.set');
+    Route::delete('/lectures/{lecture}/bookmark', [LectureBookmarkController::class, 'remove'])->name('bookmark.remove');
 
     //講義レビュー関連
     Route::controller(ReviewController::class)->group(function () {
@@ -33,13 +46,14 @@ Route::middleware('auth')->group(function ()
         Route::get('/lectures/{lecture}/reviews/create', 'create')->name('review.create');
         Route::get('/lectures/{lecture}/reviews/{review}/edit', 'edit')->name('review.edit');
     });
-
-    //講義ブックマーク
-    Route::put('/lectures/{lecture}/bookmark', [LectureBookmarkController::class, 'set'])->name('bookmark.set');
-    Route::delete('/lectures/{lecture}/bookmark', [LectureBookmarkController::class, 'remove'])->name('bookmark.remove');
-
     //講義レビューいいね
     Route::post('/reviews/{review}/good', [ReviewGoodController::class, 'good'])->name('review.good');
+
+    //チャット関連
+    Route::controller(ChatController::class)->group(function () {
+        Route::get('/chats', 'index')->name('chat.index');
+        Route::post('/chats', 'store')->name('chat.store');
+    });
 
     //不適切な投稿の報告報告
     Route::post('/report', [ReportController::class, 'report'])->name('report');
@@ -49,9 +63,5 @@ Route::middleware('auth')->group(function ()
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-//お問い合わせ
-Route::get('/contacts/create', [ContactController::class, 'create'])->name('contact.create');
-Route::post('/contacts', [ContactController::class, 'store'])->name('contact.store');
 
 require __DIR__.'/auth.php';

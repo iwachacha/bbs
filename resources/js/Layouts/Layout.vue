@@ -1,6 +1,6 @@
 <script setup>
   import { ref } from 'vue'
-  import { mdiAccountCircle, mdiSchool, mdiChatQuestion, mdiPenPlus, mdiHumanMaleBoard, mdiChat, mdiSilverwareForkKnife, mdiMessageText } from '@mdi/js'
+  import { mdiAccountCircle, mdiSchool, mdiAccountQuestionOutline, mdiPenPlus, mdiHumanMaleBoard, mdiChatProcessingOutline, mdiSilverwareForkKnife, mdiMessageText } from '@mdi/js'
   import { usePage, Link } from '@inertiajs/vue3'
   import NavAvatar from '@/Components/NavAvatar.vue'
   import NavItem from '@/Components/NavItem.vue'
@@ -9,7 +9,7 @@
   const pageProps = usePage().props
 
   const drawer = ref(false)
-  const nav = ref(null)
+  const open = ref([null])
 </script>
 
 <template>
@@ -25,8 +25,7 @@
 
         <v-divider class="border-opacity-100" />
 
-        <v-list nav v-model:opened="nav">
-
+        <v-list nav v-model:opened="open">
           <v-list-group value="lectures">
             <template v-slot:activator="{ props }">
               <v-list-item
@@ -45,6 +44,7 @@
               :icon="mdiHumanMaleBoard"
               component="Lecture/Index"
             />
+
             <NavItem
               :href="route('review.index')"
               title="レビュー検索"
@@ -62,19 +62,19 @@
 
           <NavItem
             :href="route('contact.create')"
-            :icon="mdiSilverwareForkKnife"
-            title="周辺グルメ（開発予定）"
-          />
-          
-          <NavItem
-            :href="route('contact.create')"
-            :icon="mdiChat"
-            title="雑談部屋（開発予定）"
+            :icon="mdiChatProcessingOutline "
+            title="雑談部屋（開発中）"
           />
 
           <NavItem
             :href="route('contact.create')"
-            :icon="mdiChatQuestion"
+            :icon="mdiSilverwareForkKnife"
+            title="周辺グルメ（開発予定）"
+          />
+
+          <NavItem
+            :href="route('contact.create')"
+            :icon="mdiAccountQuestionOutline"
             title="お問い合わせ"
             component="Contact/Create"
           />
@@ -127,7 +127,7 @@
 
       </v-app-bar>
 
-      <v-main class="mx-auto" style="width: 100%; overflow: hidden;">
+      <v-main class="mx-auto mb-10" style="width: 100%; overflow: hidden;">
         <slot />
       </v-main>
 
