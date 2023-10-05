@@ -74,7 +74,7 @@
               variant="tonal"
             >
               <v-card-text class="text-medium-emphasis text-caption">
-                パスワードを忘れた場合は、Twitterかお問い合わせページより「ユーザー名」を合わせてお知らせください。
+                パスワードリセット機能は実装しておりません。パスワードを忘れた場合は再登録をお願いいたします。
               </v-card-text>
             </v-card>
           </v-col>

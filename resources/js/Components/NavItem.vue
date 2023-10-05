@@ -1,7 +1,7 @@
 <script setup>
   import { Link } from '@inertiajs/vue3';
 
-  defineProps(['href', 'component', 'title', 'icon']);
+  defineProps(['href', 'component', 'title', 'icon', 'active']);
 </script>
 
 <template>
@@ -12,7 +12,7 @@
       link
       :title="title"
       :prepend-icon="icon"
-      :active="$page.component.includes(component)"
+      :active="active"
     />
   </Link>
 </template>
