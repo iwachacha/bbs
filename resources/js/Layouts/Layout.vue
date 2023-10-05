@@ -32,7 +32,7 @@
             :href="'/'"
             title="ホーム"
             :icon="mdiHome"
-            component="Home"
+            :active="$page.component == 'Home'"
           />
 
           <v-list-group value="lectures">
@@ -51,21 +51,21 @@
               :href="route('lecture.index')"
               title="講義検索"
               :icon="mdiHumanMaleBoard"
-              component="Lecture/Index"
+              :active="$page.component == 'Lecture/Index'"
             />
 
             <NavItem
               :href="route('review.index')"
               title="レビュー検索"
               :icon="mdiMessageText"
-              component="Review/Index"
+              :active="$page.component == 'Review/Index'"
             />
 
             <NavItem
               :href="route('lecture.create')"
               title="レビュー作成"
               :icon="mdiPenPlus"
-              component="Lecture/Create"
+              :active="$page.component == 'Lecture/Create'"
             />
           </v-list-group>
 
@@ -73,7 +73,7 @@
             :href="route('chat.index')"
             :icon="mdiChatProcessingOutline "
             title="雑談部屋"
-            component="Chat/Index"
+            :active="$page.component.startsWith('Chat')"
           />
 
           <NavItem
@@ -86,7 +86,7 @@
             :href="route('contact.create')"
             :icon="mdiAccountQuestionOutline"
             title="お問い合わせ"
-            component="Contact/Create"
+            :active="$page.component.startsWith('Contact')"
           />
         </v-list>
 
