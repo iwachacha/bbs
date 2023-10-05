@@ -55,7 +55,7 @@
       </v-label>
     </div>
 
-    <div class="d-flex flex-wrap mb-2 ms-4">
+    <div class="d-flex flex-wrap ms-4">
       <template v-for="(value, key) in props.query">
         <div class="px-1 py-1">
           <v-chip

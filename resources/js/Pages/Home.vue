@@ -1,5 +1,5 @@
 <script setup>
-	import { Head, Link } from '@inertiajs/vue3'
+	import { Head } from '@inertiajs/vue3'
 	import { mdiNewBox, mdiAccountOutline } from '@mdi/js'
 	import PageSection from '@/Components/PageSection.vue'
 
@@ -62,7 +62,10 @@
 <style>
 	.home_img {
 		filter: blur(5px);
-		opacity: 0.4;
+		-webkit-filter:blur(5px);
+    -moz-filter:blur(5px);
+    -ms-filter: blur(5px);
+		opacity: 0.5;
 	}
 
 	.home_user_count {
