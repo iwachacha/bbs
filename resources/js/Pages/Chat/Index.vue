@@ -160,7 +160,7 @@
       title="雑談部屋作成"
     >
       <template v-slot:cancelBtn>
-        <SecondaryBtn @click="[dialog = false, threadV$.$reset()]">いいえ</SecondaryBtn>
+        <SecondaryBtn @click="[dialog = false, threadV$.$reset()]">閉じる</SecondaryBtn>
       </template>
       <template v-slot:okBtn>
         <PrimaryBtn
