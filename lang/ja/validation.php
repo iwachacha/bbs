@@ -154,6 +154,12 @@ return [
     */
 
     'attributes' => [
+        'name' => 'ユーザー名',
+        'email' => '大学メールアドレス',
+        'password' => 'パスワード',
+        'faculty_id' => '学部',
+        'department_id' => '学科・課程',
+        'course_id' => 'コース・専修',
         'lecture_name' => '講義名',
         'professor_name' => '担当教員名',
         'season' => '開講時期',
@@ -166,10 +172,10 @@ return [
         'good_point' => '良い点',
         'bad_point' => '悪い点',
         'lecture_content' => '講義内容',
-        'name' => 'ユーザー名',
-        'email' => '大学メールアドレス',
-        'password' => 'パスワード',
         'delete_confirm' => '削除確認',
+        'thread_category_id' => 'カテゴリー',
+        'body' => '投稿内容',
+        'reply_id' => '返信先',
     ],
 
 ];

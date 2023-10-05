@@ -114,7 +114,7 @@
     subtitle="寄せられたレビューはこちらから探すことができます。"
     :guest-viewing="false"
   >
-    <v-row justify="center">
+    <v-row justify="center" class="ma-0">
       <v-col cols="11" sm="9" md="7" class="pa-0">
         <SearchReviewForm
           :query="props.query"

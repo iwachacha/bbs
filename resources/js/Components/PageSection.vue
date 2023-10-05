@@ -8,14 +8,14 @@
   <v-sheet rounded="0" color="secondary" class="mb-16 mx-auto">
 
     <v-card-title
-      class="ps-0 pe-10 mt-7 text-h6 text-sm-h5 text-medium-emphasis d-flex align-center justify-center"
+      class="ps-0 pe-10 mt-7 mx-2 text-h6 text-sm-h5 text-medium-emphasis d-flex align-center justify-center"
       style="white-space: normal; line-height: normal;"
     >
       <v-icon :icon="icon" class="me-2" size="32" />
       <h2>{{ title }}</h2>
     </v-card-title>
 
-    <v-card-subtitle v-if="subtitle" class="px-0 pb-2 text-center text-caption" style="white-space: pre-wrap;">
+    <v-card-subtitle v-if="subtitle" class="px-0 pb-2 text-center text-caption mx-2" style="white-space: pre-wrap;">
       {{ subtitle }}
     </v-card-subtitle>
 
@@ -43,11 +43,11 @@
 
 <style>
   .guest {
-    -webkit-filter:blur(5px);
-    -moz-filter:blur(5px);
-    -ms-filter: blur(5px);
-    filter: blur(5px);
-    opacity: 0.7;
+    -webkit-filter:blur(4px);
+    -moz-filter:blur(4px);
+    -ms-filter: blur(4px);
+    filter: blur(4px);
+    opacity: 0.8;
   }
 
   .login_btn {

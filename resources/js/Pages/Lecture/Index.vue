@@ -197,7 +197,7 @@
                 :prepend-icon="mdiSquareEditOutline"
                 style="color: #26A69A;"
                 @click="router.get(route('lecture.edit', lecture.id), {} , {
-                  preserveScroll,
+                  preserveScroll: true,
                   onSuccess: (page) => {
                     page.props.flash.error && useToast().error(page.props.flash.error)
                   }

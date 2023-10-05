@@ -56,7 +56,9 @@ Route::middleware(['throttle:request'])->group(function ()
     //チャット関連
     Route::controller(ChatController::class)->group(function () {
         Route::get('/chats', 'index')->name('chat.index');
-        Route::post('/chats', 'store')->name('chat.store');
+        Route::post('/chats', 'storeThread')->name('chat.thread.store');
+        Route::get('/chats/{thread}', 'show')->name('chat.show');
+        Route::post('/chats/{thread}', 'storeResponse')->name('chat.res.store');
     });
 
     //不適切な投稿の報告報告

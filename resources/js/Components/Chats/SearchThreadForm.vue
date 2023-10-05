@@ -10,32 +10,31 @@
     query: Object
   })
 
-    const search_word = ref(props.query['search_word'])
+  const search_title = ref(props.query['search_title'])
 
-  watch(search_word, () => {
-    if(search_word.value.length <= 4){
-      router.get(route('review.index', [props.query, { search_word: search_word.value }]), {}, {
+  watch(search_title, () => {
+    if(search_title.value.length <= 4){
+      router.get(route('chat.index', [props.query, { search_title: search_title.value }]), {}, {
         onSuccess: () => {
           useToast().success(props.resultCount + '件取得しました。')
         },
         preserveState: true,
         preserveScroll: true,
-        only: ['reviews', 'resultCount', 'query'],
+        only: ['threads', 'resultCount', 'query'],
       })
     }
-    else if(search_word.value.length > 5) {
-      search_word.value.pop()
+    else if(search_title.value.length > 5) {
+      search_title.value.pop()
     }
   })
 </script>
 
 <template>
   <SearchInput
-    v-model="search_word"
+    v-model="search_title"
     :icon="mdiMagnify"
     placeholder="検索ワードを入力してください"
-    label="キーワード検索(4つまで)"
+    label="タイトル検索(4つまで)"
     hide-no-data
-    :disabled="!$page.props.auth.user"
   />
 </template>
