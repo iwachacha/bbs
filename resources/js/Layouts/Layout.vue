@@ -109,13 +109,12 @@
               <template v-slot:okBtn>
                 <PrimaryBtn
                   @click="[
-                    router.post(route('logout'), {
+                    router.post(route('logout'), {}, {
                       onSuccess: () => {
                         useToast().success('ログアウトが完了しました。')
-                        router.reload()
                       }
                     }),
-                    dialog = false
+                    dialog = false,
                   ]"
                 >
                   ログアウト
@@ -159,11 +158,11 @@
 
           <template v-else>
             <Link :href="route('login')">
-              <v-btn class="pe-1">ログイン</v-btn>
+              <v-btn class="px-1">ログイン</v-btn>
             </Link>
 
             <Link :href="route('register')">
-              <v-btn class="ps-1 pe-2">新規登録</v-btn>
+              <v-btn class="px-1 me-sm-2">新規登録</v-btn>
             </Link>
           </template>
         </template>

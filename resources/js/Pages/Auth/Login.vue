@@ -9,8 +9,6 @@
 
 	const props = defineProps({
     errors: Object,
-		canResetPassword: Boolean,
-    status: String,
 	})
 
 	const form = useForm({
@@ -55,7 +53,7 @@
             >ユーザー名</MustInput>
           </v-col>
 
-          <v-col cols="12" class="py-2">
+          <v-col cols="12" class="pt-2 pb-0">
             <MustInput
               v-model="form.password"
               :type="visiblePassword ? 'text' : 'password'"
@@ -67,7 +65,15 @@
             >パスワード</MustInput>
           </v-col>
 
-          <v-col cols="12" class="py-2">
+          <v-col cols="12" class="py-0">
+            <v-checkbox
+              v-model="form.remember"
+              label="ログイン状態を保持する"
+              color="primary"
+            />
+          </v-col>
+
+          <v-col cols="12" class="pb-2 pt-0">
             <v-card
               class="mb-10"
               color="surface-variant"
