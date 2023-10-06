@@ -31,7 +31,7 @@
     @click="props.isBookmarked
       ? [removeBookmark(), count--, isBookmarked = !isBookmarked]
       : [setBookmark(), count++, isBookmarked = !isBookmarked]"
-    :disabled="onProgress"
+    :disabled="!$page.props.auth.user || onProgress"
     style="color: #26A69A;"
   >
     <v-icon

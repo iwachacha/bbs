@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Prunable;
 
 class Lecture extends Model
 {
-    use HasFactory;
+    use HasFactory, Prunable;
 
     protected $fillable = [
         'user_id', 'lecture_category_id', 'faculty_id', 'department_id', 'course_id',
@@ -61,6 +62,14 @@ class Lecture extends Model
         return Attribute::make(
             get: fn ($value) => Carbon::parse($value)->format('Y年m月d日'),
         );
+    }
+
+    //レビュー投稿が1週間ない講義は削除
+    public function prunable()
+    {
+        return static::withCount('reviews')
+            ->where('created_at', '<=', now()->subDays(7))
+            ->having('reviews_count',  0);
     }
 
     //講義名・教員名検索 - exactの値によって部分一致検索と完全一致検索を切り替える

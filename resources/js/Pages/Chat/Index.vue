@@ -1,6 +1,6 @@
 <script setup>
   import { ref } from 'vue'
-  import { Head, useForm, Link } from '@inertiajs/vue3'
+  import { Head, useForm, Link, router } from '@inertiajs/vue3'
   import { mdiChatProcessingOutline, mdiChatOutline, mdiPlus, mdiTagOutline } from '@mdi/js'
   import { useToast } from "vue-toastification"
   import { useVuelidate } from '@vuelidate/core'
@@ -60,6 +60,15 @@
     threadV$.value.$touch()
     useToast().error('入力内容に誤りがあります！\n内容の確認をお願いします。')
   }
+
+  //ページネーション
+  const movePage = (targetPage) => {
+    router.get(props.threads.links[targetPage].url,
+    props.query, {
+      preserveState: true,
+      only: ['threads', 'query'],
+    })
+  }
 </script>
 
 <script>
@@ -70,10 +79,10 @@
 </script>
 
 <template>
-  <Head title="雑談部屋" />
+  <Head title="雑談部屋一覧" />
 
   <PageSection
-    title="雑談部屋"
+    title="雑談部屋一覧"
     subtitle="学生同士での雑談や相談事にお使いください。"
     :icon="mdiChatProcessingOutline "
     :guest-viewing="true"
@@ -160,7 +169,7 @@
       title="雑談部屋作成"
     >
       <template v-slot:cancelBtn>
-        <SecondaryBtn @click="[dialog = false, threadV$.$reset()]">閉じる</SecondaryBtn>
+        <SecondaryBtn @click="[dialog = false, threadV$.$reset()]">いいえ</SecondaryBtn>
       </template>
       <template v-slot:okBtn>
         <PrimaryBtn

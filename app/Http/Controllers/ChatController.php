@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\LectureBookmark;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,7 +14,7 @@ use App\Http\Requests\ResponseRequest;
 
 class ChatController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, Thread $thread)
     {
         $threads = Thread::query()
             ->searchByTitle($request->search_title)

@@ -6,15 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Prunable;
 
 class Thread extends Model
 {
-    use HasFactory;
+    use HasFactory, Prunable;
 
     protected $fillable = [
         'user_id', 'thread_category_id', 'title'
     ];
 
+    //リレーション
     public function thread_category()
     {
         return $this->belongsTo(ThreadCategory::class);
@@ -30,6 +32,14 @@ class Thread extends Model
         return $this->hasOne(Response::class)->orderBy('created_at', 'desc');
     }
 
+    //返信が1週間ない雑談部屋は削除
+    public function prunable()
+    {
+        return static::withCount('responses')
+            ->where('created_at', '<=', now()->subDays(7))
+            ->having('responses_count',  0);
+    }
+
     protected function createdAt(): Attribute
     {
         return Attribute::make(
@@ -37,6 +47,7 @@ class Thread extends Model
         );
     }
 
+    //検索関連
     public function scopeSearchByTitle($query, $titles = null) //タイトル検索
     {
         if(!empty($titles)){
