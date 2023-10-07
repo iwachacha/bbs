@@ -1,9 +1,10 @@
 <script setup>
   import { computed, reactive, watch, ref } from 'vue'
-  import { Head, usePage } from '@inertiajs/vue3'
+  import { Head } from '@inertiajs/vue3'
   import { mdiMessageText, mdiSquareEditOutline, mdiTrashCan, mdiAlertCircle, mdiHumanMaleBoard, mdiChevronRight } from '@mdi/js'
   import { router } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
+  import Layout from '@/Layouts/Layout.vue'
   import LinkBtn from '@/Components/LinkBtn.vue'
   import PageSection from '@/Components/PageSection.vue'
   import PostCard from '@/Components/PostCard.vue'
@@ -125,182 +126,176 @@
   }
 </script>
 
-<script>
-  import Layout from '@/Layouts/Layout.vue'
-  export default {
-    layout: Layout,
-  }
-</script>
-
 <template>
   <Head title="講義検索" />
 
-  <PageSection
-    :icon="mdiHumanMaleBoard"
-    title="講義検索"
-    subtitle="講義からレビューを探すことができます。"
-    :guest-viewing="false"
-  >
+  <Layout>
+    <PageSection
+      :icon="mdiHumanMaleBoard"
+      title="講義検索"
+      subtitle="講義からレビューを探すことができます。"
+      :guest-viewing="false"
+    >
 
-    <v-row justify="center">
-      <v-col cols="11" sm="9" md="7" class="pa-0">
-        <SearchLectureForm
-          :names="names"
-          :result-count="props.lectures.total"
-          :query="props.query"
-        />
-      </v-col>
-    </v-row>
-
-    <div class="d-flex justify-end mt-7 me-sm-5">
-      <div class="me-3">
-        <FilterLectureForm
-          :result-count="props.lectures.total"
-          :lecture-categories="props.lectureCategories"
-          :faculties="props.faculties"
-          :departments="props.departments"
-          :query="props.query"
-        />
-      </div>
-
-      <SortLectureForm
-        :query="props.query"
-      />
-    </div>
-
-    <LectureQueryChip
-      :query="props.query"
-      :lecture-categories="props.lectureCategories"
-      :faculties="props.faculties"
-      :departments="props.departments"
-      :result-count="props.lectures.total"
-      :total-count="props.totalCount"
-    />
-
-    <v-row justify="space-around" class="mt-0">
-      <template v-for="lecture in props.lectures.data">
-        <v-col cols="12" sm="6" lg="4" class="px-2 px-md-3 py-2 py-sm-3">
-
-          <PostCard>
-            <template v-slot:barTitle>
-              <div @click="search.lecture_name = lecture.lecture_name" style="cursor: pointer;">
-                {{ lecture.lecture_name }}
-                <v-icon :icon="mdiChevronRight" size="x-small" class="ms-n1" />
-              </div>
-            </template>
-
-            <template v-slot:menuItem>
-              <v-list-item
-                v-if="lecture.user.id === $page.props.auth.user.id"
-                link
-                title="編集"
-                :prepend-icon="mdiSquareEditOutline"
-                style="color: #26A69A;"
-                @click="router.get(route('lecture.edit', lecture.id), {} , {
-                  preserveScroll: true,
-                  onSuccess: (page) => {
-                    page.props.flash.error && useToast().error(page.props.flash.error)
-                  }
-                })"
-              />
-
-              <v-list-item
-                v-if="lecture.user.id === $page.props.auth.user.id"
-                link
-                title="削除"
-                :prepend-icon="mdiTrashCan"
-                style="color: red;"
-                @click="[deleteConfirm(lecture.id), deleteLectureId = lecture.id]"
-              />
-
-              <v-list-item
-                link
-                title="不適切な投稿として報告"
-                :prepend-icon="mdiAlertCircle"
-                @click="[reportConfirm(lecture.id), reportLectureId = lecture.id]"
-              />
-            </template>
-
-            <template v-slot:cardTitle>
-              <div @click="search.professor_name = lecture.professor_name" style="cursor: pointer;">
-                {{ lecture.professor_name + '先生' }}
-                <v-icon :icon="mdiChevronRight" size="x-small" class="ms-n1 text-disabled" />
-              </div>
-            </template>
-
-            <template v-slot:subtitle>
-              {{ lecture.season }}
-              {{ ' / ' + lecture.lecture_category.name }}
-              {{ lecture.faculty && ' / ' + lecture.faculty.name }}
-              {{ lecture.department && ' / ' + lecture.department.name }}
-              {{ lecture.course && ' / ' + lecture.course.name }}
-            </template>
-
-            <template v-slot:text>
-              <div class="text-subtitle-2">
-                総合評価
-                <span class="text-body-1" style="color: #26A69A;">★</span>
-                {{ Math.floor(lecture.average_rate * 1000) / 1000 }}
-              </div>
-
-              <v-row justify="center" class="mt-0 mb-0">
-                <v-col cols="auto" class="px-2">
-                  <StarRateChip
-                    label="充実度"
-                    :star="Math.floor(lecture.fulfillment_rate_avg * 10) / 10"
-                    :small="true"
-                  />
-                </v-col>
-
-                <v-col cols="auto" class="px-2">
-                  <StarRateChip
-                    label="楽単度"
-                    :star="Math.floor(lecture.ease_rate_avg * 10) / 10"
-                    :small="true"
-                  />
-                </v-col>
-
-                <v-col cols="auto" class="px-2">
-                  <StarRateChip
-                    label="満足度"
-                    :star="Math.floor(lecture.satisfaction_rate_avg * 10) / 10"
-                    :small="true"
-                  />
-                </v-col>
-              </v-row>
-            </template>
-
-            <template v-slot:action>
-              <LinkBtn :href="route('review.create', lecture.id)">
-                この講義を評価する
-              </LinkBtn>
-              <v-spacer />
-              <BookmarkBtn
-                :is-bookmarked="isBookmarked(lecture.id)"
-                :lecture-id="lecture.id"
-                :count="lecture.lecture_bookmarks_count"
-              />
-              <LinkBtn :href="route('lecture.show', lecture.id)" :block="true" class="ms-1">
-                <v-icon :icon="mdiMessageText" size="large"/>
-                {{ lecture.reviews_count }}
-              </LinkBtn>
-            </template>
-          </PostCard>
+      <v-row justify="center">
+        <v-col cols="11" sm="9" md="7" class="pa-0">
+          <SearchLectureForm
+            :names="names"
+            :result-count="props.lectures.total"
+            :query="props.query"
+          />
         </v-col>
-      </template>
-    </v-row>
+      </v-row>
 
-    <template v-if="props.lectures.last_page > 1">
-      <PaginationBtn
-        v-model="props.lectures.current_page"
-        :length="props.lectures.last_page"
-        @update:modelValue="movePage(props.lectures.current_page)"
-      />
-      <div class="text-center text-caption mt-1" style="color: #26A69A;">
-        {{ props.lectures.total }}件中 {{ props.lectures.from }}~{{ props.lectures.to }}件目表示中
+      <div class="d-flex justify-end mt-7 me-sm-5">
+        <div class="me-3">
+          <FilterLectureForm
+            :result-count="props.lectures.total"
+            :lecture-categories="props.lectureCategories"
+            :faculties="props.faculties"
+            :departments="props.departments"
+            :query="props.query"
+          />
+        </div>
+
+        <SortLectureForm
+          :query="props.query"
+        />
       </div>
-    </template>
-  </PageSection>
+
+      <LectureQueryChip
+        :query="props.query"
+        :lecture-categories="props.lectureCategories"
+        :faculties="props.faculties"
+        :departments="props.departments"
+        :result-count="props.lectures.total"
+        :total-count="props.totalCount"
+      />
+
+      <v-row justify="space-around" class="mt-0">
+        <template v-for="lecture in props.lectures.data">
+          <v-col cols="12" sm="6" lg="4" class="px-2 px-md-3 py-2 py-sm-3">
+
+            <PostCard>
+              <template v-slot:barTitle>
+                <div @click="search.lecture_name = lecture.lecture_name" style="cursor: pointer;">
+                  {{ lecture.lecture_name }}
+                  <v-icon :icon="mdiChevronRight" size="x-small" class="ms-n1" />
+                </div>
+              </template>
+
+              <template v-slot:menuItem>
+                <v-list-item
+                  v-if="lecture.user.id === $page.props.auth.user.id"
+                  link
+                  title="編集"
+                  :prepend-icon="mdiSquareEditOutline"
+                  style="color: #26A69A;"
+                  @click="router.get(route('lecture.edit', lecture.id), {} , {
+                    preserveScroll: true,
+                    onSuccess: (page) => {
+                      page.props.flash.error && useToast().error(page.props.flash.error)
+                    }
+                  })"
+                />
+
+                <v-list-item
+                  v-if="lecture.user.id === $page.props.auth.user.id"
+                  link
+                  title="削除"
+                  :prepend-icon="mdiTrashCan"
+                  style="color: red;"
+                  @click="[deleteConfirm(lecture.id), deleteLectureId = lecture.id]"
+                />
+
+                <v-list-item
+                  link
+                  title="不適切な投稿として報告"
+                  :prepend-icon="mdiAlertCircle"
+                  @click="[reportConfirm(lecture.id), reportLectureId = lecture.id]"
+                />
+              </template>
+
+              <template v-slot:cardTitle>
+                <div @click="search.professor_name = lecture.professor_name" style="cursor: pointer;">
+                  {{ lecture.professor_name + '先生' }}
+                  <v-icon :icon="mdiChevronRight" size="x-small" class="ms-n1 text-disabled" />
+                </div>
+              </template>
+
+              <template v-slot:subtitle>
+                {{ lecture.season }}
+                {{ ' / ' + lecture.lecture_category.name }}
+                {{ lecture.faculty && ' / ' + lecture.faculty.name }}
+                {{ lecture.department && ' / ' + lecture.department.name }}
+                {{ lecture.course && ' / ' + lecture.course.name }}
+              </template>
+
+              <template v-slot:text>
+                <div class="text-subtitle-2">
+                  総合評価
+                  <span class="text-body-1" style="color: #26A69A;">★</span>
+                  {{ Math.floor(lecture.average_rate * 1000) / 1000 }}
+                </div>
+
+                <v-row justify="center" class="mt-0 mb-0">
+                  <v-col cols="auto" class="px-2">
+                    <StarRateChip
+                      label="充実度"
+                      :star="Math.floor(lecture.fulfillment_rate_avg * 10) / 10"
+                      :small="true"
+                    />
+                  </v-col>
+
+                  <v-col cols="auto" class="px-2">
+                    <StarRateChip
+                      label="楽単度"
+                      :star="Math.floor(lecture.ease_rate_avg * 10) / 10"
+                      :small="true"
+                    />
+                  </v-col>
+
+                  <v-col cols="auto" class="px-2">
+                    <StarRateChip
+                      label="満足度"
+                      :star="Math.floor(lecture.satisfaction_rate_avg * 10) / 10"
+                      :small="true"
+                    />
+                  </v-col>
+                </v-row>
+              </template>
+
+              <template v-slot:action>
+                <LinkBtn :href="route('review.create', lecture.id)">
+                  この講義を評価する
+                </LinkBtn>
+                <v-spacer />
+                <BookmarkBtn
+                  :is-bookmarked="isBookmarked(lecture.id)"
+                  :lecture-id="lecture.id"
+                  :count="lecture.lecture_bookmarks_count"
+                />
+                <LinkBtn :href="route('lecture.show', lecture.id)" :block="true" class="ms-1">
+                  <v-icon :icon="mdiMessageText" size="large"/>
+                  {{ lecture.reviews_count }}
+                </LinkBtn>
+              </template>
+            </PostCard>
+          </v-col>
+        </template>
+      </v-row>
+
+      <template v-if="props.lectures.last_page > 1">
+        <PaginationBtn
+          v-model="props.lectures.current_page"
+          :length="props.lectures.last_page"
+          @update:modelValue="movePage(props.lectures.current_page)"
+        />
+        <div class="text-center text-caption mt-1" style="color: #26A69A;">
+          {{ props.lectures.total }}件中 {{ props.lectures.from }}~{{ props.lectures.to }}件目表示中
+        </div>
+      </template>
+    </PageSection>
 
     <ConfirmCard
       :dialog="deleteDialog"
@@ -331,4 +326,5 @@
         <PrimaryBtn @click="[reportDialog = false, report()]">はい</PrimaryBtn>
       </template>
     </ConfirmCard>
+  </Layout>
 </template>

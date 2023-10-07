@@ -1,7 +1,7 @@
 <script setup>
   import LinkBtn from '@/Components/LinkBtn.vue'
 
-  defineProps(['icon', 'title', 'subtitle', 'mustAuth', 'guestViewing'])
+  defineProps(['icon', 'title', 'subtitle',  'guestViewing'])
 </script>
 
 <template>
@@ -15,7 +15,11 @@
       <h2>{{ title }}</h2>
     </v-card-title>
 
-    <v-card-subtitle v-if="subtitle" class="px-0 pb-2 text-center text-caption mx-2" style="white-space: pre-wrap;">
+    <v-card-subtitle
+      v-if="subtitle"
+      class="px-0 pb-2 text-center text-caption mx-2"
+      style="white-space: pre-wrap; word-wrap: break-word;"
+    >
       {{ subtitle }}
     </v-card-subtitle>
 

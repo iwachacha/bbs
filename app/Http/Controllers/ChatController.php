@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Thread;
@@ -42,10 +41,6 @@ class ChatController extends Controller
     public function storeThread(ThreadRequest $request)
     {
         $input = $request->validated();
-        if(Auth::check()){
-            $input['user_id'] = Auth::id();
-        }
-
         Thread::create($input);
     }
 
@@ -53,10 +48,6 @@ class ChatController extends Controller
     {
         $input = $request->validated();
         $input['thread_id'] = $thread_id;
-        if(Auth::check()){
-            $input['user_id'] = Auth::id();
-        }
-
         Response::create($input);
     }
 }

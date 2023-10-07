@@ -9,32 +9,32 @@ use App\Models\Report;
 
 class ReportController extends Controller
 {
-    //重複なしで報告を保存
     public function report(Request $request)
     {
-        if($request->has('reportee_id')){
-            if(!Report::where('reporter_id', Auth::id())->where('reportee_id', $request->reportee_id)->exists()){
-                Report::create([
-                    'reporter_id' => Auth::id(),
-                    'reportee_id' => $request->reportee_id
-                ]);
-            }
-        }
-
+        //重複なしで報告を保存
         if($request->has('lecture_id')){
-            if(!Report::where('reporter_id', Auth::id())->where('lecture_id', $request->lecture_id)->exists()){
+            if(!Report::where('user_id', Auth::id())->where('lecture_id', $request->lecture_id)->exists()){
                 Report::create([
-                    'reporter_id' => Auth::id(),
+                    'user_id' => Auth::id(),
                     'lecture_id' => $request->lecture_id
                 ]);
             }
         }
 
         if($request->has('review_id')){
-            if(!Report::where('review_id', Auth::id())->where('review_id', $request->review_id)->exists()){
+            if(!Report::where('user_id', Auth::id())->where('review_id', $request->review_id)->exists()){
                 Report::create([
-                    'reporter_id' => Auth::id(),
+                    'user_id' => Auth::id(),
                     'review_id' => $request->review_id
+                ]);
+            }
+        }
+
+        if($request->has('thread_id')){
+            if(!Report::where('user_id', Auth::id())->where('thread_id', $request->thread_id)->exists()){
+                Report::create([
+                    'user_id' => Auth::id(),
+                    'thread_id' => $request->thread_id
                 ]);
             }
         }

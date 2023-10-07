@@ -2,6 +2,7 @@
   import { ref, computed } from 'vue'
   import { Head } from '@inertiajs/vue3'
   import { mdiPenPlus } from '@mdi/js'
+  import Layout from '@/Layouts/Layout.vue'
   import PageSection from '@/Components/PageSection.vue'
   import MoveReviewPageForm from '@/Components/Lectures/MoveReviewPageForm.vue'
   import LectureForm from '@/Components/Lectures/LectureForm.vue'
@@ -38,72 +39,67 @@
   })
 </script>
 
-<script>
-  import Layout from '@/Layouts/Layout.vue'
-  export default {
-    layout: Layout,
-  }
-</script>
-
 <template>
   <Head title="レビュー作成" />
 
-  <PageSection :title="currentSection.title" :subtitle="currentSection.subtitle" :icon="mdiPenPlus">
-    <v-stepper
-      v-model="step"
-      alt-labels
-      hide-actions
-      :items="['講義検索', '講義作成', '評価作成']"
-      style="background-color: #FAFAFA;"
-    >
+  <Layout>
+    <PageSection :title="currentSection.title" :subtitle="currentSection.subtitle" :icon="mdiPenPlus">
+      <v-stepper
+        v-model="step"
+        alt-labels
+        hide-actions
+        :items="['講義検索', '講義作成', '評価作成']"
+        style="background-color: #FAFAFA;"
+      >
 
-      <template v-slot:item.1>
-        <MoveReviewPageForm
-          :lectures="props.lectures"
-          :lecture-categories="props.lectureCategories"
-          :faculties="props.faculties"
-          :departments="props.departments"
-          :courses="props.courses"
-        />
-      </template>
+        <template v-slot:item.1>
+          <MoveReviewPageForm
+            :lectures="props.lectures"
+            :lecture-categories="props.lectureCategories"
+            :faculties="props.faculties"
+            :departments="props.departments"
+            :courses="props.courses"
+          />
+        </template>
 
-      <template v-slot:item.2>
-        <LectureForm
-          :errors="props.errors"
-          :lecture-categories="props.lectureCategories"
-          :faculties="props.faculties"
-          :departments="props.departments"
-          :courses="props.courses"
-          @isSubmit="step++"
-        />
-      </template>
+        <template v-slot:item.2>
+          <LectureForm
+            :errors="props.errors"
+            :lecture-categories="props.lectureCategories"
+            :faculties="props.faculties"
+            :departments="props.departments"
+            :courses="props.courses"
+            @isSubmit="step++"
+          />
+        </template>
 
-      <template v-slot:item.3>
-        <ReviewForm
-          :errors="props.errors"
-          :tags="tags"
-        />
-      </template>
+        <template v-slot:item.3>
+          <ReviewForm
+            :errors="props.errors"
+            :tags="tags"
+          />
+        </template>
 
-      <v-divider />
+        <v-divider />
 
-      <v-card-actions class="mb-3 mx-3">
-        <PrimaryBtn
-          v-if="step == 2"
-          @click="step--"
-        >
-          戻る
-        </PrimaryBtn>
-        <v-spacer />
-        <PrimaryBtn
-          v-if="step == 1"
-          @click="step++"
-        >
-          次へ
-        </PrimaryBtn>
-      </v-card-actions>
-    </v-stepper>
-  </PageSection>
+        <v-card-actions class="mb-3 mx-3">
+          <PrimaryBtn
+            v-if="step == 2"
+            @click="step--"
+          >
+            戻る
+          </PrimaryBtn>
+          <v-spacer />
+          <PrimaryBtn
+            v-if="step == 1"
+            @click="step++"
+          >
+            次へ
+          </PrimaryBtn>
+        </v-card-actions>
+      </v-stepper>
+    </PageSection>
+  </Layout>
 </template>
 
 <style>
