@@ -1,6 +1,7 @@
 <script setup>
 	import { Head } from '@inertiajs/vue3'
 	import { mdiNewBox, mdiAccountOutline } from '@mdi/js'
+	import Layout from '@/Layouts/Layout.vue'
 	import PageSection from '@/Components/PageSection.vue'
 
 	const props = defineProps({
@@ -11,15 +12,10 @@
 	})
 </script>
 
-<script>
-  import Layout from '@/Layouts/Layout.vue'
-  export default {
-    layout: Layout,
-  }
-</script>
-
 <template>
 	<Head title="ホーム" />
+
+	<Layout>
 		<div style="position: relative;">
 			<v-img
 				:src="'Images/大学風景.jpg'"
@@ -57,14 +53,15 @@
 		>
 			<div class="text-center">実装中</div>
 		</PageSection>
+	</Layout>
 </template>
 
 <style>
 	.home_img {
 		filter: blur(5px);
 		-webkit-filter:blur(5px);
-    -moz-filter:blur(5px);
-    -ms-filter: blur(5px);
+	    -moz-filter:blur(5px);
+	    -ms-filter: blur(5px);
 		opacity: 0.5;
 	}
 
@@ -76,10 +73,10 @@
 	.home_title {
 		position: absolute;
 		top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    -webkit-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
+	    left: 50%;
+	    transform: translate(-50%, -50%);
+	    -webkit-transform: translate(-50%, -50%);
+	    -ms-transform: translate(-50%, -50%);
 	}
 </style>
 
