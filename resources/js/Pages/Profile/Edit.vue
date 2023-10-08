@@ -16,7 +16,7 @@
 
 <template>
   <Layout>
-    <PageSection title="プロフィール編集" :icon="mdiAccount">
+    <PageSection title="プロフィール編集" :icon="mdiAccount" style="max-width: 800px;">
       <UpdateProfileInformationForm
         :faculties="faculties"
         :departments="departments"
@@ -26,13 +26,16 @@
 
     <v-divider class="border-opacity-100" />
 
-    <PageSection title="パスワード変更" :icon="mdiLockOutline">
+    <PageSection title="パスワード変更" :icon="mdiLockOutline"  style="max-width: 800px;">
       <UpdatePasswordForm />
     </PageSection>
 
     <v-divider class="border-opacity-100" />
 
-    <PageSection title="アカウント削除" :icon="mdiAlertCircle">
+    <PageSection
+      title="アカウント削除"
+      :icon="mdiAlertCircle"
+      style="max-width: 800px;">
       <DeleteUserForm />
     </PageSection>
   </Layout>

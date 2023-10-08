@@ -11,13 +11,17 @@ class ReviewGoodController extends Controller
 {
     public function good(Review $review, Request $request)
     {
-        //対象レビューに既にgoodが存在すれば数を増やし、存在しなければ新しく作成
+        //投稿者本人はgood不可
+        //対象レビューにユーザーが既にgoodをしていれば数を増やし、していなければ新しく作成
         if($review->user_id !== Auth::id()){
-            if(ReviewGood::where('review_id', $review->id)->exists()){
-                $review->review_good->increment('count', $request->count);
+            if(ReviewGood::where('review_id', $review->id)->where('user_id', Auth::id())->exists()){
+                ReviewGood::where('review_id', $review->id)
+                    ->where('user_id', Auth::id())
+                    ->increment('count', $request->count);
             }
             else {
                 ReviewGood::create([
+                    'user_id' => Auth::id(),
                     'review_id' => $review->id,
                     'count' => $request->count
                 ]);

@@ -41,6 +41,14 @@
     }
   })
 
+  const reviewGoodText = computed(() => (review) => {
+    let goodCount = 0
+    review.review_goods.map((e) => {
+      goodCount += e.count
+    })
+    return review.review_goods_count + '人から' + goodCount + '回の共感が寄せられています！'
+  })
+
   //レビュー削除
   const deleteDialog = ref(false)
   const deleteReviewId = ref(null)
@@ -280,8 +288,8 @@
                   </template>
 
                   <template v-slot:action>
-                    <div class="ms-2 text-caption">
-                      {{ review.review_good ? review.review_good.count : 0 }}回の共感が寄せられています！
+                    <div v-if="review.review_goods_count" class="text-caption">
+                      {{ reviewGoodText(review) }}
                     </div>
                     <v-spacer />
 

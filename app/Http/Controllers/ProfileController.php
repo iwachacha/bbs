@@ -10,15 +10,24 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\User;
 use App\Models\Faculty;
 use App\Models\Department;
 use App\Models\Course;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
+    public function show($user_id)
+    {
+        $user = User::query()
+            ->with('lectures', 'reviews', 'lectureBookmarks', 'reviewGoods', 'faculty', 'department', 'course')
+            ->find($user_id);
+
+        return Inertia::render('Profile/Show', [
+            'user' => $user
+        ]);
+    }
+
     public function edit(Request $request): Response
     {
         return Inertia::render('Profile/Edit', [
@@ -30,9 +39,6 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
-     * Update the user's profile information.
-     */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
@@ -46,9 +52,6 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit');
     }
 
-    /**
-     * Delete the user's account.
-     */
     public function destroy(Request $request): RedirectResponse
     {
         $request->validate([

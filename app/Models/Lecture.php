@@ -47,7 +47,7 @@ class Lecture extends Model
         return $this->hasMany(Review::class);
     }
 
-    public function lecture_bookmarks()
+    public function lectureBookmarks()
     {
         return $this->hasMany(LectureBookmark::class);
     }

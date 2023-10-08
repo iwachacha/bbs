@@ -32,9 +32,9 @@ class Review extends Model
         return $this->belongsToMany(Tag::class)->withTimestamps();
     }
 
-    public function review_good()
+    public function reviewGoods()
     {
-        return $this->hasOne(ReviewGood::class);
+        return $this->hasMany(ReviewGood::class);
     }
 
     public function getAverageRate($request)

@@ -54,7 +54,8 @@ Route::middleware(['throttle:request'])->group(function ()
         ->name('review.good')->middleware('auth');
 
     //チャット関連
-    Route::controller(ChatController::class)->group(function () {
+    Route::controller(ChatController::class)->group(function ()
+    {
         Route::get('/chats', 'index')->name('chat.index');
         Route::post('/chats', 'storeThread')->name('chat.thread.store');
         Route::get('/chats/{thread}', 'show')->name('chat.show');
@@ -64,9 +65,10 @@ Route::middleware(['throttle:request'])->group(function ()
     //不適切な投稿の報告報告
     Route::post('/report', [ReportController::class, 'report'])->name('report')->middleware('auth');
 
-    //プロフィール編集
+    //プロフィール関連
     Route::middleware('auth')->group(function ()
     {
+        Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

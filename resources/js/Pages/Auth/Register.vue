@@ -1,24 +1,19 @@
 <script setup>
-	import { ref, watch, computed } from 'vue'
+	import { ref, computed } from 'vue'
   import { mdiAccount, mdiEmailOutline, mdiEyeOff, mdiEye, mdiLockOutline, mdiChevronRight } from '@mdi/js'
 	import { Head, Link, useForm } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
   import { useVuelidate } from '@vuelidate/core'
   import { required, sameAs, maxLength, minLength, helpers } from '@vuelidate/validators'
   import { requiredM, maxLengthM, minLengthM } from '@/validationMessage.js'
-  import { getFacultyName, getDepartmentName, getCourseName } from '@/Components/Lectures/GetNameFromId.vue'
   import MustInput from '@/Components/MustInput.vue'
 	import PageSection from '@/Components/PageSection.vue'
-  import Select from '@/Components/Select.vue'
   import PrimaryBtn from '@/Components/PrimaryBtn.vue'
 	import SecondaryBtn from '@/Components/SecondaryBtn.vue'
   import ConfirmCard from '@/Components/ConfirmCard.vue'
 
 	const props = defineProps({
 		errors: Object,
-		faculties: Object,
-		departments: Object,
-		courses: Object,
 	})
 
 	const form = useForm({
@@ -26,11 +21,6 @@
 		email: null,
 		password: null,
 		password_confirmation: null,
-		grade: null,
-		faculty_id: null,
-		department_id: null,
-		course_id: null,
-		terms: false,
 	})
 
 	const registerRules = {
@@ -59,25 +49,6 @@
 	const visiblePassword = ref(false)
 	const visibleConfirmPassword = ref(false)
 
-  const sortDepartments = ref()
-  const sortCourses = ref()
-  watch(
-    () => form.faculty_id,
-    (faculty_id) => {
-      sortDepartments.value = props.departments.filter((department) => department.faculty_id === faculty_id)
-      form.department_id = null
-      form.course_id = null
-    }
-  )
-
-  watch(
-    () => form.department_id,
-    (department_id) => {
-      sortCourses.value = props.courses.filter((course) => course.department_id === department_id)
-      form.course_id = null
-    }
-  )
-
 	const submit = () => {
 		form.post(route('register'), {
 			onSuccess: () => {
@@ -95,18 +66,9 @@
 	const dialog = ref(false)
   const createUser = ref([])
   const openDialog = () => {
-    let selectFacultyName = getFacultyName(props.faculties, form.faculty_id)
-    let selectDepartmentName = getDepartmentName(props.departments, form.department_id)
-    let selectCourseName = getCourseName(props.courses, form.course_id)
-
     createUser.value = [
       {key: 'ユーザー名', value: form.name},
-      {key: '学年', value: form.grade ? form.grade : '未設定'},
-      {key: '所属学部', value: selectFacultyName ? selectFacultyName : '未設定'},
-      {key: '所属学科・課程', value: selectDepartmentName ? selectDepartmentName : '未設定'},
-      {key: '所属コース・専修', value: selectCourseName ? selectCourseName : '未設定'},
 			{key: 'パスワード', value: form.password},
-			{key: '大学メールアドレス', value: form.email},
     ]
     dialog.value = true
   }
@@ -120,11 +82,11 @@
 			title="ユーザー登録"
 			:icon="mdiAccount"
 			:guest-viewing="true"
-			style="max-width: 1000px;"
+			style="max-width: 700px;"
 		>
 			<form @submit.prevent="registerV$.$invalid ? showError() : submit()" id="registerForm">
 				<v-row>
-					<v-col cols="12" md="6">
+					<v-col cols="12">
 						<MustInput
 							v-model="form.name"
 							variant="outlined"
@@ -138,51 +100,7 @@
 						>ユーザー名</MustInput>
 					</v-col>
 
-					<v-col cols="12" sm="6">
-						<Select
-							v-model="form.grade"
-							variant="outlined"
-							label="学年"
-							:items="['1年', '2年', '3年', '4年', 'その他']"
-						/>
-					</v-col>
-
-					<v-col cols="12" sm="6" md="4">
-						<Select
-							v-model="form.faculty_id"
-							variant="outlined"
-							label="学部"
-							:items="props.faculties"
-							item-title="name"
-            	item-value="id"
-						/>
-					</v-col>
-
-					<v-col cols="12" sm="6" md="4">
-						<Select
-							v-model="form.department_id"
-							variant="outlined"
-							label="学科・課程"
-							:items="sortDepartments"
-							item-title="name"
-            	item-value="id"
-							hint="学部選択時のみ選択できます"
-						/>
-					</v-col>
-
-					<v-col cols="12" sm="6" md="4">
-						<Select
-							v-model="form.course_id"
-							variant="outlined"
-							label="コース・専修"
-							:items="sortCourses"
-							item-title="name"
-            	item-value="id"
-							hint="学科選択時のみ選択できます"
-						/>
-					</v-col>
-
-					<v-col cols="12" md="6">
+					<v-col cols="12">
 						<MustInput
 							v-model="form.password"
 							:type="visiblePassword ? 'text' : 'password'"
@@ -190,15 +108,15 @@
 							hint="ログインに使用します"
 							counter="16"
 							:prepend-inner-icon="mdiLockOutline"
-							:append-inner-icon="visiblePassword ? mdiEye : mdiEyeOff"
-							:error-messages="props.errors.password ? props.errors.password : registerV$.password.$errors.map(e => e.$message)"
+							:append-inner-icon="(visiblePassword) ? mdiEye : mdiEyeOff"
+							:error-messages="props.errors.password || registerV$.password.$errors.map(e => e.$message)"
 							@input="registerV$.password.$touch"
 							@blur="registerV$.password.$touch"
 							@click:append-inner="visiblePassword = !visiblePassword"
 						>パスワード</MustInput>
 					</v-col>
 
-					<v-col cols="12" md="6">
+					<v-col cols="12">
 						<MustInput
 							v-model="form.password_confirmation"
 							:type="visibleConfirmPassword ? 'text' : 'password'"
@@ -206,8 +124,8 @@
 							hint="同じパスワードを入力してください"
 							counter="16"
 							:prepend-inner-icon="mdiLockOutline"
-							:append-inner-icon="visibleConfirmPassword ? mdiEye : mdiEyeOff"
-							:error-messages="props.errors.password_confirmation ? props.errors.password_confirmation : registerV$.password_confirmation.$errors.map(e => e.$message)"
+							:append-inner-icon="(visibleConfirmPassword) ? mdiEye : mdiEyeOff"
+							:error-messages="props.errors.password_confirmation || registerV$.password_confirmation.$errors.map(e => e.$message)"
 							@input="registerV$.password_confirmation.$touch"
 							@blur="registerV$.password_confirmation.$touch"
 							@click:append-inner="visibleConfirmPassword = !visibleConfirmPassword"
@@ -221,7 +139,7 @@
 							hint="~@gmail.com → gmail.com"
 							placeholder="@の後ろを入力してください"
 							:prepend-inner-icon="mdiEmailOutline"
-							:error-messages="props.errors.email ? props.errors.email : registerV$.email.$errors.map(e => e.$message)"
+							:error-messages="props.errors.email || registerV$.email.$errors.map(e => e.$message)"
 							@input="registerV$.email.$touch"
 							@blur="registerV$.email.$touch"
 						>大学メールアドレス(ドメイン)</MustInput>

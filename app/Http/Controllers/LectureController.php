@@ -29,7 +29,7 @@ class LectureController extends Controller
             ->searchByProfessorName($request->professor_name)
             ->selectFilter($request->only(['season', 'category', 'faculty', 'department']))
             ->with('lecture_category', 'faculty', 'department', 'course', 'user')
-            ->withCount('reviews', 'lecture_bookmarks')
+            ->withCount('reviews', 'lectureBookmarks')
             ->withAvg('reviews as average_rate', 'average_rate')
             ->withAvg('reviews as fulfillment_rate_avg', 'fulfillment_rate')
             ->withAvg('reviews as ease_rate_avg', 'ease_rate')
@@ -62,7 +62,8 @@ class LectureController extends Controller
 
         $reviews = Review::where('lecture_id', $lecture_id)
             ->filter($request->only(['fulfillment', 'ease', 'satisfaction', 'year']))
-            ->with('user', 'tags', 'review_good')
+            ->with('user', 'tags', 'reviewGoods')
+            ->withCount('reviewGoods')
             ->sort($request->sort)
             ->get();
 
