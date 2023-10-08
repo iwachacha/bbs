@@ -7,7 +7,7 @@
     label
     color="primary"
     :class="[ (small) ? 'px-1 text-caption' : 'px-2 text-body-2' ]"
-    :style="{ height: [ (small) ? '20px' : '30px' ] }"
+    :style="{ height: [ (small) ? '24px' : '28px' ] }"
   >
     {{ label }}
   </v-chip>

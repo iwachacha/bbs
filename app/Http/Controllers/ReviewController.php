@@ -20,7 +20,8 @@ class ReviewController extends Controller
             ->searchByWord($request->search_word)
             ->filter($request->only(['fulfillment', 'ease', 'satisfaction', 'year']))
             ->searchByTag($request->tag)
-            ->with('lecture', 'tags', 'user', 'review_good')
+            ->with('lecture', 'tags', 'user', 'reviewGoods')
+            ->withCount('reviewGoods')
             ->sort($request->sort)
             ->paginate(8);
 

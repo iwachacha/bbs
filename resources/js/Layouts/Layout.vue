@@ -1,6 +1,6 @@
 <script setup>
   import { ref } from 'vue'
-  import { mdiHome, mdiAccountCircle, mdiSchool, mdiHelpCircleOutline, mdiPenPlus, mdiHumanMaleBoard, mdiChatProcessingOutline, mdiMessageText } from '@mdi/js'
+  import { mdiHome, mdiAccountCircle, mdiSchool, mdiHelpCircleOutline, mdiPenPlus, mdiHumanMaleBoard, mdiChatProcessingOutline, mdiMessageText, mdiMapMarkerRadius } from '@mdi/js'
   import { usePage, Link, router } from '@inertiajs/vue3'
   import { useToast } from "vue-toastification"
   import { getFacultyName } from '@/Components/Lectures/GetNameFromId.vue'
@@ -11,8 +11,14 @@
   import SecondaryBtn from '@/Components/SecondaryBtn.vue'
 
   const user = usePage().props.auth.user
+
   const drawer = ref(false)
-  const open = ref([null])
+
+  const component = usePage().component
+  const open = (component.startsWith('Lecture') || component.startsWith('Review'))
+    ? ref(['lectures'])
+    : ref([null])
+
   const dialog = ref(false)
 </script>
 
@@ -32,7 +38,7 @@
           :href="'/'"
           title="ホーム"
           :icon="mdiHome"
-          :active="$page.component == 'Home'"
+          :active="component === 'Home'"
         />
 
         <v-list-group value="lectures">
@@ -43,7 +49,7 @@
               title="講義情報"
               rounded="xl"
               color="primary"
-              :active="$page.component.startsWith('Lecture') || $page.component.startsWith('Review')"
+              :active="component.startsWith('Lecture') || component.startsWith('Review')"
             />
           </template>
 
@@ -51,21 +57,21 @@
             :href="route('lecture.index')"
             title="講義検索"
             :icon="mdiHumanMaleBoard"
-            :active="$page.component == 'Lecture/Index'"
+            :active="component === 'Lecture/Index'"
           />
 
           <NavItem
             :href="route('review.index')"
             title="レビュー検索"
             :icon="mdiMessageText"
-            :active="$page.component == 'Review/Index'"
+            :active="component === 'Review/Index'"
           />
 
           <NavItem
             :href="route('lecture.create')"
             title="レビュー作成"
             :icon="mdiPenPlus"
-            :active="$page.component == 'Lecture/Create'"
+            :active="component === 'Lecture/Create'"
           />
         </v-list-group>
 
@@ -73,14 +79,20 @@
           :href="route('chat.index')"
           :icon="mdiChatProcessingOutline "
           title="雑談部屋"
-          :active="$page.component.startsWith('Chat')"
+          :active="component.startsWith('Chat')"
+        />
+
+        <NavItem
+          :href="route('contact.create')"
+          :icon="mdiMapMarkerRadius"
+          title="周辺スポット(開発予定)"
         />
 
         <NavItem
           :href="route('contact.create')"
           :icon="mdiHelpCircleOutline"
           title="お問い合わせ"
-          :active="$page.component.startsWith('Contact')"
+          :active="component.startsWith('Contact')"
         />
       </v-list>
 
@@ -141,12 +153,15 @@
             </template>
 
             <v-list>
+              <Link :href="route('profile.show', user.id)">
+                <v-list-item link title="プロフィール" />
+              </Link>
+
+              <v-divider class="border-opacity-100" />
+
               <Link :href="route('profile.edit')">
                 <v-list-item link title="アカウント情報" />
               </Link>
-              <v-divider class="border-opacity-100" />
-
-              <v-list-item link title="プロフィール" ></v-list-item>
             </v-list>
           </v-menu>
         </template>
@@ -163,7 +178,7 @@
       </template>
     </v-app-bar>
 
-    <v-main class="mb-10" style="width: 100%; overflow: hidden;">
+    <v-main class="mb-10 mx-auto" style="width: 100%; overflow: hidden;">
       <slot />
     </v-main>
   </v-app>

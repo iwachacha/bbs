@@ -10,6 +10,6 @@ class ReviewGood extends Model
     use HasFactory;
 
     protected $fillable = [
-        'review_id', 'count'
+        'user_id', 'review_id', 'count'
     ];
 }

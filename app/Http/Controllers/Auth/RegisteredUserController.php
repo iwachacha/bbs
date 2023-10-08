@@ -18,23 +18,11 @@ use App\Models\Course;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
     public function create(): Response
     {
-        return Inertia::render('Auth/Register')->with([
-            'faculties' => Faculty::all(),
-            'departments' => Department::all(),
-            'courses' => Course::all()
-        ]);
+        return Inertia::render('Auth/Register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(UserRequest $request): RedirectResponse
     {
         $input = $request->validated();

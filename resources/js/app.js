@@ -14,7 +14,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 
-const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
+const appName = window.document.getElementsByTagName('title')[0]?.innerText || '文教大学越谷キャンパス情報掲示板';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -29,5 +29,6 @@ createInertiaApp({
     },
     progress: {
         color: '#00BFA5',
+        showSpinner: true,
     },
 });
