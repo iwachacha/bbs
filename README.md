@@ -1,66 +1,76 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## サービスの概要
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+学内の情報共有を活性化するための掲示板です。
+主に講義レビューの共有とチャットを行うことができます。
 
-## About Laravel
+<br />
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## サービスのURL
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+[https://ren-app.jp/ ](https://bu-bbs.herokuapp.com/)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+ユーザー名：test<br />
+パスワード：Testtest<br />
+でログインすることができます。<br />現在は開発者しかアクセスしていないため、ご自由に機能をお試しください。
 
-## Learning Laravel
+<br />
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## サービスへの想い
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+私の通う大学の学生に大学生活での困りごとを聞いたところ、複数の学生が共通して「大学生活における有益な情報を入手することが難しい」と答えました。<br />
+コロナウイルスの流行により、講義のオンライン化、学内のサークル・部活動の活動率が低下したことが原因として考えられます。<br />
+そんな学内の情報入手の難しさを解消し、「多くの学生に満足のいく大学生活を送ってもらいたい」という想いからこのサービスの開発を始めました。<br />
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+学生から聞いた声の中でも特に多かった「履修した講義の後悔」と「大学生活での困りごとを相談できる相手が少ない」いう点に着目し、<br />
+まずは、「学生視点の講義情報を共有できる機能」と「困りごとを複数の学生に相談できる機能」の開発を重点的に行っていこうと思います。<br />
 
-## Laravel Sponsors
+目指すは「学生の当たり前」です。学生間でこのサービスを代々受け継いでいきたいと考えています。
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+<br />
 
-### Premium Partners
+## 一部機能紹介
+| 講義レビュー作成 |　検索機能 |
+| ---- | ---- |
+| ![事業者選択画面](/docs/img/app-view/select-business_1.1.png) | ![請求書作成画面](/docs/img/app-view/create-invoice_1.1.png) |
+| 講義検索・講義作成・レビュー作成の3stepでの入力フォームを実装しました。各入力エリアはリアルタイムで値検証が行われます。 | 各検索機能は、①複数ワード検索：４つまでワード設定可能、完全一致と部分一致の切り替え可能　②絞り込み：複数条件で絞り込み可能　③並べ替え　で構成されます。また、設定中の検索条件は画面に表示され、一つ一つ削除することも可能です。 |
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+|　講義検索ページ  |　レビュー検索ページ  |
+| ---- | ---- |
+| ![請求書詳細画面](/docs/img/app-view/invoice-detail_1.1.png) | ![　PDF出力画面](/docs/img/app-view/print-invoice_1.1.png) |
+| 作成された講義を検索し、講義に寄せられたレビューの平均評価値閲覧とレビュー一覧画面への遷移が行えます。| 作成されたレビューを検索し、各レビューの詳細を閲覧できます。また、＃タグによる検索も行うことができます。 |
 
-## Contributing
+|　講義レビュー詳細 |　レビューへの共感 |
+| ---- | ---- |
+| ![請求書詳細画面](/docs/img/app-view/invoice-detail_1.1.png) | ![　PDF出力画面](/docs/img/app-view/print-invoice_1.1.png) |
+|　1つの講義に寄せられたレビューの一覧と全レビューの評価値集計が閲覧できます。 | 各レビューには回数上限なしのそれな！ボタンを設置しています。クリックすると5秒間のカウントが開始し、カウント終了後にクリック数が送信される仕組みにすることでサーバー負荷の軽減をしています。 |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+<br />
 
-## Code of Conduct
+## その他の工夫ポイント
+* 不適切な情報の排除
+  * 各投稿には「不適切な情報として報告」ボタンを設置しており、開発者画面で報告された投稿の閲覧と削除が行えます。
+  * 連投への対策として、「作成から1週間経過してもレビューが付与されない講義」「作成から1週間経過しても会話が行われない雑談部屋」は自動で削除される仕組みを実装しています。（現在は稼働させていません。）
+* 不適切なアクセスの制限
+  * 1分間のアクセス数上限を設定しています。
+  * 作成された講義の削除・編集は「講義作成者本人であること」「講義にレビューが1件も付与されていないこと」の2条件を満たした場合のみ行えます。なお、開発者画面では全投稿を削除・編集可能です。
+  * 全ての送信ボタンは多重送信を防止するため、サーバーの情報処理が終了するまで再度クリックできないようにしています。
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+<br />
 
-## Security Vulnerabilities
+## 使用技術
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Category          | Technology Stack                                     |
+| ----------------- | --------------------------------------------------   |
+| Frontend          | Vue.js, Vuetify, Vuelidate, Inertia.js               |
+| Backend           | PHP, Laravel                                         |
+| Infrastructure    | Amazon Web Services                                  |
+| Database          | MySQL                                                |
+| etc.              | Git, GitHub, VisualStudioCode                        |
 
-## License
+<br />
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 今後の展望
+
+- ユーザーの獲得：SNSを用いた宣伝を行い、ユーザーの獲得を目指します。
+- コンテンツの拡大：現時点では大学周辺スポットを検討中です。
+- ユーザーとの協力：ユーザーとなる学生の声を基に、学生皆でサービスを成長させていきます。
